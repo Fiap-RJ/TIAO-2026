@@ -1,0 +1,25 @@
+*.csv
+*.tsv
+*.xls
+*.xlsx
+# Ambiente Virtual local
+.venv/
+venv/
+ENV/
+
+# Caches do Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Arquivos de configuração local (Variáveis de Ambiente com chaves de IA)
+.env
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Bancos de Dados Locais
+faiss_index/
+**/*Zone.Identifier

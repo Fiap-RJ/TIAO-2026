@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  genera-api:
+    build: .
+    container_name: genera_intelligence_backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+    volumes:
+      - .:/app
+    restart: always

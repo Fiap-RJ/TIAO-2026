@@ -1,0 +1,120 @@
+{
+  "paciente_id": "uuid-v4-gerado-pelo-sistema",
+  "laboratorio": "Genera",
+  "versao_relatorio": "2.0",
+  "data_processamento": "2026-05-19T10:00:00Z",
+  "paineis_geneticos": [
+    {
+      "nome_painel": "Genera Skin",
+      "descricao": "Influência da genética nos cuidados com a pele.",
+      "resultados": [
+        {
+          "caracteristica": "Acne",
+          "categoria_impacto": "Cuidados relevantes",
+          "dados_tecnicos": {
+            "snp": "rs7531806",
+            "cromossomo": "1",
+            "gene": "SELL",
+            "populacao_estudo": "Asiática",
+            "genotipo": "A,A"
+          },
+          "conclusao_curta": "Maior predisposição para desenvolver acne",
+          "explicacao_detalhada": "Você possui duas cópias do alelo rs7531806-A, o que indica que você pode apresentar maior predisposição para desenvolver acne. A genética oferece uma visão sobre a predisposição, mas não é o único fator envolvido...",
+          "recomendacoes": [
+            "Fazer acompanhamento médico para indicação de tratamento",
+            "Manter rotina de cuidados com a pele e dieta adequada"
+          ]
+        }
+      ]
+    },
+    {
+      "nome_painel": "Genera Fit",
+      "descricao": "Desempenho físico e prevenção de lesões durante exercícios.",
+      "resultados": [
+        {
+          "caracteristica": "Densidade óssea (força dos ossos)",
+          "categoria_impacto": "Pontos de atenção",
+          "dados_tecnicos": {
+            "snp": "rs2707466",
+            "cromossomo": "7",
+            "gene": "WNT16",
+            "populacao_estudo": "Europeia",
+            "genotipo": "C,C"
+          },
+          "conclusao_curta": "Predisposição para menor densidade óssea",
+          "explicacao_detalhada": "Os ossos desempenham funções muito importantes, uma vez que sustentam nosso corpo. O risco de fraturas e doenças ósseas, como a osteoporose, está relacionado a essa densidade...",
+          "recomendacoes": [
+            "Monitorar ingestão de cálcio e vitamina D",
+            "Praticar atividades físicas adequadas com supervisão"
+          ]
+        }
+      ]
+    },
+    {
+      "nome_painel": "Genera Nutri",
+      "descricao": "Resposta do corpo a nutrientes e vitaminas.",
+      "resultados": [
+        {
+          "caracteristica": "Sensibilidade à Cafeína",
+          "categoria_impacto": "Pontos de atenção",
+          "dados_tecnicos": {
+            "snp": "rs762551",
+            "cromossomo": "15",
+            "gene": "CYP1A2",
+            "populacao_estudo": "Mista",
+            "genotipo": "C,C"
+          },
+          "conclusao_curta": "Metabolismo lento de cafeína",
+          "explicacao_detalhada": "O seu genótipo indica uma metabolização lenta da cafeína. O consumo excessivo de café ou pré-treinos pode estar associado a um maior risco de hipertensão, ansiedade ou dificuldades no sono.",
+          "recomendacoes": [
+            "Limitar o consumo de café a 1 a 2 xícaras por dia",
+            "Evitar o consumo de cafeína após as 16h"
+          ]
+        }
+      ]
+    },
+    {
+      "nome_painel": "Genera Farma",
+      "descricao": "Resposta genética a medicamentos.",
+      "resultados": [
+        {
+          "caracteristica": "Sensibilidade ao Omeprazol",
+          "categoria_impacto": "Intervenção médica recomendada",
+          "dados_tecnicos": {
+            "snp": "rs1065852",
+            "cromossomo": "10",
+            "gene": "CYP2C19",
+            "populacao_estudo": "Mista",
+            "genotipo": "A,A"
+          },
+          "conclusao_curta": "Metabolizador ultrarrápido",
+          "explicacao_detalhada": "A sua genética sugere que você metaboliza o omeprazol de forma ultrarrápida, o que pode reduzir significativamente a eficácia da dosagem padrão do medicamento no tratamento de condições gástricas.",
+          "recomendacoes": [
+            "Discutir possível ajuste de dosagem com o médico assistente",
+            "Avaliar terapias alternativas para proteção gástrica"
+          ]
+        }
+      ]
+    }
+  ],
+  "escala_risco_genetico": [
+    {
+      "doenca": "Câncer de mama",
+      "risco_calculado_porcentagem": 6.01,
+      "intervalo_risco": {
+        "minimo": 5.22,
+        "maximo": 6.72
+      },
+      "classificacao_risco": "Risco aumentado",
+      "marcadores_associados": [
+        {
+          "snp": "rs7902587",
+          "genotipo": "C,C",
+          "alelo_risco": "T",
+          "efeito": 0.344,
+          "gene": "Intergênico"
+        }
+      ]
+    }
+  ]
+}
