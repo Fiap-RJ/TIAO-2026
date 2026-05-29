@@ -11,9 +11,9 @@ from pathlib import Path
 from dotenv import load_dotenv
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
 from core.config import settings
+from core.llm import build_embeddings
 
 load_dotenv()
 
@@ -93,13 +93,9 @@ def carregar_dados_json() -> list[Document]:
     return documentos
 
 
-def _build_embeddings() -> GoogleGenerativeAIEmbeddings:
-    """Constrói a instância de embeddings com configurações centralizadas."""
-    return GoogleGenerativeAIEmbeddings(
-        model=settings.EMBEDDING_MODEL,
-        google_api_key=settings.GOOGLE_API_KEY,
-        task_type="RETRIEVAL_DOCUMENT",
-    )
+def _build_embeddings():
+    """Constrói a instância de embeddings via factory (respeita LLM_PROVIDER)."""
+    return build_embeddings()
 
 
 def criar_e_salvar_banco_vetorial():
@@ -113,10 +109,7 @@ def criar_e_salvar_banco_vetorial():
 
 def load_vector_store() -> FAISS:
     """Carrega o índice FAISS do disco."""
-    embeddings = GoogleGenerativeAIEmbeddings(
-        model=settings.EMBEDDING_MODEL,
-        google_api_key=settings.GOOGLE_API_KEY,
-    )
+    embeddings = _build_embeddings()
     return FAISS.load_local(
         str(FAISS_INDEX_PATH),
         embeddings,

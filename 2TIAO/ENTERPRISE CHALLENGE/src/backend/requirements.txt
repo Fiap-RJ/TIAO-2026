@@ -8,4 +8,5 @@ langgraph>=0.2.0
 faiss-cpu>=1.12.0
 python-dotenv>=1.0.1
 langchain-google-genai>=2.0.0,<4.0.0
+langchain-openai>=0.1.0
 requests>=2.31.0

@@ -1,22 +1,10 @@
 """Nó de geração — invoca o LLM via LangChain com prompt especializado."""
 
 from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_google_genai import ChatGoogleGenerativeAI
 
 from agents.state import AgentState
-from core.config import settings
+from core.llm import build_llm
 from prompts import compor_prompt_completo
-
-
-def _build_llm() -> ChatGoogleGenerativeAI:
-    """Constrói a instância do LLM com as configurações centralizadas."""
-    return ChatGoogleGenerativeAI(
-        model=settings.MODEL_NAME,
-        google_api_key=settings.GOOGLE_API_KEY,
-        temperature=settings.LLM_TEMPERATURE,
-        max_output_tokens=settings.LLM_MAX_TOKENS,
-        convert_system_message_to_human=True,
-    )
 
 
 def generate(state: AgentState) -> dict:
@@ -41,8 +29,8 @@ def generate(state: AgentState) -> dict:
         ),
     ]
 
-    # Invoca o LLM via LangChain
-    llm = _build_llm()
+    # Invoca o LLM (Gemini ou OpenAI, conforme LLM_PROVIDER)
+    llm = build_llm()
     response = llm.invoke(messages)
 
     return {"answer": response.content}

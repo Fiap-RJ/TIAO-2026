@@ -39,7 +39,7 @@ services:
       - GENERA_FAISS_PATH=/app/faiss_index
     volumes:
       - faiss_data:/app/faiss_index
-    command: ["python", "services/vector_store.py"]
+    command: ["python", "-m", "services.vector_store"]
     restart: "no"
 
   # ─────────────────────────────────────────
