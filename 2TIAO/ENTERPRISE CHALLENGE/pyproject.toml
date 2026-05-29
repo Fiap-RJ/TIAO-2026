@@ -1,0 +1,52 @@
+[tool.poetry]
+name = "genera-intelligence"
+version = "0.2.0"
+description = "Motor RAG e Multi-Agent para Interpretação de Laudos Genéticos (Dasa)"
+authors = ["FIAP 2TIAO Team"]
+readme = "README.md"
+license = "MIT"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = ">=0.110.1"
+uvicorn = { version = ">=0.29.0", extras = ["standard"] }
+pydantic = ">=2.7.1"
+pydantic-settings = ">=2.2.0"
+langchain = ">=0.3.0"
+langchain-community = ">=0.3.0"
+langgraph = ">=0.2.0"
+faiss-cpu = ">=1.12.0"
+python-dotenv = ">=1.0.1"
+langchain-google-genai = ">=2.0.0,<4.0.0"
+requests = ">=2.31.0"
+ruff = "^0.15.15"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0"
+httpx = "^0.27"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["src/backend"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src/backend"]
+
+[tool.pyright]
+include = ["src/backend", "tests"]
+extraPaths = ["src/backend"]
+pythonVersion = "3.12"
+pythonPlatform = "Linux"
+venvPath = "."
+venv = ".venv"
+reportMissingImports = "warning"
