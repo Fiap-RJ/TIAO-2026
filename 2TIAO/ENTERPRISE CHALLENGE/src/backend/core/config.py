@@ -1,12 +1,27 @@
-import os
+"""
+Configurações centralizadas — Genera Intelligence
+==================================================
+Carrega variáveis de ambiente via Pydantic BaseSettings.
+"""
+
 from pydantic_settings import BaseSettings
 
+
 class Settings(BaseSettings):
-    GOOGLE_API_KEY: str = os.getenv("GOOGLE_API_KEY", "")
-    MODEL_NAME: str = "gemini-3.1-flash-lite"
+    """Configurações da aplicação carregadas do .env."""
+
+    GOOGLE_API_KEY: str = ""
+    MODEL_NAME: str = "gemini-2.0-flash-lite"
     EMBEDDING_MODEL: str = "models/gemini-embedding-001"
 
-    class Config:
-        env_file = ".env"
+    # Parâmetros do LLM
+    LLM_TEMPERATURE: float = 0.3
+    LLM_MAX_TOKENS: int = 2048
+
+    # Parâmetros do RAG
+    RETRIEVER_K: int = 3
+
+    model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
+
 
 settings = Settings()
