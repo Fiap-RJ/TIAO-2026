@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+
+::selection {
+  background-color: rgba(45, 0, 75, 0.15);
+  color: #2D004B;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
