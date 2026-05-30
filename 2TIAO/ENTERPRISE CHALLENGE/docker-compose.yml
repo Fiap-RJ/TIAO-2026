@@ -1,0 +1,61 @@
+services:
+  # ─────────────────────────────────────────
+  # Backend: FastAPI + LangGraph + FAISS
+  # ─────────────────────────────────────────
+  backend:
+    build:
+      context: .
+      dockerfile: src/backend/Dockerfile
+    container_name: genera_backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - src/backend/.env
+    environment:
+      - GENERA_DATA_PATH=/data/proposta_estrutura_de_dados.json
+      - GENERA_FAISS_PATH=/app/faiss_index
+    volumes:
+      - faiss_data:/app/faiss_index
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    restart: unless-stopped
+
+  # ─────────────────────────────────────────
+  # Seed: Popula o banco vetorial FAISS
+  # ─────────────────────────────────────────
+  seed:
+    build:
+      context: .
+      dockerfile: src/backend/Dockerfile
+    container_name: genera_seed
+    env_file:
+      - src/backend/.env
+    environment:
+      - GENERA_DATA_PATH=/data/proposta_estrutura_de_dados.json
+      - GENERA_FAISS_PATH=/app/faiss_index
+    volumes:
+      - faiss_data:/app/faiss_index
+    command: ["python", "-m", "services.vector_store"]
+    restart: "no"
+
+  # ─────────────────────────────────────────
+  # Frontend: React + Nginx (proxy reverso)
+  # ─────────────────────────────────────────
+  frontend:
+    build:
+      context: src/frontend
+      dockerfile: Dockerfile
+    container_name: genera_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  faiss_data:
