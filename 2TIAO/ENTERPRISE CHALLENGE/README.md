@@ -36,7 +36,7 @@ O projeto visa resolver o gargalo de interpretação de dados genéticos do prod
 A nossa solução é uma camada de inteligência baseada em **RAG (Retrieval-Augmented Generation)**. Através de um assistente conversacional inteligente, o usuário pode "conversar" com o seu DNA, recebendo explicações em linguagem simples, recomendações personalizadas e visualizações intuitivas de riscos e predisposições.
 
 ## 📺 Apresentação do Projeto
-* **Sprint 2 (Atual - Motor RAG & Agentes):** [Link do YouTube será inserido aqui]
+* **Sprint 2 (Atual - Motor RAG & Agentes):** [Link para o YouTube](https://youtu.be/y-MmL1nKIFg)
 * **Sprint 1 (Fundação e Arquitetura):** [Link para o YouTube](https://youtu.be/mASJnbO3dqo)
 
 ---
