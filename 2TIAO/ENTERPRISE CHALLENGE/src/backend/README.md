@@ -1,144 +1,96 @@
-# Genera Intelligence - Backend Core (Sprint 2)
+# Genera Intelligence — Backend (Sprint 2)
 
-Este diretório contém o coração do ecossistema de Inteligência Artificial da nossa solução, sendo responsável pela ingestão de dados na base vetorial (FAISS), orquestração de agentes dinâmicos via **LangGraph** e integração com os modelos de linguagem do **Google Gemini**.
+Core do motor RAG e orquestração de agentes via LangGraph.
 
-## 🏗️ Estrutura de Pastas
+## Arquitetura
 
-A arquitetura foi desenhada seguindo os princípios de modularidade e Clean Architecture para separação de responsabilidades:
-
-```text
+```
 backend/
-├── agents/          # Definição dos grafos e nós do LangGraph (Agente Médico Dasa)
-├── api/             # Camada de exposição da aplicação (Rotas e Endpoints FastAPI)
-│   └── routes/      # Controladores de rotas (ex: chat.py)
-├── core/            # Configurações globais, segurança e variáveis de ambiente (Pydantic V2)
-├── domain/          # Entidades de negócio e contratos de dados (Schemas Pydantic)
-├── services/        # Serviços de suporte (Conexão com a Base Vetorial FAISS e Embeddings)
-├── utils/           # Ferramentas de diagnóstico, testes de busca e validação de LLMs
-└── main.py          # Ponto de entrada (Bootstrap) da aplicação FastAPI
-
+├── main.py              # Bootstrap FastAPI
+├── agents/              # LangGraph pipeline
+│   ├── state.py         # Estado tipado (Pydantic BaseModel)
+│   ├── graph.py         # Builder do grafo
+│   └── nodes/           # Nós do pipeline
+│       ├── sanitize.py  # PII Redaction (LGPD)
+│       ├── retrieve.py  # Busca semântica FAISS
+│       ├── generate.py  # Invocação do LLM (Gemini/OpenAI)
+│       └── guardrail.py # Validação pós-geração
+├── api/routes/          # Endpoints HTTP
+│   └── chat.py          # POST /api/chat/
+├── core/                # Configuração centralizada
+│   ├── config.py        # Pydantic BaseSettings (.env)
+│   └── llm.py           # Factory: build_llm() + build_embeddings()
+├── domain/              # DTOs
+│   └── schemas.py       # ChatRequest, ChatResponse, FonteDado
+├── eval/                # Avaliação automatizada
+│   ├── cases.py         # Dataset de eval (7 casos)
+│   ├── criteria.py      # Funções de critério
+│   ├── runner.py        # Orquestrador
+│   └── __main__.py      # python -m eval
+├── prompts/             # Engenharia de prompts
+│   ├── base.py          # SYSTEM_BASE (8 regras invioláveis)
+│   └── specialists.py   # AGENT_NUTRI, AGENT_FARMA, AGENT_FIT, AGENT_SKIN, AGENT_RISCO
+├── services/            # Infraestrutura
+│   ├── vector_store.py  # FAISS: ingestão + carregamento
+│   ├── guardrails.py    # Validação de termos proibidos
+│   └── pii_redaction.py # Anonimização (CPF, RG, e-mail, telefone, CEP)
+├── Dockerfile           # Build (contexto na raiz do projeto)
+├── requirements.txt     # Dependências pip
+└── .env.example         # Template de variáveis de ambiente
 ```
 
-## 🚀 Como Executar Localmente
+## Configuração Multi-Provider
 
-Siga os passos abaixo para configurar o ambiente virtual, preparar os dados e rodar o servidor de desenvolvimento:
-
-### 1. Pré-requisitos
-
-Certifique-se de ter o Python 3.10 ou superior instalado na sua máquina.
-
-### 2. Configuração do Ambiente Virtual
-
-Navegue até a pasta `src/backend` no seu terminal e execute:
-
-```bash
-# Criação do ambiente virtual
-python3 -m venv .venv
-
-# Ativação do ambiente (Linux/macOS)
-source .venv/bin/activate
-
-# Ativação do ambiente (Windows)
-.venv\Scripts\activate
-
-```
-
-### 3. Instalação de Dependências
-
-Com o ambiente virtual ativo, instale as bibliotecas necessárias:
-
-```bash
-pip install --no-cache-dir -r requirements.txt
-
-```
-
-### 4. Configuração das Variáveis de Ambiente
-
-Crie um arquivo chamado `.env` na raiz da pasta `backend/` e adicione sua chave de API do Google Studio:
+O sistema suporta Gemini e OpenAI via variável `LLM_PROVIDER`:
 
 ```env
-GOOGLE_API_KEY=sua_chave_api_aqui
+# Gemini (default)
+LLM_PROVIDER=gemini
+GOOGLE_API_KEY=your_key
 
+# OpenAI
+LLM_PROVIDER=openai
+OPENAI_API_KEY=sk-your_key
 ```
 
-### 5. Ingestão de Dados (Criação do Banco Vetorial)
+A factory em `core/llm.py` instancia o provider correto. Lazy imports garantem que `langchain-openai` só é carregado quando necessário.
 
-Antes de rodar a API, é necessário processar o laudo genético (`proposta_estrutura_de_dados.json`) e criar o índice de busca semântica. Execute:
+## Comandos
 
 ```bash
-python3 services/vector_store.py
+# Seed do vector store (obrigatório antes de rodar)
+make seed
 
+# API com hot-reload
+make serve
+
+# Eval do agente
+make eval
+
+# Lint
+make lint
 ```
 
-*Nota: Isso criará a pasta `faiss_index/` na raiz do backend.*
+## Grafo LangGraph
 
-### 6. Executar a API
+```
+sanitize → retrieve → generate → guardrail → END
+```
 
-Para levantar o servidor local com suporte a *hot-reload* (atualização automática ao salvar os arquivos):
+| Nó | Responsabilidade |
+|----|-----------------|
+| `sanitize` | Remove PII do input (LGPD) |
+| `retrieve` | Busca semântica no FAISS (k=3) |
+| `generate` | Invoca LLM com prompt especializado |
+| `guardrail` | Valida resposta + adiciona disclaimer |
+
+## Eval
 
 ```bash
-uvicorn main:app --reload
-
+cd src/backend && python -m eval
 ```
 
-* A API ficará disponível em: `http://localhost:8000`
-* A documentação interativa (Swagger) poderá ser acessada em: `http://localhost:8000/docs`
-
-## 🛠️ Ferramentas de Diagnóstico (`utils/`)
-
-Para facilitar o desenvolvimento e debugar o comportamento do RAG, criamos scripts independentes na pasta `utils/`:
-
-* **`check_models.py`:** Verifica a conectividade com a API do Google e lista os modelos de Embedding liberados para a sua chave de API. Útil para validar problemas de `404 NOT_FOUND` de modelos de IA.
-```bash
-python3 utils/check_models.py
-
-```
-
-
-* **`test_search.py`:** Testa exclusivamente o motor de busca vetorial (FAISS). Simula uma pergunta de paciente e retorna os chunks (trechos do laudo) recuperados no terminal, garantindo que o RAG está extraindo a informação correta antes de enviar ao LLM.
-```bash
-python3 utils/test_search.py
-
-```
-
-
-* **`test_agent.py`:** Dispara uma execução direta do LangGraph (Agente Médico), testando o fluxo completo (Recuperação + Geração) via terminal, sem precisar levantar a API FastAPI.
-```bash
-python3 utils/test_agent.py
-
-```
-
-
-
-## 🔌 Contrato de API Estabelecido
-
-### Endpoint: `POST /api/chat/`
-
-Interface de comunicação utilizada pelo Front-end para enviar as dúvidas dos usuários e receber as respostas fundamentadas via RAG.
-
-**Request Body (Envio):**
-
-```json
-{
-  "paciente_id": "string (uuid)",
-  "mensagem": "string"
-}
-
-```
-
-**Response Body (Retorno):**
-
-```json
-{
-  "resposta": "string",
-  "fontes": [
-    {
-      "painel": "string",
-      "marcador": "string",
-      "gene": "string",
-      "conclusao_curta": "string"
-    }
-  ]
-}
-
-```
+Executa 7 casos cobrindo:
+- Grounding por painel (Nutri, Farma, Fit, Skin, Risco)
+- Guardrails (recusa de diagnóstico)
+- Escopo (recusa de perguntas fora do domínio)
