@@ -1,11 +1,10 @@
 import { ChatRequest, ChatResponse } from '../dtos/chat.dto';
+import { ChatAgentPort } from '../ports/chat-agent.port';
 
 export class ProcessChatMessageUseCase {
+  constructor(private readonly agent: ChatAgentPort) {}
+
   async execute(request: ChatRequest): Promise<ChatResponse> {
-    // Mocked response based on the contract
-    return {
-      reply: "Atualmente, o asteroide Apophis está sendo monitorado...",
-      source_data: ["Apophis - Risco: true"]
-    };
+    return await this.agent.process(request.message);
   }
 }

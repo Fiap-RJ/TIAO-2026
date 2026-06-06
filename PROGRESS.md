@@ -18,7 +18,7 @@
 - [x] **Infraestrutura:** Configurar o Docker (`Dockerfile` e `docker-compose.yml`) para a API.
 - [x] **Core da API:** Subir a API principal em Node.js (NestJS) com Clean Architecture.
 - [x] **Motor de IA:** Construir a orquestração via LangGraph consumindo os dados da NASA.
-- [ ] **Contrato da API:** Expor o endpoint `POST /api/chat` para o Front-end.
+- [x] **Contrato da API:** Expor o endpoint `POST /api/chat` para o Front-end.
 - [ ] **Documentação Técnica:** Extrair trechos vitais do código em formato de texto para o PDF.
 
 ## 🎨 Frontend e Documentação Narrativa (Nathalia)
