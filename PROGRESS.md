@@ -17,14 +17,14 @@
 - [x] **Repositório:** Clonar o template oficial da FIAP (`TEMPLATE-TIAO-2026`).
 - [x] **Infraestrutura:** Configurar o Docker (`Dockerfile` e `docker-compose.yml`) para a API.
 - [x] **Core da API:** Subir a API principal em Node.js (NestJS) com Clean Architecture.
-- [ ] **Motor de IA:** Construir a orquestração via LangGraph consumindo os dados da NASA.
+- [x] **Motor de IA:** Construir a orquestração via LangGraph consumindo os dados da NASA.
 - [ ] **Contrato da API:** Expor o endpoint `POST /api/chat` para o Front-end.
 - [ ] **Documentação Técnica:** Extrair trechos vitais do código em formato de texto para o PDF.
 
 ## 🎨 Frontend e Documentação Narrativa (Nathalia)
 - [ ] **Setup:** Iniciar o projeto da interface (React Native ou Web).
 - [ ] **Telas:** Desenvolver o Dashboard numérico e a Tela de Chat (com estados de loading).
-- [ ] **Integração Front:** Integrar o Front com a rota `/api/chat` (usando mocks iniciais).
+- [ ] **Integração Front:** Integar o Front com a rota `/api/chat` (usando mocks iniciais).
 - [ ] **PDF:** Montar a estrutura do documento (Introdução, Resultados e Conclusão) com diagramação visual.
 - [ ] **Regra de Ouro:** Garantir a inserção da frase "QUERO CONCORRER" na primeira página.
 
