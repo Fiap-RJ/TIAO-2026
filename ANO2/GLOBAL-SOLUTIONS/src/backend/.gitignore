@@ -1,0 +1,30 @@
+# Dependências
+node_modules/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Build do TypeScript
+dist/
+build/
+*.tsbuildinfo
+
+# Variáveis de ambiente
+.env
+
+# Editor e IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker
+.dockerignore
+# Se você decidir não versionar logs do docker compose
+docker-compose.override.yml
+
+# Sistema Operacional
+.DS_Store
+Thumbs.db
