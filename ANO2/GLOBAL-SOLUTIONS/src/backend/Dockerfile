@@ -1,13 +1,16 @@
 FROM node:20-alpine
 
+RUN npm install -g @nestjs/cli
+
 WORKDIR /app
 
-COPY package*.json ./
+COPY package*.json tsconfig*.json tsconfig.build.json ./
 
 RUN npm install
 
-COPY . .
+COPY src ./src
 
+# Executa o build
 RUN npm run build
 
 EXPOSE 3000
