@@ -1,0 +1,29 @@
+[
+  {
+    "id_evento": "NEO-2026-X1",
+    "tipo": "Asteroide",
+    "nome": "2026 Xray-1",
+    "data_aproximacao": "2026-06-08T14:30:00Z",
+    "distancia_terra_km": 350000,
+    "risco_colisao": true,
+    "resumo_alerta": "Asteroide de classe Apollo em rota de aproximação crítica. Risco de impacto avaliado em 4%. Requer monitoramento contínuo."
+  },
+  {
+    "id_evento": "NEO-2026-Y2",
+    "tipo": "Asteroide",
+    "nome": "2026 Yankee-2",
+    "data_aproximacao": "2026-06-10T09:15:00Z",
+    "distancia_terra_km": 5400000,
+    "risco_colisao": false,
+    "resumo_alerta": "Passagem segura a uma distância superior a 14 distâncias lunares. Sem risco para a Terra."
+  },
+  {
+    "id_evento": "SWE-2026-S1",
+    "tipo": "Tempestade Solar",
+    "nome": "Flares Classe X",
+    "data_aproximacao": "2026-06-07T22:00:00Z",
+    "distancia_terra_km": 149600000,
+    "risco_colisao": false,
+    "resumo_alerta": "Erupção solar de alta intensidade detectada. Possibilidade de tempestade geomagnética G3, podendo afetar satélites de comunicação e redes elétricas."
+  }
+]
