@@ -1,0 +1,136 @@
+[
+  {
+    "id": "int-014",
+    "timestamp": "2026-08-16T00:00:00Z",
+    "pergunta": "Posso compartilhar com meu médico?",
+    "resposta": "Sim, e é recomendado. Levar o relatório à consulta ajuda o profissional a personalizar orientações.",
+    "fontes": []
+  },
+  {
+    "id": "int-013",
+    "timestamp": "2026-08-15T21:00:00Z",
+    "pergunta": "O que é ancestralidade genética?",
+    "resposta": "É a estimativa das origens populacionais do seu DNA. No dashboard, ela aparece de forma ilustrativa por enquanto.",
+    "fontes": []
+  },
+  {
+    "id": "int-012",
+    "timestamp": "2026-08-15T18:00:00Z",
+    "pergunta": "Devo fazer exames adicionais?",
+    "resposta": "O relatório pode sugerir acompanhamento, mas a indicação de exames é sempre do seu médico, considerando seu histórico completo.",
+    "fontes": []
+  },
+  {
+    "id": "int-011",
+    "timestamp": "2026-08-15T15:00:00Z",
+    "pergunta": "Cafeína afeta meu sono?",
+    "resposta": "Como seu metabolismo de cafeína tende a ser mais lento, o consumo tardio pode atrapalhar o sono. Avalie reduzir após o meio da tarde.",
+    "fontes": [
+      {
+        "painel": "Genera Nutri",
+        "marcador": "Sensibilidade à Cafeína",
+        "gene": "CYP1A2"
+      }
+    ]
+  },
+  {
+    "id": "int-010",
+    "timestamp": "2026-08-15T12:00:00Z",
+    "pergunta": "Como interpretar cores dos cards?",
+    "resposta": "As cores usam uma escala neutra: baixo, moderado e atenção. Elas não indicam gravidade nem diagnóstico.",
+    "fontes": []
+  },
+  {
+    "id": "int-009",
+    "timestamp": "2026-08-15T09:00:00Z",
+    "pergunta": "Qual painel fala sobre pele?",
+    "resposta": "O painel Genera Skin reúne características ligadas à pele, como predisposição a acne e sensibilidade.",
+    "fontes": [
+      {
+        "painel": "Genera Skin",
+        "marcador": "Acne",
+        "gene": "SELL"
+      }
+    ]
+  },
+  {
+    "id": "int-008",
+    "timestamp": "2026-08-15T06:00:00Z",
+    "pergunta": "Meus dados estão seguros?",
+    "resposta": "Sim. Dados sensíveis são tratados com redação de informações pessoais antes de qualquer processamento, seguindo boas práticas de privacidade.",
+    "fontes": []
+  },
+  {
+    "id": "int-007",
+    "timestamp": "2026-08-15T03:00:00Z",
+    "pergunta": "O que é um SNP?",
+    "resposta": "SNP é uma variação de uma única letra no DNA. Algumas dessas variações estão associadas a características ou predisposições estudadas.",
+    "fontes": []
+  },
+  {
+    "id": "int-006",
+    "timestamp": "2026-08-15T00:00:00Z",
+    "pergunta": "Posso mudar meus hábitos com base nisso?",
+    "resposta": "Sim, hábitos como alimentação, sono e exercício influenciam bastante. A genética indica tendências, mas o estilo de vida faz diferença.",
+    "fontes": []
+  },
+  {
+    "id": "int-005",
+    "timestamp": "2026-08-14T21:00:00Z",
+    "pergunta": "Esses resultados são um diagnóstico?",
+    "resposta": "Não. Os resultados indicam predisposições genéticas, não diagnósticos. Eles apoiam decisões junto a profissionais de saúde.",
+    "fontes": []
+  },
+  {
+    "id": "int-004",
+    "timestamp": "2026-08-14T18:00:00Z",
+    "pergunta": "Preciso me preocupar com algum medicamento?",
+    "resposta": "O painel Genera Farma traz pontos de atenção sobre resposta a certos medicamentos. Sempre informe seu médico sobre esse resultado antes de iniciar tratamentos.",
+    "fontes": [
+      {
+        "painel": "Genera Farma",
+        "marcador": "Metabolização",
+        "gene": "CYP2C19"
+      }
+    ]
+  },
+  {
+    "id": "int-003",
+    "timestamp": "2026-08-14T15:00:00Z",
+    "pergunta": "O que significa minha densidade óssea?",
+    "resposta": "No Genera Fit há predisposição a menor densidade óssea. Monitorar cálcio e vitamina D e praticar atividade física com orientação são boas medidas.",
+    "fontes": [
+      {
+        "painel": "Genera Fit",
+        "marcador": "Densidade óssea",
+        "gene": "WNT16"
+      }
+    ]
+  },
+  {
+    "id": "int-002",
+    "timestamp": "2026-08-14T12:00:00Z",
+    "pergunta": "Tenho predisposição a acne?",
+    "resposta": "O painel Genera Skin aponta maior predisposição a acne. A genética é um dos fatores, não o único. Manter cuidados com a pele e acompanhamento ajuda.",
+    "fontes": [
+      {
+        "painel": "Genera Skin",
+        "marcador": "Acne",
+        "gene": "SELL"
+      }
+    ]
+  },
+  {
+    "id": "int-001",
+    "timestamp": "2026-08-14T09:00:00Z",
+    "pergunta": "Como meu corpo reage à cafeína?",
+    "resposta": "Seu perfil no painel Genera Nutri indica metabolismo mais lento da cafeína. Isso significa que os efeitos podem durar mais. Considere moderar o consumo à tarde e conversar com um profissional.",
+    "fontes": [
+      {
+        "painel": "Genera Nutri",
+        "marcador": "Sensibilidade à Cafeína",
+        "gene": "CYP1A2"
+      }
+    ]
+  }
+]
