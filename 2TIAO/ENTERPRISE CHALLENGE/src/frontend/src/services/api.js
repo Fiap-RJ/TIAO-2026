@@ -12,6 +12,7 @@
  */
 import riscosMock from '../mocks/riscos.mock.json';
 import ancestralidadeMock from '../mocks/ancestralidade.mock.json';
+import historicoMock from '../mocks/historico.mock.json';
 
 // Ponto de troca mock → real. Vire para `false` quando os endpoints existirem.
 export const USE_MOCKS = true;
@@ -50,4 +51,13 @@ export async function getRiscos(pacienteId) {
 export async function getAncestralidade(pacienteId) {
   if (USE_MOCKS) return mockResponse(ancestralidadeMock);
   return getJson(`/api/ancestralidade/${pacienteId}`);
+}
+
+/**
+ * GET /api/historico/{paciente_id}
+ * → [{ id, timestamp, pergunta, resposta, fontes[] }] em ordem cronológica reversa.
+ */
+export async function getHistorico(pacienteId) {
+  if (USE_MOCKS) return mockResponse(historicoMock);
+  return getJson(`/api/historico/${pacienteId}`);
 }
