@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { getAncestralidade } from '../services/api';
 import { usePacienteId } from '../hooks/usePacienteId';
 import AncestryChart from '../components/ancestralidade/AncestryChart';
+import LoadingState from '../components/feedback/LoadingState';
+import ErrorState from '../components/feedback/ErrorState';
+import EmptyState from '../components/feedback/EmptyState';
 
 /** AncestralidadePage — resumo de ancestralidade (A3). */
 export default function AncestralidadePage() {
@@ -9,6 +12,7 @@ export default function AncestralidadePage() {
   const [dados, setDados] = useState(null);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
+  const [tentativa, setTentativa] = useState(0);
 
   useEffect(() => {
     let ativo = true;
@@ -26,7 +30,13 @@ export default function AncestralidadePage() {
     return () => {
       ativo = false;
     };
-  }, [pacienteId]);
+  }, [pacienteId, tentativa]);
+
+  const recarregar = () => {
+    setErro(null);
+    setCarregando(true);
+    setTentativa((t) => t + 1);
+  };
 
   const componentes = dados?.componentes ?? [];
 
@@ -54,22 +64,18 @@ export default function AncestralidadePage() {
       )}
 
       {carregando && (
-        <p className="mt-6 text-genera-roxo/60" role="status">
-          Carregando composição de ancestralidade...
-        </p>
+        <LoadingState mensagem="Carregando composição de ancestralidade..." />
       )}
 
       {erro && !carregando && (
-        <p className="mt-6 text-genera-roxo/80" role="alert">
-          Não foi possível carregar a ancestralidade agora. Tente novamente mais
-          tarde.
-        </p>
+        <ErrorState
+          mensagem="Não foi possível carregar a ancestralidade agora. Tente novamente mais tarde."
+          onRetry={recarregar}
+        />
       )}
 
       {!carregando && !erro && componentes.length === 0 && (
-        <p className="mt-6 text-genera-roxo/70">
-          Nenhum dado de ancestralidade disponível no momento.
-        </p>
+        <EmptyState mensagem="Nenhum dado de ancestralidade disponível no momento." />
       )}
 
       {!carregando && !erro && componentes.length > 0 && (

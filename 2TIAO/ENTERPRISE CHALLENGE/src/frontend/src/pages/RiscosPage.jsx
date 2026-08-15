@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { getRiscos } from '../services/api';
 import { usePacienteId } from '../hooks/usePacienteId';
 import RiskCard from '../components/risco/RiskCard';
+import LoadingState from '../components/feedback/LoadingState';
+import ErrorState from '../components/feedback/ErrorState';
+import EmptyState from '../components/feedback/EmptyState';
 
 /** Agrupa a lista achatada de riscos por painel, preservando a ordem de chegada. */
 function agruparPorPainel(riscos) {
@@ -19,6 +22,7 @@ export default function RiscosPage() {
   const [riscos, setRiscos] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
+  const [tentativa, setTentativa] = useState(0);
 
   useEffect(() => {
     let ativo = true;
@@ -36,7 +40,13 @@ export default function RiscosPage() {
     return () => {
       ativo = false;
     };
-  }, [pacienteId]);
+  }, [pacienteId, tentativa]);
+
+  const recarregar = () => {
+    setErro(null);
+    setCarregando(true);
+    setTentativa((t) => t + 1);
+  };
 
   const grupos = agruparPorPainel(riscos);
 
@@ -50,22 +60,17 @@ export default function RiscosPage() {
         neutra (baixo, moderado, atenção) e não representam diagnóstico.
       </p>
 
-      {carregando && (
-        <p className="mt-6 text-genera-roxo/60" role="status">
-          Carregando seus resultados...
-        </p>
-      )}
+      {carregando && <LoadingState mensagem="Carregando seus resultados..." />}
 
       {erro && !carregando && (
-        <p className="mt-6 text-genera-roxo/80" role="alert">
-          Não foi possível carregar os riscos agora. Tente novamente mais tarde.
-        </p>
+        <ErrorState
+          mensagem="Não foi possível carregar os riscos agora. Tente novamente mais tarde."
+          onRetry={recarregar}
+        />
       )}
 
       {!carregando && !erro && grupos.length === 0 && (
-        <p className="mt-6 text-genera-roxo/70">
-          Nenhum resultado disponível no momento.
-        </p>
+        <EmptyState mensagem="Nenhum resultado disponível no momento." />
       )}
 
       {!carregando && !erro && grupos.length > 0 && (
