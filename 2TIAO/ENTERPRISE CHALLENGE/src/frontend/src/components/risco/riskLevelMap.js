@@ -23,8 +23,9 @@ export const NIVEIS = {
   atencao: {
     nivel: 'atencao',
     label: 'Atenção',
-    // magenta suave, alinhado à identidade Genera (nunca vermelho puro)
-    badgeClasses: 'bg-pink-50 text-genera-magenta border border-pink-200',
+    // magenta suave, alinhado à identidade Genera (nunca vermelho puro);
+    // usa o tom mais escuro (magentahover) para contraste de texto >= 4.5:1
+    badgeClasses: 'bg-pink-50 text-genera-magentahover border border-pink-200',
   },
 };
 

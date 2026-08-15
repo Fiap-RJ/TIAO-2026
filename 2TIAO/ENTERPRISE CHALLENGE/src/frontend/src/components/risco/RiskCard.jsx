@@ -29,7 +29,7 @@ export default function RiskCard({ risco }) {
         onClick={() => setAberto((v) => !v)}
         aria-expanded={aberto}
         aria-controls={detalhesId}
-        className="mt-3 text-sm font-medium text-genera-magenta underline-offset-2 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-genera-magenta focus-visible:ring-offset-2"
+        className="mt-3 text-sm font-medium text-genera-magentahover underline-offset-2 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-genera-magenta focus-visible:ring-offset-2"
       >
         {aberto ? 'Ocultar detalhes' : 'Ver detalhes'}
       </button>

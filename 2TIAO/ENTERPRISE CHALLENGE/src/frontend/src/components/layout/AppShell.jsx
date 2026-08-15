@@ -30,6 +30,12 @@ function navLinkClasses({ isActive }) {
 export default function AppShell() {
   return (
     <div className="flex min-h-screen flex-col bg-white font-sans text-genera-roxo">
+      <a
+        href="#conteudo-principal"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-genera-roxo focus:px-4 focus:py-2 focus:text-white"
+      >
+        Pular para o conteúdo
+      </a>
       <header className="border-b border-gray-200 bg-white shadow-sm">
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3">
           <img
@@ -77,7 +83,11 @@ export default function AppShell() {
           </nav>
         </aside>
 
-        <main className="min-w-0 flex-1 p-4 md:p-6">
+        <main
+          id="conteudo-principal"
+          tabIndex={-1}
+          className="min-w-0 flex-1 p-4 focus:outline-none md:p-6"
+        >
           <Outlet />
         </main>
       </div>
