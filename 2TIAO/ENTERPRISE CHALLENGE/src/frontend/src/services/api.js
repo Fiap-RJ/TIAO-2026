@@ -11,6 +11,7 @@
  * A3 → getAncestralidade.
  */
 import riscosMock from '../mocks/riscos.mock.json';
+import ancestralidadeMock from '../mocks/ancestralidade.mock.json';
 
 // Ponto de troca mock → real. Vire para `false` quando os endpoints existirem.
 export const USE_MOCKS = true;
@@ -38,4 +39,15 @@ async function getJson(url) {
 export async function getRiscos(pacienteId) {
   if (USE_MOCKS) return mockResponse(riscosMock);
   return getJson(`/api/riscos/${pacienteId}`);
+}
+
+/**
+ * GET /api/ancestralidade/{paciente_id}
+ * Formato provisório (ver seção 2 do spec): { componentes: [{ regiao, percentual }] }.
+ * O mock traz `ilustrativo: true` porque a fonte estruturada ainda não expõe
+ * ancestralidade — dado fictício apenas para demonstração da UI.
+ */
+export async function getAncestralidade(pacienteId) {
+  if (USE_MOCKS) return mockResponse(ancestralidadeMock);
+  return getJson(`/api/ancestralidade/${pacienteId}`);
 }
