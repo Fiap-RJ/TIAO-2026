@@ -1,0 +1,10 @@
+{
+  "ilustrativo": true,
+  "componentes": [
+    { "regiao": "Europa", "percentual": 52.4 },
+    { "regiao": "África Subsaariana", "percentual": 27.1 },
+    { "regiao": "Ameríndia", "percentual": 13.8 },
+    { "regiao": "Ásia Oriental", "percentual": 4.2 },
+    { "regiao": "Oriente Médio", "percentual": 2.5 }
+  ]
+}
