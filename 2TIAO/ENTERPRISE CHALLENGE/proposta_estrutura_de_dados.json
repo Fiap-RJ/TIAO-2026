@@ -97,6 +97,13 @@
       ]
     }
   ],
+  "composicao_ancestralidade": [
+    { "regiao": "Europa", "percentual": 45.2 },
+    { "regiao": "África", "percentual": 28.6 },
+    { "regiao": "Américas (Indígena)", "percentual": 14.5 },
+    { "regiao": "Ásia Oriental", "percentual": 8.9 },
+    { "regiao": "Oriente Médio", "percentual": 2.8 }
+  ],
   "escala_risco_genetico": [
     {
       "doenca": "Câncer de mama",

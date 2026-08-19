@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "genera-intelligence"
-version = "0.2.0"
+version = "0.3.0"
 description = "Motor RAG e Multi-Agent para Interpretação de Laudos Genéticos (Dasa)"
 authors = ["FIAP 2TIAO Team"]
 readme = "README.md"
