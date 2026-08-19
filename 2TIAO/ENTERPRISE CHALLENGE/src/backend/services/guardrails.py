@@ -39,10 +39,25 @@ TERMOS_ALARMISTAS: list[str] = [
     "você vai morrer",
     "risco de morte",
     "doença fatal",
+    "condição fatal",
     "situação gravíssima",
+    "situação catastrófica",
     "perigo iminente",
     "você certamente desenvolverá",
     "é inevitável que",
+    "extremamente grave",
+    "condição grave",
+    "quadro grave",
+    "muito perigoso",
+    "muito perigosa",
+    "altamente perigoso",
+    "altamente perigosa",
+    "resultado alarmante",
+    "isso é alarmante",
+    "motivo de pânico",
+    "sem cura",
+    "irreversível",
+    "não há nada a fazer",
 ]
 
 DISCLAIMER_KEYWORDS: list[str] = [
@@ -61,6 +76,22 @@ DISCLAIMER_FALLBACK: str = (
     "um médico geneticista ou especialista clínico para correlacionar esses achados com seu histórico "
     "pessoal e familiar."
 )
+
+DISCLAIMER_RISCO_POLIGENICO: str = (
+    "\n\n⚠️ **Nota sobre Risco Poligênico:** Os percentuais apresentados representam uma "
+    "estimativa estatística baseada em estudos populacionais. Fatores ambientais, estilo de "
+    "vida e histórico familiar são igualmente determinantes. Um risco \"aumentado\" não "
+    "significa que a condição se manifestará."
+)
+
+_TERMOS_RISCO_POLIGENICO: list[str] = [
+    "escala de risco genético",
+    "risco poligênico",
+    "risco calculado",
+    "classificação de risco",
+    "risco aumentado",
+    "risco reduzido",
+]
 
 RESPOSTA_BLOQUEADA: str = (
     "Desculpe, não consigo fornecer uma resposta adequada para essa pergunta no momento. "
@@ -130,6 +161,12 @@ def verificar_disclaimer(resposta: str) -> bool:
     return any(kw.lower() in resposta_lower for kw in DISCLAIMER_KEYWORDS)
 
 
+def _menciona_risco_poligenico(resposta: str) -> bool:
+    """Verifica se a resposta trata da escala de risco poligênico (governança §2.2)."""
+    resposta_lower = _normalizar(resposta)
+    return any(termo in resposta_lower for termo in _TERMOS_RISCO_POLIGENICO)
+
+
 def verificar_pii_na_resposta(resposta: str) -> list[str]:
     """Verifica se a resposta contém padrões de PII (CPF, e-mail, telefone)."""
     violacoes = []
@@ -189,9 +226,14 @@ def validar_resposta(resposta: str) -> GuardrailResult:
     # Se há violações de tom mas não críticas, deixa passar com aviso no log
     # (o tom alarmista é preocupante mas não justifica bloquear a resposta inteira)
 
-    # Verifica e adiciona disclaimer se ausente
+    # Verifica e adiciona disclaimer geral se ausente
     if not verificar_disclaimer(resposta):
         result.resposta_final = resposta + DISCLAIMER_FALLBACK
+        result.disclaimer_adicionado = True
+
+    # Reforça o disclaimer específico de risco poligênico quando a resposta trata do tema
+    if _menciona_risco_poligenico(resposta) and "Risco Poligênico" not in result.resposta_final:
+        result.resposta_final += DISCLAIMER_RISCO_POLIGENICO
         result.disclaimer_adicionado = True
 
     return result

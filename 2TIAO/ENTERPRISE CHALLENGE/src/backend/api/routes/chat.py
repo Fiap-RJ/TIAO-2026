@@ -7,6 +7,7 @@ from fastapi import APIRouter, HTTPException
 
 from agents import app as agent_app
 from domain.schemas import ChatRequest, ChatResponse, FonteDado
+from services.history_store import salvar_interacao
 
 logger = logging.getLogger(__name__)
 
@@ -28,6 +29,16 @@ async def chat_com_agente(request: ChatRequest):
             )
             for d in resultado.get("context", [])
         ]
+
+        try:
+            salvar_interacao(
+                paciente_id=request.paciente_id,
+                pergunta=resultado.get("question", request.mensagem),
+                resposta=resultado["answer"],
+                fontes=[fonte.model_dump() for fonte in fontes],
+            )
+        except Exception:
+            logger.warning("Falha ao persistir histórico da interação", exc_info=True)
 
         return ChatResponse(resposta=resultado["answer"], fontes=fontes)
 

@@ -1,9 +1,9 @@
 # Relatório de Governança e Riscos — Genera Intelligence
 
-**Versão:** 1.0  
-**Data:** 2026-05-28  
-**Responsável:** Arthur Guimarães Alentejo  
-**Sprint:** 2 — Motor RAG & Agentes Especialistas
+**Versão:** 1.1  
+**Data:** 2026-08-18 (atualização Sprint 3 sobre a base de 2026-05-28)  
+**Responsável:** Arthur Guimarães Alentejo (v1.0) · Michael Rodrigues (v1.1)  
+**Sprint:** 3 — Experiência do Usuário (evolução da Sprint 2 — Motor RAG & Agentes Especialistas)
 
 ---
 
@@ -56,26 +56,39 @@ O disclaimer é garantido por duas camadas:
 
 | Tipo de dado | Classificação LGPD | Tratamento |
 |-------------|-------------------|------------|
-| Dados genéticos (SNPs, genótipos) | Dado pessoal sensível (Art. 5, II) | Processado apenas em memória, não persistido em logs |
+| Dados genéticos (SNPs, genótipos) | Dado pessoal sensível (Art. 5, II) | Processado apenas em memória durante o pipeline RAG, não persistido em logs |
 | Nome do paciente | Dado pessoal | Removido via PII Redaction antes do LLM |
 | CPF, RG, telefone | Dado pessoal | Removido via PII Redaction |
-| Perguntas do usuário | Dado pessoal | Não armazenadas em banco de dados |
+| Perguntas e respostas do histórico | Dado pessoal sensível (referencia predisposições genéticas) | **A partir da Sprint 3**, persistidas em SQLite local associadas a `paciente_id`, apenas após a pergunta já ter passado pelo nó `sanitize` (PII Redaction) — ver §3.3 |
 
 ### 3.2 Fluxo de dados e proteção
 
 ```
 [Input do Usuário] → [PII Redaction] → [RAG Pipeline] → [LLM Externo] → [Guardrails] → [Resposta]
-                          ↑                                                      ↑
-                    Remove PII antes                                    Verifica se PII
-                    de enviar ao LLM                                    vazou na resposta
+                          ↑                                                      ↑              │
+                    Remove PII antes                                    Verifica se PII          ▼
+                    de enviar ao LLM                                    vazou na resposta   [Histórico SQLite]
+                                                                                             (pergunta já sanitizada
+                                                                                              + resposta final)
 ```
 
 ### 3.3 Princípios aplicados
 
-- **Minimização:** Apenas dados estritamente necessários são enviados ao modelo
-- **Finalidade:** Dados usados exclusivamente para interpretação do laudo
-- **Não-retenção:** Nenhum histórico de conversa é persistido no servidor
-- **Anonimização:** PII é removido antes do processamento pelo LLM externo
+- **Minimização:** Apenas dados estritamente necessários são enviados ao modelo ou persistidos
+- **Finalidade:** Dados usados exclusivamente para interpretação do laudo e para as funcionalidades
+  de histórico/resumo do dashboard — nunca compartilhados com terceiros
+- **Anonimização:** PII é removido antes do processamento pelo LLM externo *e* antes da persistência
+  (a pergunta gravada no histórico é a versão já sanitizada pelo nó `sanitize`)
+- **Retenção com propósito definido (atualizado na Sprint 3):** a partir desta sprint, o histórico de
+  interações passa a ser persistido em SQLite local (`services/history_store.py`) para viabilizar a
+  tela de histórico e os resumos automáticos de interações — um requisito explícito desta
+  etapa do produto. Isso substitui o princípio de "não-retenção" da v1.0 deste documento. Salvaguardas
+  aplicadas:
+  - O arquivo do banco não é versionado no Git (`.gitignore`) e seu caminho é configurável via
+    `GENERA_DB_PATH`, permitindo isolar o dado por ambiente;
+  - Nenhum dado é replicado para fora do servidor local (sem serviço de banco externo);
+  - **Limitação conhecida:** não há criptografia em repouso nem endpoint de exclusão (direito de
+    eliminação, LGPD Art. 18, VI) implementados nesta sprint — ver risco R9 em §4.1.
 
 ---
 
@@ -93,6 +106,7 @@ O disclaimer é garantido por duas camadas:
 | R6 | Viés do modelo em populações sub-representadas | 🟡 Média | Média | Documentação clara sobre populações de estudo nos metadados |
 | R7 | Dados do laudo incompletos ou incorretos | 🟡 Média | Baixa | Agente informa quando dado não consta; não extrapola |
 | R8 | Indisponibilidade da API do LLM | 🟢 Baixa | Baixa | Tratamento de erro com mensagem amigável ao usuário |
+| R9 | Persistência de histórico amplia a superfície de dados sensíveis em repouso (Sprint 3) | 🟡 Média | Média | Banco local não versionado; pergunta já sanitizada antes de gravar; path configurável via `GENERA_DB_PATH`. Sem criptografia em repouso nem endpoint de exclusão — limitação conhecida, fora do escopo desta sprint |
 
 ### 4.2 Detalhamento das mitigações técnicas
 
@@ -103,8 +117,13 @@ O disclaimer é garantido por duas camadas:
 
 **R2 — Tom alarmista:**
 - Prompt proíbe termos como "grave", "perigoso", "fatal"
-- Guardrail pós-geração detecta linguagem catastrofista
+- Guardrail pós-geração detecta linguagem catastrofista (lista de termos ampliada na Sprint 3 —
+  `services/guardrails.py::TERMOS_ALARMISTAS` — para cobrir explicitamente as variações citadas
+  acima, como "grave", "perigoso/a", "alarmante", "sem cura", "irreversível")
 - Prompts especializados por painel reforçam tom equilibrado
+- Respostas sobre a escala de risco poligênico recebem, adicionalmente, o disclaimer específico de
+  §2.2 de forma automática (Sprint 3 — antes previsto apenas no prompt, agora também garantido pelo
+  guardrail pós-geração, como camada de defesa redundante)
 
 **R3 e R5 — Diagnóstico e prescrição:**
 - Listas de termos proibidos verificadas automaticamente
@@ -141,8 +160,9 @@ Camada 5: Disclaimer automático (garantia final)
 | Diagnóstico médico | 🚫 Bloqueia resposta |
 | Prescrição de medicamentos | 🚫 Bloqueia resposta |
 | PII na resposta | 🚫 Bloqueia resposta |
-| Tom alarmista | ⚠️ Log de alerta (não bloqueia) |
-| Disclaimer ausente | 📎 Adiciona automaticamente |
+| Tom alarmista | ⚠️ Log de alerta (não bloqueia — decisão mantida na Sprint 3 para não suprimir informação relevante do laudo; a mitigação é a detecção ampliada de termos, não o bloqueio) |
+| Disclaimer geral ausente | 📎 Adiciona automaticamente |
+| Disclaimer de risco poligênico ausente (quando a resposta trata de risco calculado) | 📎 Adiciona automaticamente (Sprint 3) |
 
 ---
 
@@ -173,3 +193,4 @@ Camada 5: Disclaimer automático (garantia final)
 | Data | Versão | Alteração |
 |------|--------|-----------|
 | 2026-05-28 | 1.0 | Documento inicial — Sprint 2 |
+| 2026-08-18 | 1.1 | Sprint 3: atualiza o princípio de não-retenção para refletir a persistência de histórico, documenta o risco R9, amplia a lista de termos alarmistas e formaliza o disclaimer de risco poligênico como guardrail automático |

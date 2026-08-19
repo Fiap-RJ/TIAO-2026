@@ -23,6 +23,8 @@ Thumbs.db
 
 # Bancos de Dados Locais
 faiss_index/
+**/data/*.db
+**/data/*.db-journal
 **/*Zone.Identifier
 
 .agents/

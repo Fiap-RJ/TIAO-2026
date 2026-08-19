@@ -14,8 +14,10 @@ services:
     environment:
       - GENERA_DATA_PATH=/data/proposta_estrutura_de_dados.json
       - GENERA_FAISS_PATH=/app/faiss_index
+      - GENERA_DB_PATH=/app/data/history.db
     volumes:
       - faiss_data:/app/faiss_index
+      - history_data:/app/data
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 10s
@@ -59,3 +61,4 @@ services:
 
 volumes:
   faiss_data:
+  history_data:
