@@ -71,10 +71,10 @@ DISCLAIMER_KEYWORDS: list[str] = [
 ]
 
 DISCLAIMER_FALLBACK: str = (
-    "\n\n⚠️ **Importante:** Este assistente é puramente informativo e não substitui uma consulta médica. "
-    "Os dados genéticos indicam predisposições, não certezas. Recomendamos fortemente que você consulte "
-    "um médico geneticista ou especialista clínico para correlacionar esses achados com seu histórico "
-    "pessoal e familiar."
+    "\n\n⚠️ **Importante:** Este assistente é puramente informativo e não substitui uma "
+    "consulta médica. Os dados genéticos indicam predisposições, não certezas. "
+    "Recomendamos fortemente que você consulte um médico geneticista ou especialista "
+    "clínico para correlacionar esses achados com seu histórico pessoal e familiar."
 )
 
 DISCLAIMER_RISCO_POLIGENICO: str = (
