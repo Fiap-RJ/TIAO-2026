@@ -17,6 +17,22 @@ def generate(state: AgentState) -> dict:
     # Compõe o system prompt (base + especialização por painel)
     system_prompt = compor_prompt_completo(state.question, context_metadata)
 
+    # Personalização (Sprint 3): injeta o perfil de comunicação do usuário
+    # (tom de voz e nível de detalhe) nas diretrizes finais do system prompt.
+    tom_usuario = state.user_tone
+    nivel_detalhe = state.detail_level
+
+    system_prompt += f"""
+---
+DIRETRIZES DE PERSONALIZAÇÃO E COMUNICAÇÃO:
+Você deve formatar sua resposta obedecendo ESTRITAMENTE ao perfil abaixo:
+- Tom de voz: Adote um tom {tom_usuario}.
+- Nível de detalhamento: O tamanho e a profundidade da resposta devem ser {nivel_detalhe}.
+- Simplificação: Traduza jargões técnicos de genética para termos do dia a dia, mantendo o \
+rigor clínico, mas garantindo que um paciente leigo entenda sem gerar alarde.
+---
+"""
+
     # Monta as mensagens no formato ChatModel
     messages = [
         SystemMessage(content=system_prompt),
