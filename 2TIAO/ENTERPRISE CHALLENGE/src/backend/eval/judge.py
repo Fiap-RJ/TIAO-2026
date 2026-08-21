@@ -14,7 +14,7 @@ from langchain_core.documents import Document
 from langchain_core.messages import HumanMessage, SystemMessage
 
 from agents import app as agente_principal
-from core.llm import build_llm
+from core.llm import build_llm, extrair_texto_resposta
 
 _PROMPT_JUIZ = """Você é um auditor rigoroso de qualidade em saúde digital.
 Avalie a seguinte RESPOSTA GERADA pelo agente de IA com base nos três critérios abaixo.
@@ -66,5 +66,5 @@ def avaliar_resposta_agente(
     return {
         "pergunta": pergunta_teste,
         "resposta_gerada": resposta_gerada,
-        "parecer_do_juiz": avaliacao.content,
+        "parecer_do_juiz": extrair_texto_resposta(avaliacao.content),
     }

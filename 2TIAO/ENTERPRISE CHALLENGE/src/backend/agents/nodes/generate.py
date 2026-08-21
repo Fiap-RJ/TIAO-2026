@@ -3,7 +3,7 @@
 from langchain_core.messages import HumanMessage, SystemMessage
 
 from agents.state import AgentState
-from core.llm import build_llm
+from core.llm import build_llm, extrair_texto_resposta
 from prompts import compor_prompt_completo
 
 
@@ -49,4 +49,4 @@ rigor clínico, mas garantindo que um paciente leigo entenda sem gerar alarde.
     llm = build_llm()
     response = llm.invoke(messages)
 
-    return {"answer": response.content}
+    return {"answer": extrair_texto_resposta(response.content)}

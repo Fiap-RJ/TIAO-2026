@@ -17,7 +17,7 @@ dev: ## Ativa o shell do Poetry
 	poetry shell
 
 seed: ## Popula o vector store FAISS
-	poetry run python $(BACKEND)/services/vector_store.py
+	cd $(BACKEND) && poetry run python -m services.vector_store
 
 serve: ## Sobe a API backend com hot-reload
 	poetry run uvicorn main:app --reload --app-dir $(BACKEND)

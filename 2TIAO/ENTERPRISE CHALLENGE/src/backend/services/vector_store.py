@@ -12,7 +12,6 @@ from dotenv import load_dotenv
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
 
-from core.config import settings
 from core.llm import build_embeddings
 
 load_dotenv()
