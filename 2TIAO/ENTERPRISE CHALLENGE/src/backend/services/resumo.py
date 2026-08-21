@@ -19,9 +19,10 @@ import json
 import logging
 from functools import lru_cache
 
-from core.config import settings
-from core.llm import build_llm
 from langchain_core.messages import HumanMessage, SystemMessage
+
+from core.config import settings
+from core.llm import build_llm, extrair_texto_resposta
 from services.history_store import contar_interacoes, listar_historico
 from services.report_data import JSON_PATH, carregar_relatorio
 
@@ -94,7 +95,7 @@ def _gerar_resumo_relatorio_cached(paciente_id: str, versao: float) -> str:
         ]
         llm = build_llm()
         response = llm.invoke(messages)
-        return response.content
+        return extrair_texto_resposta(response.content)
     except Exception:
         logger.warning(
             "Falha ao gerar resumo do relatório via LLM, usando fallback determinístico.",
@@ -145,7 +146,7 @@ def gerar_resumo_interacoes(paciente_id: str) -> str:
             ]
             llm = build_llm()
             response = llm.invoke(messages)
-            resumo = response.content
+            resumo = extrair_texto_resposta(response.content)
         except Exception:
             logger.warning(
                 "Falha ao gerar resumo de interações via LLM, usando fallback determinístico.",
