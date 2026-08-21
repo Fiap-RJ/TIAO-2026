@@ -34,6 +34,26 @@ def build_llm() -> BaseChatModel:
     )
 
 
+def extrair_texto_resposta(conteudo) -> str:
+    """Normaliza `AIMessage.content` para string.
+
+    Alguns providers (ex.: Gemini via langchain-google-genai, em versões
+    recentes) retornam o conteúdo como uma lista de blocos estruturados
+    (`[{"type": "text", "text": "..."}]`) em vez de uma string simples.
+    Outros (ex.: OpenAI) já retornam string diretamente.
+    """
+    if isinstance(conteudo, str):
+        return conteudo
+    if isinstance(conteudo, list):
+        partes = [
+            bloco.get("text", "")
+            for bloco in conteudo
+            if isinstance(bloco, dict) and bloco.get("type") == "text"
+        ]
+        return "".join(partes)
+    return str(conteudo)
+
+
 def build_embeddings() -> Embeddings:
     """Constrói a instância de embeddings de acordo com o provider configurado."""
     if settings.LLM_PROVIDER == "openai":

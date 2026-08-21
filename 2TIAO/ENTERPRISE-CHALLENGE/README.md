@@ -158,7 +158,7 @@ Documentação completa (atualizada na Sprint 3, v1.1): [`document/governanca_e_
 ## 📁 Estrutura de Pastas
 
 ```
-2TIAO/ENTERPRISE CHALLENGE/
+2TIAO/ENTERPRISE-CHALLENGE/
 ├── assets/                     # Diagramas de arquitetura
 ├── config/                     # Configurações de deploy
 ├── document/                   # PDFs originais + Relatório de Governança
