@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Assistente CardioIA</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
+        #chatbox { width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); }
+        .message { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .user { font-weight: bold; background-color: #e1f5fe; text-align: right; }
+        .bot { color: #230077; font-weight: bold; background-color: #f1f8e9; }
+        #chat-log { height: 400px; overflow-y: auto; margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; }
+        #user-input { width: 80%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 10px 20px; background-color: #230077; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div id="chatbox">
+    <h2 style="text-align: center; color: #230077;">Triagem CardioIA</h2>
+    <div id="chat-log"></div>
+    <div style="display: flex; justify-content: space-between;">
+        <input type="text" id="user-input" placeholder="Digite seus sintomas ou dúvidas..." onkeypress="handleKeyPress(event)">
+        <button onclick="sendMessage()">Enviar</button>
+    </div>
+</div>
+
+<script>
+    // Função para adicionar as mensagens na tela
+    function appendMessage(sender, text, className) {
+        const chatLog = document.getElementById('chat-log');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${className}`;
+        messageDiv.innerHTML = `<span>${text}</span>`;
+        chatLog.appendChild(messageDiv);
+        chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    // Função para enviar a mensagem via POST para o Flask usando fetch
+    async function sendMessage() {
+        const inputField = document.getElementById('user-input');
+        const userText = inputField.value.trim();
+        if (userText === "") return;
+
+        appendMessage('Você', userText, 'user');
+        inputField.value = '';
+
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: userText })
+            });
+
+            const data = await response.json();
+            
+            if (data.response) {
+                appendMessage('CardioIA', data.response, 'bot');
+            } else {
+                appendMessage('Erro', 'Desculpe, ocorreu um erro de conexão.', 'bot');
+            }
+        } catch (error) {
+            console.error('Erro na API:', error);
+            appendMessage('Erro', 'O servidor não está respondendo.', 'bot');
+        }
+    }
+
+    // Permite enviar apertando Enter
+    function handleKeyPress(event) {
+        if (event.key === "Enter") {
+            sendMessage();
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,573 @@
+{
+  "intents": [
+    {
+      "intent": "analisar_ecg",
+      "examples": [
+        {
+          "text": "Fiz um eletrocardiograma e quero saber o resultado."
+        },
+        {
+          "text": "Posso enviar a imagem do meu ECG?"
+        },
+        {
+          "text": "Quero analisar meu eletro."
+        }
+      ],
+      "description": ""
+    },
+    {
+      "intent": "duvida_medicacao",
+      "examples": [
+        {
+          "text": "Como devo tomar o Enalapril?"
+        },
+        {
+          "text": "\"Esqueci de tomar meu remédio de pressão, o que faço?"
+        },
+        {
+          "text": "O betabloqueador dá sono?"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "intent": "informar_sinais_vitais",
+      "examples": [
+        {
+          "text": "Estou com 38 graus de febre."
+        },
+        {
+          "text": "Meu relógio marcou 115 batimentos por minuto."
+        },
+        {
+          "text": "Minha glicemia em jejum deu 130."
+        },
+        {
+          "text": "Minha pressão hoje está 14 por 9."
+        }
+      ],
+      "description": ""
+    },
+    {
+      "intent": "relatar_sintomas",
+      "examples": [
+        {
+          "text": "dor de cabeça leve e um pouco de enjoo"
+        },
+        {
+          "text": "estava correndo senti uma dor no peito e meu braço esquerdo começou a doer e a ponta dos dedos formigar"
+        },
+        {
+          "text": "Estou sentindo uma dor muito forte no peito"
+        },
+        {
+          "text": "estou suando frio, mas a minha pele está gelada"
+        },
+        {
+          "text": "fui levantar da cama e vi tudo preto e vomitei"
+        },
+        {
+          "text": "Meu coração está batendo muito rápido e estou ofegante."
+        },
+        {
+          "text": "meu coração está muito acelerado e quase desmaiei"
+        },
+        {
+          "text": "minha mandíbula começou a doer do nada, junto com esse cansaço"
+        },
+        {
+          "text": "minha vista está embaralhada e estou tonto"
+        },
+        {
+          "text": "não estou conseguindo engolir direito"
+        },
+        {
+          "text": "parece que o coração está batendo fora do ritmo, meio torto"
+        },
+        {
+          "text": "pressão no tórax que irradia para o braço esquerdo"
+        },
+        {
+          "text": "sinto dor aguda no peito e falta de ar repentina"
+        },
+        {
+          "text": "Sinto falta de ar quando vou dormir."
+        },
+        {
+          "text": "sinto um aperto, como se meu coração estivesse sendo espremido"
+        },
+        {
+          "text": "Sinto um aperto no peito que irradia para o braço."
+        },
+        {
+          "text": "sinto um cansaço normal depois de trabalhar o dia todo"
+        },
+        {
+          "text": "tive um leve incômodo muscular nas costas ontem"
+        },
+        {
+          "text": "toda vez que eu subo a escada, vem essa queimação no peito"
+        },
+        {
+          "text": "tomei um remédio e meu coração disparou, sentei no chão e fiquei todo dormente"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "intent": "saudacao",
+      "examples": [
+        {
+          "text": "Necessito de ajuda"
+        },
+        {
+          "text": "Oi!"
+        },
+        {
+          "text": "Olá, bom dia"
+        },
+        {
+          "text": "Preciso de atendimento"
+        },
+        {
+          "text": "Quero fazer uma triagem"
+        }
+      ],
+      "description": ""
+    }
+  ],
+  "entities": [
+    {
+      "entity": "doenca_previa",
+      "values": [
+        {
+          "type": "synonyms",
+          "value": "hipertensao",
+          "synonyms": [
+            "hipertenso",
+            "pressão alta crônica"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "infarto_previo",
+          "synonyms": [
+            "ataque cardíaco no passado",
+            "histórico de MI",
+            "já infartei"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "insuficiencia_cardiaca",
+          "synonyms": [
+            "coração fraco",
+            "insuficiência"
+          ]
+        }
+      ],
+      "fuzzy_match": true
+    },
+    {
+      "entity": "medicamento",
+      "values": [
+        {
+          "type": "synonyms",
+          "value": "betabloqueador",
+          "synonyms": [
+            "remédio para o coração"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "enalapril",
+          "synonyms": [
+            "remédio de pressão"
+          ]
+        }
+      ],
+      "fuzzy_match": true
+    },
+    {
+      "entity": "sinal_vital",
+      "values": [
+        {
+          "type": "synonyms",
+          "value": "bpm",
+          "synonyms": [
+            "batimentos",
+            "coração acelerado",
+            "frequência cardíaca",
+            "pulsação"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "glicemia",
+          "synonyms": [
+            "açúcar no sangue",
+            "diabetes",
+            "glicose"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "pressao_arterial",
+          "synonyms": [
+            "PA",
+            "pressão",
+            "pressão alta"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "temperatura",
+          "synonyms": [
+            "febre",
+            "medidor de temperatura"
+          ]
+        }
+      ],
+      "fuzzy_match": true
+    },
+    {
+      "entity": "sintoma_cardiaco",
+      "values": [
+        {
+          "type": "synonyms",
+          "value": "dispneia",
+          "synonyms": [
+            "cansaço para respirar",
+            "falta de ar",
+            "ofegante"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "dor_toracica",
+          "synonyms": [
+            "angina",
+            "aperto no peito",
+            "dor no peito",
+            "peso no peito"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "ortopneia",
+          "synonyms": [
+            "falta de ar ao deitar",
+            "não consigo respirar deitado"
+          ]
+        }
+      ],
+      "fuzzy_match": true
+    }
+  ],
+  "metadata": {
+    "api_version": {
+      "major_version": "v2",
+      "minor_version": "2018-11-08"
+    }
+  },
+  "dialog_nodes": [
+    {
+      "type": "standard",
+      "title": "Bem-vindo",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Olá! Eu sou o Assistente CardioIA. Posso te ajudar com uma triagem inicial, dúvidas sobre medicações ou resultados de exames. Como posso ajudar hoje?"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "welcome",
+      "dialog_node": "Bem-vindo"
+    },
+    {
+      "type": "standard",
+      "title": "Em outros casos",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Eu não entendi. Você pode tentar reformular a frase."
+              },
+              {
+                "text": "Você pode reformular sua afirmação? Eu não estou entendendo."
+              },
+              {
+                "text": "Eu não entendi o sentido."
+              },
+              {
+                "text": "Desculpe, não consegui compreender sua solicitação. Você pode tentar reformular? Lembre-se que sou um assistente virtual em treinamento e posso ajudar com triagem inicial, dúvidas sobre exames ou medicações cardiológicas"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "anything_else",
+      "dialog_node": "Em outros casos",
+      "previous_sibling": "node_8_1789004064464",
+      "disambiguation_opt_out": true
+    },
+    {
+      "type": "standard",
+      "title": "Sintoma_Moderado",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "A falta de ar, especialmente ao deitar, pode ser um sintoma de problemas cardiovasculares. É importante que você agende uma consulta com seu cardiologista em breve para uma avaliação clínica."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_3_1789002997196",
+      "conditions": "@sintoma_cardiaco:dispneia || @sintoma_cardiaco:ortopneia",
+      "dialog_node": "node_1_1789003519687",
+      "previous_sibling": "node_6_1789003191826"
+    },
+    {
+      "type": "standard",
+      "title": "Outros medicamentos",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Sobre medicamentos, a regra de ouro é sempre seguir a prescrição exata e nunca interromper o uso por conta própria. Consulte a bula ou seu farmacêutico/médico para dúvidas específicas."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_8_1789004064464",
+      "conditions": "anything_else",
+      "dialog_node": "node_1_1789004235894",
+      "previous_sibling": "node_6_1789004191862"
+    },
+    {
+      "type": "standard",
+      "title": "Relatar_Sintomas",
+      "conditions": "#relatar_sintomas",
+      "digress_in": "does_not_return",
+      "dialog_node": "node_3_1789002997196",
+      "previous_sibling": "node_9_1789002935492"
+    },
+    {
+      "type": "standard",
+      "title": "Frequência Cardíaca (BPM)",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Anotei seus batimentos. De acordo com as diretrizes, a frequência de repouso normal é entre 60 e 100 batimentos por minuto. Se estiver constantemente fora dessa faixa, avise seu médico."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_9_1789003735060",
+      "conditions": "@sinal_vital:bpm",
+      "dialog_node": "node_4_1789003935313",
+      "previous_sibling": "node_7_1789003798588"
+    },
+    {
+      "type": "standard",
+      "title": "Enalapril/Pressão",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "O Enalapril é comumente usado para controlar a pressão alta e tratar a insuficiência cardíaca. Siga rigorosamente os horários prescritos pelo seu médico. Se você esqueceu uma dose, não tome duas juntas para compensar."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_8_1789004064464",
+      "conditions": "@medicamento:enalapril",
+      "dialog_node": "node_5_1789004154535"
+    },
+    {
+      "type": "standard",
+      "title": "Sintoma_Critico",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Atenção: Uma dor no peito pode ser um sinal de alerta grave, como um possível infarto. Por favor, procure um serviço de emergência médica ou ligue para o SAMU (192) imediatamente"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_3_1789002997196",
+      "conditions": "@sintoma_cardiaco:dor_toracica",
+      "dialog_node": "node_6_1789003191826"
+    },
+    {
+      "type": "standard",
+      "title": "Outros Sinais",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Obrigado por informar seu sinal vital. Manter esse registro é essencial para o seu acompanhamento cardiológico contínuo."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_9_1789003735060",
+      "conditions": "anything_else",
+      "dialog_node": "node_6_1789004000689",
+      "previous_sibling": "node_4_1789003935313"
+    },
+    {
+      "type": "standard",
+      "title": "Betabloqueadores",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Os betabloqueadores ajudam a reduzir a carga de trabalho do coração. É normal sentir um leve cansaço nos primeiros dias, mas se persistir, converse com o cardiologista."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_8_1789004064464",
+      "conditions": "@medicamento:betabloqueador",
+      "dialog_node": "node_6_1789004191862",
+      "previous_sibling": "node_5_1789004154535"
+    },
+    {
+      "type": "standard",
+      "title": "Outros_Sintomas",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Entendo que você não está se sentindo bem. Como este é um sistema de triagem inicial, recomendo que você acompanhe a evolução desses sintomas e procure orientação médica caso piorem."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_3_1789002997196",
+      "conditions": "anything_else",
+      "dialog_node": "node_7_1789003668732",
+      "previous_sibling": "node_1_1789003519687"
+    },
+    {
+      "type": "standard",
+      "title": "Pressão Arterial",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Registrei a sua pressão arterial. Lembre-se que valores constantemente acima de 14 por 9 (140/90 mmHg) requerem acompanhamento médico para evitar riscos cardiovasculares"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_9_1789003735060",
+      "conditions": "@sinal_vital:pressao_arterial",
+      "dialog_node": "node_7_1789003798588"
+    },
+    {
+      "type": "standard",
+      "title": "Duvida_Medicacao",
+      "conditions": "#duvida_medicacao",
+      "dialog_node": "node_8_1789004064464",
+      "previous_sibling": "node_9_1789003735060"
+    },
+    {
+      "type": "standard",
+      "title": "Saudacao",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Olá! Tudo bem? Por favor, me diga o que você está sentindo ou como posso ajudar com a sua saúde cardiovascular."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "#saudacao",
+      "dialog_node": "node_9_1789002935492",
+      "previous_sibling": "Bem-vindo"
+    },
+    {
+      "type": "standard",
+      "title": "Sinais_Vitais",
+      "conditions": "#informar_sinais_vitais",
+      "digress_in": "does_not_return",
+      "dialog_node": "node_9_1789003735060",
+      "previous_sibling": "node_3_1789002997196"
+    }
+  ],
+  "counterexamples": [],
+  "system_settings": {
+    "disambiguation": {
+      "prompt": "Você quis dizer:",
+      "enabled": true,
+      "randomize": true,
+      "max_suggestions": 5,
+      "suggestion_text_policy": "title",
+      "none_of_the_above_prompt": "Nenhuma das anteriores",
+      "use_connect_to_support_prompt": "Connect to support",
+      "single_answer_clarification_prompt": "Something else"
+    },
+    "human_agent_assist": {
+      "prompt": "Você quis dizer:"
+    }
+  },
+  "learning_opt_out": false,
+  "language": "pt-br",
+  "description": "",
+  "name": "Skill CardioIA - On"
+}
