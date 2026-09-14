@@ -18,7 +18,14 @@ logging.basicConfig(
     datefmt="%H:%M:%S",
 )
 
-app = Flask(__name__)
+# templates/ e static/ vivem em src/frontend (pasta irmã de src/backend) — não há um
+# servidor de frontend separado aqui (diferente do projeto Dasa/Genera): é o próprio
+# Flask que renderiza o HTML e serve os assets, então só apontamos os caminhos.
+app = Flask(
+    __name__,
+    template_folder="../frontend/templates",
+    static_folder="../frontend/static",
+)
 app.secret_key = settings.FLASK_SECRET_KEY
 
 app.register_blueprint(pages_bp)

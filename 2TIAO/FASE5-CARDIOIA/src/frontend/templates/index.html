@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Assistente CardioIA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
+</head>
+<body>
+
+<main id="chatbox" aria-labelledby="chat-title">
+    <h1 id="chat-title">Triagem CardioIA</h1>
+
+    <p class="disclaimer">
+        Este assistente oferece orientação inicial e não substitui uma consulta médica. Em caso de
+        emergência, procure atendimento imediato ou ligue para o SAMU (192).
+    </p>
+
+    <div id="chat-log" role="log" aria-live="polite" aria-label="Histórico da conversa"></div>
+
+    <form id="chat-form" autocomplete="off">
+        <label for="user-input" class="sr-only">Digite sua mensagem</label>
+        <input
+            type="text"
+            id="user-input"
+            name="mensagem"
+            placeholder="Digite seus sintomas ou dúvidas..."
+            required
+        >
+        <button type="submit" id="send-button">Enviar</button>
+    </form>
+</main>
+
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+
+</body>
+</html>
