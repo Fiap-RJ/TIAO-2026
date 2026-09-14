@@ -53,23 +53,24 @@ FASE5-CARDIOIA/
 │   └── Skill-CardioIA---On.json   # Export do skill do Watson (intents/entities/dialog nodes)
 ├── document/                      # Relatório técnico e documentações da Fase 5
 ├── src/
-│   └── backend/                   # Aplicação Flask
-│       ├── main.py                # Bootstrap: cria o app e registra as rotas
-│       ├── core/
-│       │   └── config.py          # Settings centralizadas (variáveis de ambiente)
-│       ├── api/routes/
-│       │   ├── pages.py           # GET / — renderiza a interface web
-│       │   └── chat.py            # POST /api/chat — fala com o Watson
-│       ├── services/
-│       │   ├── watson_client.py       # Factory do cliente Watson Assistant (SDK)
-│       │   └── watson_conversation.py # Sessão persistente por conversa + envio de mensagem
+│   ├── backend/                   # Aplicação Flask
+│   │   ├── main.py                # Bootstrap: cria o app (aponta pra src/frontend) e registra as rotas
+│   │   ├── core/
+│   │   │   └── config.py          # Settings centralizadas (variáveis de ambiente)
+│   │   ├── api/routes/
+│   │   │   ├── pages.py           # GET / — renderiza a interface web
+│   │   │   └── chat.py            # POST /api/chat — fala com o Watson
+│   │   ├── services/
+│   │   │   ├── watson_client.py       # Factory do cliente Watson Assistant (SDK)
+│   │   │   └── watson_conversation.py # Sessão persistente por conversa + envio de mensagem
+│   │   ├── .env.example           # Modelo das variáveis de ambiente necessárias
+│   │   └── .env                   # Credenciais reais (não versionado — ver .gitignore)
+│   └── frontend/                  # Templates e assets estáticos, servidos pelo próprio Flask
 │       ├── templates/
 │       │   └── index.html         # Interface de chat
-│       ├── static/
-│       │   ├── css/chat.css
-│       │   └── js/chat.js
-│       ├── .env.example           # Modelo das variáveis de ambiente necessárias
-│       └── .env                   # Credenciais reais (não versionado — ver .gitignore)
+│       └── static/
+│           ├── css/chat.css
+│           └── js/chat.js
 ├── .gitignore                     # Arquivos ignorados pelo Git (inclui .env e __pycache__)
 ├── requirements.txt                # Dependências do projeto com versões fixadas
 └── README_fase5.md                 # Guia geral de configuração e execução
@@ -79,6 +80,11 @@ FASE5-CARDIOIA/
 > Watson) segue o mesmo padrão adotado no projeto Dasa/Genera (`2TIAO/ENTERPRISE-CHALLENGE`), só que
 > em escala menor: sem `agents/`, `domain/` ou `prompts/`, que não fazem sentido para um backend Flask
 > simples que só conversa com o Watson Assistant.
+>
+> `src/frontend/` guarda templates e assets separados do `src/backend/` por clareza de organização,
+> mesmo não sendo uma aplicação à parte (diferente do React do projeto Dasa) — é o próprio Flask que
+> renderiza o HTML e serve o CSS/JS a partir dali (`main.py` aponta `template_folder`/`static_folder`
+> para essa pasta).
 
 ## 🔧 Como executar o código
 
