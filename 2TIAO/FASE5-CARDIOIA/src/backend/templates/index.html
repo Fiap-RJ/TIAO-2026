@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Assistente CardioIA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
+</head>
+<body>
+
+<div id="chatbox">
+    <h2 style="text-align: center; color: #230077;">Triagem CardioIA</h2>
+    <div id="chat-log"></div>
+    <div style="display: flex; justify-content: space-between;">
+        <input type="text" id="user-input" placeholder="Digite seus sintomas ou dúvidas..." onkeypress="handleKeyPress(event)">
+        <button onclick="sendMessage()">Enviar</button>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+
+</body>
+</html>
