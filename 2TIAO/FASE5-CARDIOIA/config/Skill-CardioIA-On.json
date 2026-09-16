@@ -1,0 +1,1030 @@
+{
+  "intents": [
+    {
+      "intent": "afirmacao",
+      "examples": [
+        {
+          "text": "com certeza"
+        },
+        {
+          "text": "correto"
+        },
+        {
+          "text": "isso mesmo"
+        },
+        {
+          "text": "sim"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "intent": "falar_com_humano",
+      "examples": [
+        {
+          "text": "Chama a enfermeira"
+        },
+        {
+          "text": "Chega de falar com robô"
+        },
+        {
+          "text": "Preciso de ajuda real"
+        },
+        {
+          "text": "Quero falar com um médico"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "intent": "fator_modificador",
+      "examples": [
+        {
+          "text": "Dói mais quando eu respiro fundo"
+        },
+        {
+          "text": "Melhora quando eu me curvo para frente"
+        },
+        {
+          "text": "Piora se eu apertar o local"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "intent": "historico_cardiaco_previo",
+      "examples": [
+        {
+          "text": "Coloquei três stents"
+        },
+        {
+          "text": "Eu já tive um infarto antes"
+        },
+        {
+          "text": "Tenho ponte de safena"
+        },
+        {
+          "text": "Tenho sopro no coração"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "intent": "informar_tempo_inicio",
+      "examples": [
+        {
+          "text": "Acordei de madrugada sentindo isso"
+        },
+        {
+          "text": "Comecei a sentir agora"
+        },
+        {
+          "text": "Começou faz meia hora"
+        },
+        {
+          "text": "Estou com essa dor desde ontem à noite"
+        },
+        {
+          "text": "Iniciou agora pouco"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "intent": "nao_sei",
+      "examples": [
+        {
+          "text": "Acho que não lembro"
+        },
+        {
+          "text": "Não sei dizer"
+        },
+        {
+          "text": "Não tenho certeza"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "intent": "negacao",
+      "examples": [
+        {
+          "text": "De jeito nenhum"
+        },
+        {
+          "text": "Não"
+        },
+        {
+          "text": "Negativo"
+        },
+        {
+          "text": "Nunca tive"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "intent": "relatar_sintoma",
+      "examples": [
+        {
+          "text": "Coração disparou"
+        },
+        {
+          "text": "dor de cabeça leve e um pouco de enjoo"
+        },
+        {
+          "text": "Dor no peito"
+        },
+        {
+          "text": "estava correndo senti uma dor no peito e meu braço esquerdo começou a doer e a ponta dos dedos formigar"
+        },
+        {
+          "text": "estou suando frio, mas a minha pele está gelada"
+        },
+        {
+          "text": "Falta de ar"
+        },
+        {
+          "text": "fui levantar da cama e vi tudo preto e vomitei"
+        },
+        {
+          "text": "meu braço esquerdo está formigando"
+        },
+        {
+          "text": "meu coração está batendo na boca"
+        },
+        {
+          "text": "meu coração está em ritmo de carnaval"
+        },
+        {
+          "text": "meu coração está muito acelerado e quase desmaiei"
+        },
+        {
+          "text": "meu peito aperta"
+        },
+        {
+          "text": "meu peito está ardendo"
+        },
+        {
+          "text": "meu relógio está indicando batimento alto"
+        },
+        {
+          "text": "meus batimentos estão acelerados"
+        },
+        {
+          "text": "minha mandíbula começou a doer do nada, junto com esse cansaço"
+        },
+        {
+          "text": "minha vista está embaralhada e estou tonto"
+        },
+        {
+          "text": "não estou conseguindo engolir direito"
+        },
+        {
+          "text": "parece que estão apertando o meu coração"
+        },
+        {
+          "text": "parece que o coração está batendo fora do ritmo, meio torto"
+        },
+        {
+          "text": "Peito doendo"
+        },
+        {
+          "text": "pressão no tórax que irradia para o braço esquerdo"
+        },
+        {
+          "text": "sinto dor aguda no peito e falta de ar repentina"
+        },
+        {
+          "text": "sinto pontadas no lado esquerdo do peito"
+        },
+        {
+          "text": "Sinto um aperto"
+        },
+        {
+          "text": "sinto um aperto, como se meu coração estivesse sendo espremido"
+        },
+        {
+          "text": "sinto um cansaço normal depois de trabalhar o dia todo"
+        },
+        {
+          "text": "tive um leve incômodo muscular nas costas ontem"
+        },
+        {
+          "text": "toda vez que eu subo a escada, vem essa queimação no peito"
+        },
+        {
+          "text": "tomei um remédio e meu coração disparou, sentei no chão e fiquei todo dormente"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "intent": "uso_medicacao_relevante",
+      "examples": [
+        {
+          "text": "Coloquei aquele comprimido embaixo da língua"
+        },
+        {
+          "text": "Já tomei um AAS"
+        },
+        {
+          "text": "Uso anticoagulante"
+        }
+      ],
+      "description": ""
+    }
+  ],
+  "entities": [
+    {
+      "entity": "caracteristica_dor_peito",
+      "values": [
+        {
+          "type": "synonyms",
+          "value": "opressiva",
+          "synonyms": [
+            "apertando",
+            "aperto",
+            "esmagando",
+            "garra",
+            "peso",
+            "pressao"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "pleuritica",
+          "synonyms": [
+            "agulhada",
+            "choque",
+            "fisgada",
+            "furando",
+            "pontada"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "queimacao",
+          "synonyms": [
+            "ardendo",
+            "ardor",
+            "azia",
+            "fogo",
+            "queimando"
+          ]
+        }
+      ],
+      "fuzzy_match": true
+    },
+    {
+      "entity": "fator_modificador",
+      "values": [
+        {
+          "type": "synonyms",
+          "value": "emocional",
+          "synonyms": [
+            "ansiedade",
+            "briga",
+            "estresse",
+            "nervoso",
+            "susto"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "esforco",
+          "synonyms": [
+            "caminhada",
+            "exercicio",
+            "pegando peso",
+            "subindo escada",
+            "varrendo"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "repouso",
+          "synonyms": [
+            "deitado",
+            "dormindo",
+            "parado",
+            "sentado"
+          ]
+        }
+      ],
+      "fuzzy_match": true
+    },
+    {
+      "entity": "fator_risco",
+      "values": [
+        {
+          "type": "synonyms",
+          "value": "diabetes",
+          "synonyms": [
+            "acucar alto",
+            "diabete",
+            "diabetico",
+            "glicose alta"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "hipertensao",
+          "synonyms": [
+            "hipertenso",
+            "pressao alta",
+            "pressao sobe"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "historico_familiar",
+          "synonyms": [
+            "doenca na familia",
+            "historico",
+            "mae teve infarto",
+            "pai infartou"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "nenhum_fator",
+          "synonyms": [
+            "nada",
+            "nao",
+            "não",
+            "não tenho",
+            "negativo",
+            "nenhum"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "obesidade",
+          "synonyms": [
+            "excesso de peso",
+            "gordinho",
+            "obeso",
+            "sobrepeso"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "tabagismo",
+          "synonyms": [
+            "cigarro",
+            "fumante",
+            "fumo",
+            "fumo ha anos",
+            "tabagista"
+          ]
+        }
+      ],
+      "fuzzy_match": true
+    },
+    {
+      "entity": "irradiacao",
+      "values": [
+        {
+          "type": "synonyms",
+          "value": "dorso",
+          "synonyms": [
+            "costas",
+            "escápula",
+            "meio das costas",
+            "nas costas"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "epigastrica",
+          "synonyms": [
+            "abdome",
+            "barriga",
+            "boca do estomago",
+            "estômago"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "mandibula_pescoco",
+          "synonyms": [
+            "dentes",
+            "garganta",
+            "mandibula",
+            "pescoco",
+            "queixo"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "membro_superior_esquerdo",
+          "synonyms": [
+            "braco",
+            "braço esquerdo",
+            "mao esquerda",
+            "ombro esquerdo"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "nenhuma_irradiacao",
+          "synonyms": [
+            "fica num lugar só",
+            "nada",
+            "não",
+            "não espalha",
+            "nenhuma",
+            "só no peito"
+          ]
+        }
+      ],
+      "fuzzy_match": true
+    },
+    {
+      "entity": "sintoma_associado",
+      "values": [
+        {
+          "type": "synonyms",
+          "value": "dispneia",
+          "synonyms": [
+            "cansaco",
+            "falta de ar",
+            "folego curto",
+            "ofegante",
+            "sem folego"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "febre",
+          "synonyms": [
+            "estou muito quente",
+            "estou queimando",
+            "mais de 39 graus",
+            "me sinto quente",
+            "temperatura alta"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "nausea_vomito",
+          "synonyms": [
+            "ansiado",
+            "enjoo",
+            "nauseado",
+            "querendo vomitar",
+            "vomito"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "nenhum_sintoma",
+          "synonyms": [
+            "nada",
+            "não",
+            "não sinto mais nada",
+            "negativo",
+            "nenhum",
+            "só dor no peito mesmo"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "sincope",
+          "synonyms": [
+            "apaguei",
+            "desmaiei",
+            "desmaio",
+            "teto preto",
+            "tontura forte",
+            "vista escura"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "sudorese",
+          "synonyms": [
+            "suado",
+            "suando frio",
+            "suor frio",
+            "transpirando"
+          ]
+        }
+      ],
+      "fuzzy_match": true
+    },
+    {
+      "entity": "sintoma_principal",
+      "values": [
+        {
+          "type": "synonyms",
+          "value": "arritmia",
+          "synonyms": [
+            "estou com arritmia",
+            "meu coração está acelerado",
+            "meu coração está na boca",
+            "meus batimentos estão altos"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "dor_no_peito",
+          "synonyms": [
+            "aperto no peito",
+            "coração apertado",
+            "coração doendo",
+            "dor no lado esquerdo do peito",
+            "dor no peito",
+            "dor no tórax",
+            "estou com dor no peito",
+            "meu peito dói",
+            "meu peito dói muito",
+            "peito doendo",
+            "pontada no peito"
+          ]
+        }
+      ],
+      "fuzzy_match": true
+    }
+  ],
+  "metadata": {
+    "api_version": {
+      "major_version": "v2",
+      "minor_version": "2018-11-08"
+    }
+  },
+  "dialog_nodes": [
+    {
+      "type": "standard",
+      "title": "Bem-vindo",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Olá! Eu sou o Assistente CardioIA. Posso te ajudar com uma triagem inicial. Como está se sentindo?"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "welcome",
+      "dialog_node": "Bem-vindo"
+    },
+    {
+      "type": "standard",
+      "title": "Em outros casos",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Eu não entendi. Você pode tentar reformular a frase."
+              },
+              {
+                "text": "Você pode reformular sua afirmação? Eu não estou entendendo."
+              },
+              {
+                "text": "Eu não entendi o sentido."
+              },
+              {
+                "text": "Desculpe, não consegui compreender sua solicitação. Você pode tentar reformular? Lembre-se que sou um assistente virtual em treinamento e posso ajudar com triagem inicial, dúvidas sobre exames ou medicações cardiológicas"
+              },
+              {
+                "text": "Não compreendi totalmente o seu relato. Se você estiver sentindo dor no peito, falta de ar súbita ou mal-estar intenso, dirija-se imediatamente a uma unidade de emergência para avaliação médica e realização de eletrocardiograma."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "anything_else",
+      "dialog_node": "Em outros casos",
+      "previous_sibling": "node_1_1789514505333",
+      "disambiguation_opt_out": true
+    },
+    {
+      "type": "event_handler",
+      "output": {},
+      "parent": "slot_8_1789499775361",
+      "context": {
+        "sintoma_associado": "@sintoma_associado"
+      },
+      "conditions": "@sintoma_associado",
+      "event_name": "input",
+      "dialog_node": "handler_10_1789499775362"
+    },
+    {
+      "type": "event_handler",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Você está sentindo mais alguma coisa junto com a dor, como falta de ar, suor frio ou enjoo?"
+              }
+            ],
+            "response_type": "text"
+          }
+        ]
+      },
+      "parent": "slot_8_1789514505334",
+      "event_name": "focus",
+      "dialog_node": "handler_10_1789514505334",
+      "previous_sibling": "handler_9_1789514505334"
+    },
+    {
+      "type": "event_handler",
+      "parent": "node_6_1789499515966",
+      "event_name": "focus",
+      "dialog_node": "handler_1_1789499645703",
+      "previous_sibling": "response_10_1789513960349"
+    },
+    {
+      "type": "event_handler",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Como você descreve essa dor? É um aperto, uma queimação ou uma pontada?"
+              }
+            ],
+            "response_type": "text"
+          }
+        ]
+      },
+      "parent": "slot_9_1789499646170",
+      "event_name": "focus",
+      "dialog_node": "handler_1_1789499646170",
+      "previous_sibling": "handler_5_1789499646170"
+    },
+    {
+      "type": "event_handler",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Você está sentindo mais alguma coisa junto com a dor, como falta de ar, suor frio ou enjoo?"
+              }
+            ],
+            "response_type": "text"
+          }
+        ]
+      },
+      "parent": "slot_8_1789499775361",
+      "event_name": "focus",
+      "dialog_node": "handler_1_1789499775362",
+      "previous_sibling": "handler_10_1789499775362"
+    },
+    {
+      "type": "event_handler",
+      "output": {},
+      "parent": "slot_11_1789514505334",
+      "context": {
+        "fator_risco": "@fator_risco"
+      },
+      "conditions": "@fator_risco",
+      "event_name": "input",
+      "dialog_node": "handler_12_1789514505334"
+    },
+    {
+      "type": "event_handler",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Para finalizar a triagem: você tem pressão alta, diabetes, ou é fumante?"
+              }
+            ],
+            "response_type": "text"
+          }
+        ]
+      },
+      "parent": "slot_11_1789514505334",
+      "event_name": "focus",
+      "dialog_node": "handler_13_1789514505334",
+      "previous_sibling": "handler_12_1789514505334"
+    },
+    {
+      "type": "event_handler",
+      "output": {},
+      "parent": "node_1_1789514505333",
+      "event_name": "focus",
+      "dialog_node": "handler_14_1789514505334",
+      "previous_sibling": "response_17_1789514505334"
+    },
+    {
+      "type": "event_handler",
+      "output": {},
+      "parent": "slot_8_1789499740889",
+      "context": {
+        "irradiacao": "@irradiacao"
+      },
+      "conditions": "@irradiacao",
+      "event_name": "input",
+      "dialog_node": "handler_2_1789499740889"
+    },
+    {
+      "type": "event_handler",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Para finalizar a triagem: você tem pressão alta, diabetes, ou é fumante?"
+              }
+            ],
+            "response_type": "text"
+          }
+        ]
+      },
+      "parent": "slot_9_1789499820610",
+      "event_name": "focus",
+      "dialog_node": "handler_3_1789499820611",
+      "previous_sibling": "handler_7_1789499820611"
+    },
+    {
+      "type": "event_handler",
+      "output": {},
+      "parent": "slot_9_1789499646170",
+      "context": {
+        "caracteristica_dor": "@caracteristica_dor_peito"
+      },
+      "conditions": "@caracteristica_dor_peito",
+      "event_name": "input",
+      "dialog_node": "handler_5_1789499646170"
+    },
+    {
+      "type": "event_handler",
+      "output": {},
+      "parent": "slot_9_1789499820610",
+      "context": {
+        "fator_risco": "@fator_risco"
+      },
+      "conditions": "@fator_risco",
+      "event_name": "input",
+      "dialog_node": "handler_7_1789499820611"
+    },
+    {
+      "type": "event_handler",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Essa dor fica só no peito ou se espalha para algum outro lugar, como braço, costas ou pescoço?"
+              }
+            ],
+            "response_type": "text"
+          }
+        ]
+      },
+      "parent": "slot_8_1789499740889",
+      "event_name": "focus",
+      "dialog_node": "handler_9_1789499740889",
+      "previous_sibling": "handler_2_1789499740889"
+    },
+    {
+      "type": "event_handler",
+      "output": {},
+      "parent": "slot_8_1789514505334",
+      "context": {
+        "sintoma_associado": "@sintoma_associado"
+      },
+      "conditions": "@sintoma_associado",
+      "event_name": "input",
+      "dialog_node": "handler_9_1789514505334"
+    },
+    {
+      "type": "frame",
+      "title": "Fluxo - Arritmia",
+      "output": {},
+      "metadata": {
+        "_customization": {
+          "mcr": true
+        }
+      },
+      "conditions": "#relatar_sintoma && @sintoma_principal:arritmia",
+      "dialog_node": "node_1_1789514505333",
+      "previous_sibling": "node_6_1789499515966"
+    },
+    {
+      "type": "frame",
+      "title": "Fluxo - Dor no Peito",
+      "metadata": {
+        "_customization": {
+          "mcr": true
+        }
+      },
+      "conditions": "#relatar_sintoma && @sintoma_principal:dor_no_peito",
+      "dialog_node": "node_6_1789499515966",
+      "previous_sibling": "Bem-vindo"
+    },
+    {
+      "type": "response_condition",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Obrigado pelas informações. Pelas características descritas, não há sinais imediatos de gravidade extrema. Recomendo que você agende uma consulta com um médico cardiologista o mais breve possível para avaliação."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_6_1789499515966",
+      "conditions": "anything_else",
+      "dialog_node": "response_10_1789513960349",
+      "previous_sibling": "response_6_1789503521035"
+    },
+    {
+      "type": "response_condition",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "🚨 ALERTA CLÍNICO: Com base nos sintomas relatados, você precisa de avaliação médica imediata. Por favor, ligue imediatamente para o SAMU (192) ou dirija-se à emergência mais próxima. Não dirija sozinho."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "multiline"
+          }
+        ]
+      },
+      "parent": "node_6_1789499515966",
+      "context": {
+        "dados_paciente": {
+          "riscos": "$fatores_risco",
+          "dor_tipo": "$caracteristica_dor",
+          "dor_irradiacao": "$irradiacao",
+          "sintomas_extras": "$sintomas_associados"
+        }
+      },
+      "conditions": "$caracteristica_dor == 'opressiva' && ($sintoma_associado == 'sudorese' || $sintoma_associado == 'sincope' || $sintoma_associado == 'dispneia'||$sintoma_associado == 'arritmia')",
+      "dialog_node": "response_1_1789503445757"
+    },
+    {
+      "type": "response_condition",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "🚨 ALERTA CLÍNICO: Com base nos sintomas relatados, você precisa de avaliação médica imediata. Por favor, ligue imediatamente para o SAMU (192) ou dirija-se à emergência mais próxima. Não dirija sozinho."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "multiline"
+          }
+        ]
+      },
+      "parent": "node_1_1789514505333",
+      "context": {
+        "dados_paciente": {
+          "riscos": "$fatores_risco",
+          "dor_tipo": "$caracteristica_dor",
+          "dor_irradiacao": "$irradiacao",
+          "sintomas_extras": "$sintomas_associados"
+        }
+      },
+      "conditions": "($sintoma_associado == 'sincope' || $sintoma_associado == 'dispneia') && ($fator_risco != 'nenhum_fator')",
+      "dialog_node": "response_15_1789514505334"
+    },
+    {
+      "type": "response_condition",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "⚠️ ATENÇÃO: As características da sua dor, somadas ao seu perfil de saúde, indicam um risco que precisa ser investigado rapidamente com um eletrocardiograma. Recomendamos que você dirija-se ao Pronto-Socorro mais próximo imediatamente. Peça para alguém levá-lo."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_1_1789514505333",
+      "conditions": "$sintoma_associado == 'sudorese' && ($fator_risco != 'nenhum_fator')",
+      "dialog_node": "response_16_1789514505334",
+      "previous_sibling": "response_15_1789514505334"
+    },
+    {
+      "type": "response_condition",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Obrigado pelas informações. Pelas características descritas, não há sinais imediatos de gravidade extrema. Recomendo que você agende uma consulta com um médico cardiologista o mais breve possível para avaliação."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_1_1789514505333",
+      "conditions": "anything_else",
+      "dialog_node": "response_17_1789514505334",
+      "previous_sibling": "response_16_1789514505334"
+    },
+    {
+      "type": "response_condition",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "⚠️ ATENÇÃO: As características da sua dor, somadas ao seu perfil de saúde, indicam um risco que precisa ser investigado rapidamente com um eletrocardiograma. Recomendamos que você dirija-se ao Pronto-Socorro mais próximo imediatamente. Peça para alguém levá-lo."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_6_1789499515966",
+      "conditions": "$caracteristica_dor != 'opressiva' && $fator_risco != 'nenhum_fator'",
+      "dialog_node": "response_6_1789503521035",
+      "previous_sibling": "response_1_1789503445757"
+    },
+    {
+      "type": "slot",
+      "output": {},
+      "parent": "node_1_1789514505333",
+      "variable": "$fator_risco",
+      "dialog_node": "slot_11_1789514505334",
+      "previous_sibling": "slot_8_1789514505334"
+    },
+    {
+      "type": "slot",
+      "parent": "node_6_1789499515966",
+      "variable": "$irradiacao",
+      "dialog_node": "slot_8_1789499740889",
+      "previous_sibling": "slot_9_1789499646170"
+    },
+    {
+      "type": "slot",
+      "parent": "node_6_1789499515966",
+      "variable": "$sintoma_associado",
+      "dialog_node": "slot_8_1789499775361",
+      "previous_sibling": "slot_8_1789499740889"
+    },
+    {
+      "type": "slot",
+      "output": {},
+      "parent": "node_1_1789514505333",
+      "variable": "$sintoma_associado",
+      "dialog_node": "slot_8_1789514505334",
+      "previous_sibling": "handler_14_1789514505334"
+    },
+    {
+      "type": "slot",
+      "parent": "node_6_1789499515966",
+      "variable": "$caracteristica_dor",
+      "dialog_node": "slot_9_1789499646170",
+      "previous_sibling": "handler_1_1789499645703"
+    },
+    {
+      "type": "slot",
+      "output": {},
+      "parent": "node_6_1789499515966",
+      "variable": "$fator_risco",
+      "dialog_node": "slot_9_1789499820610",
+      "previous_sibling": "slot_8_1789499775361"
+    }
+  ],
+  "counterexamples": [],
+  "system_settings": {
+    "disambiguation": {
+      "prompt": "Você quis dizer:",
+      "enabled": true,
+      "randomize": true,
+      "max_suggestions": 5,
+      "suggestion_text_policy": "title",
+      "none_of_the_above_prompt": "Nenhuma das anteriores",
+      "use_connect_to_support_prompt": "Connect to support",
+      "single_answer_clarification_prompt": "Something else"
+    },
+    "human_agent_assist": {
+      "prompt": "Você quis dizer:"
+    }
+  },
+  "learning_opt_out": false,
+  "language": "pt-br",
+  "description": "",
+  "name": "CardioIA-dialog"
+}
