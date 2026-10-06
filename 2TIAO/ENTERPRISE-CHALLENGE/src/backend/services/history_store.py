@@ -15,9 +15,13 @@ como dado sensível em qualquer ambiente real de produção.
 import json
 import os
 import sqlite3
+import logging
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 CURRENT_DIR = Path(__file__).parent
 BACKEND_DIR = CURRENT_DIR.parent
@@ -105,3 +109,32 @@ def contar_interacoes(paciente_id: str) -> int:
             (paciente_id,),
         )
         return cursor.fetchone()["total"]
+
+    def excluir_historico_paciente(paciente_id: str) -> bool:
+    """Exclui todo o histórico de um paciente específico (Direito de Exclusão - LGPD)."""
+    try:
+        with _conectar() as conn:
+            cursor = conn.cursor()
+            # O parâmetro posicional '?' evita injeções de código SQL
+            cursor.execute("DELETE FROM interacoes WHERE paciente_id = ?", (paciente_id,))
+            return cursor.rowcount > 0
+    except Exception as e:
+        logger.error("Erro ao excluir histórico do paciente %s: %s", paciente_id, e)
+        return False
+
+def aplicar_regra_retencao(dias_retencao: int = 30) -> int:
+    """
+    Remove interações mais antigas que o período de retenção estabelecido,
+    purgando automaticamente os dados expirados.
+    """
+    try:
+        with _conectar() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "DELETE FROM interacoes WHERE criado_em <= datetime('now', ?)", 
+                (f'-{dias_retencao} days',)
+            )
+            return cursor.rowcount
+    except Exception as e:
+        logger.error("Erro ao purgar dados antigos do histórico: %s", e)
+        return 0

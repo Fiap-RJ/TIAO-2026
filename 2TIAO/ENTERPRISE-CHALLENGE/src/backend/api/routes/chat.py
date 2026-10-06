@@ -2,9 +2,13 @@
 
 import logging
 import traceback
+import uuid
+import time
 
 from fastapi import APIRouter, HTTPException
 
+
+from api.routes.metrics import registrar_execucao
 from agents import app as agent_app
 from domain.schemas import ChatRequest, ChatResponse, FonteDado
 from services.history_store import salvar_interacao
@@ -16,10 +20,33 @@ router = APIRouter()
 
 @router.post("/", response_model=ChatResponse)
 async def chat_com_agente(request: ChatRequest):
+    start_time = time.perf_counter()
     """Recebe a pergunta do paciente e retorna a resposta fundamentada via RAG."""
     try:
-        resultado = agent_app.invoke({"question": request.mensagem})
+        req_id = str(uuid.uuid4())
 
+        resultado = agent_app.invoke({"question": request.mensagem,"request_id": req_id})
+
+        latency_ms = round((time.perf_counter() - start_time) * 1000, 2)
+        
+        # Verifica se houve bloqueio por guardrails
+        violacoes = resultado.get("violacoes", [])
+        bloqueado = len(violacoes) > 0
+
+        # Alimenta as métricas
+        registrar_execucao(
+            latencia_total_ms=latency_ms, 
+            bloqueado=bloqueado, 
+            violacoes=violacoes
+        )
+
+        return ChatResponse(
+            resposta=resultado["answer"], 
+            fontes=fontes,
+            painel_utilizado=painel_utilizado,
+            guardrails_acionados=violacoes
+        )
+    
         fontes = [
             FonteDado(
                 painel=d.metadata.get("painel", "N/A"),
@@ -29,6 +56,10 @@ async def chat_com_agente(request: ChatRequest):
             )
             for d in resultado.get("context", [])
         ]
+
+        # Determina o painel principal a partir das fontes
+        
+        painel_utilizado = fontes[0].painel if fontes else "Geral"
 
         try:
             salvar_interacao(
@@ -40,8 +71,9 @@ async def chat_com_agente(request: ChatRequest):
         except Exception:
             logger.warning("Falha ao persistir histórico da interação", exc_info=True)
 
-        return ChatResponse(resposta=resultado["answer"], fontes=fontes)
-
+        return ChatResponse(resposta=resultado["answer"], fontes=fontes, painel_utilizado=painel_utilizado,
+            guardrails_acionados=resultado.get("violacoes", [])
+        )
     except Exception as e:
         logger.error("Erro no pipeline RAG: %s", e)
         traceback.print_exc()

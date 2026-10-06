@@ -43,6 +43,12 @@ class ChatResponse(BaseModel):
     fontes: List[FonteDado] = Field(
         default_factory=list, description="Lista de referências técnicas do laudo"
     )
+    painel_utilizado: str = Field(
+        default="Geral", description="Painel genético especialista utilizado para gerar a resposta"
+    )
+    guardrails_acionados: List[str] = Field(
+        default_factory=list, description="Lista de regras de guardrail que foram violadas/acionadas"
+    )
 
 
 class NivelRisco(str, Enum):

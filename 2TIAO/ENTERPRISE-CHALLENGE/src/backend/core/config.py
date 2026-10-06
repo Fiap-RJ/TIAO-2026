@@ -28,7 +28,7 @@ class Settings(BaseSettings):
 
     # Parâmetros do LLM (compartilhados)
     LLM_TEMPERATURE: float = 0.3
-    LLM_MAX_TOKENS: int = 2048
+    LLM_MAX_TOKENS: int = 300
 
     # Parâmetros do RAG
     RETRIEVER_K: int = 3
