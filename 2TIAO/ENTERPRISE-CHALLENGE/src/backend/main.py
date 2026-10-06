@@ -9,7 +9,7 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.routes import ancestralidade, chat, historico, resumos, riscos
+from api.routes import ancestralidade, chat, historico, metrics, resumos, riscos
 
 # Configuração de logging
 logging.basicConfig(
@@ -39,7 +39,8 @@ app.include_router(
 )
 app.include_router(resumos.router, prefix="/api/resumos", tags=["Dashboard — Resumos"])
 app.include_router(historico.router, prefix="/api/historico", tags=["Dashboard — Histórico"])
-
+app.include_router(chat.router, prefix="/api/chat", tags=["Chat"])
+app.include_router(metrics.router, prefix="/metrics", tags=["Monitoramento"]) # Registre o endpoint
 
 @app.get("/health", tags=["Monitoramento"])
 def health_check():

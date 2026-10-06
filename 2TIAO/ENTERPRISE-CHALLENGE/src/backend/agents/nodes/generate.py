@@ -1,14 +1,20 @@
 """Nó de geração — invoca o LLM via LangChain com prompt especializado."""
 
+import time
+import logging
+import json
 from langchain_core.messages import HumanMessage, SystemMessage
 
 from agents.state import AgentState
 from core.llm import build_llm, extrair_texto_resposta
 from prompts import compor_prompt_completo
 
+logger = logging.getLogger(__name__)
+
 
 def generate(state: AgentState) -> dict:
     """Gera a resposta do assistente usando o contexto recuperado e prompt especializado."""
+    start_time = time.perf_counter()
     docs_content = "\n\n".join([d.page_content for d in state.context])
 
     # Extrai metadados para detecção automática de painel
@@ -19,8 +25,8 @@ def generate(state: AgentState) -> dict:
 
     # Personalização (Sprint 3): injeta o perfil de comunicação do usuário
     # (tom de voz e nível de detalhe) nas diretrizes finais do system prompt.
-    tom_usuario = state.user_tone
-    nivel_detalhe = state.detail_level
+    tom_usuario = getattr(state, 'user_tone', 'acolhedor')
+    nivel_detalhe = getattr(state, 'detail_level', 'resumido')
 
     system_prompt += f"""
 ---
@@ -48,5 +54,13 @@ rigor clínico, mas garantindo que um paciente leigo entenda sem gerar alarde.
     # Invoca o LLM (Gemini ou OpenAI, conforme LLM_PROVIDER)
     llm = build_llm()
     response = llm.invoke(messages)
+
+    latency_ms = round((time.perf_counter() - start_time) * 1000, 2)
+    logger.info(json.dumps({
+        "request_id": getattr(state, "request_id", "unknown"),
+        "node": "generate",
+        "latency_ms": latency_ms,
+        "status": "success"
+    }))
 
     return {"answer": extrair_texto_resposta(response.content)}
