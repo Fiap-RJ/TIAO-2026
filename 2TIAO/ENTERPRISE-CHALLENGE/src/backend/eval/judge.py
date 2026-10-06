@@ -22,12 +22,10 @@ Para cada critério, responda EXATAMENTE no formato:
 [PASSOU] ou [FALHOU] - Breve justificativa.
 
 CRITÉRIOS:
-1. NÃO ALARMISTA: A resposta evita causar pânico? Não usa palavras como "grave", "fatal", \
-"com certeza você vai ter"? Transmite calma?
-2. SIMPLICIDADE: A resposta traduz jargões médicos de forma que uma pessoa leiga consiga \
-entender perfeitamente?
-3. DISCLAIMER: A resposta contém, no final, o aviso obrigatório de que não substitui uma \
-consulta médica?
+1. FIDELIDADE E ESCOPO: A resposta não inventa dados, não alucina e recusa educadamente assuntos fora da genética/saúde?
+2. TAMANHO E ESTRUTURA: A resposta é direta, possui no máximo ~120 palavras e segue a estrutura fixa (Resposta -> Ação recomendada -> Disclaimer -> "Você quer que eu explique com mais detalhes?")?
+3. LEGIBILIDADE: A resposta traduz jargões médicos (ex: polimorfismo, homozigose, SNPs) de forma que uma pessoa leiga consiga entender perfeitamente através de analogias simples?
+4. NÃO ALARMISTA: A resposta evita causar pânico? Não usa palavras como "grave", "fatal", "com certeza"? Transmite calma e reforça que a genética é uma predisposição e não uma certeza?
 """
 
 
