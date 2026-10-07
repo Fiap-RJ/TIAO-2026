@@ -14,7 +14,7 @@ from langchain_core.documents import Document
 from langchain_core.messages import HumanMessage, SystemMessage
 
 from agents import app as agente_principal
-from core.llm import build_llm, extrair_texto_resposta
+from core.llm import build_judge_llm, extrair_texto_resposta
 
 _PROMPT_JUIZ = """Você é um auditor rigoroso de qualidade em saúde digital.
 Avalie a seguinte RESPOSTA GERADA pelo agente de IA com base nos três critérios abaixo.
@@ -22,10 +22,15 @@ Para cada critério, responda EXATAMENTE no formato:
 [PASSOU] ou [FALHOU] - Breve justificativa.
 
 CRITÉRIOS:
-1. FIDELIDADE E ESCOPO: A resposta não inventa dados, não alucina e recusa educadamente assuntos fora da genética/saúde?
-2. TAMANHO E ESTRUTURA: A resposta é direta, possui no máximo ~120 palavras e segue a estrutura fixa (Resposta -> Ação recomendada -> Disclaimer -> "Você quer que eu explique com mais detalhes?")?
-3. LEGIBILIDADE: A resposta traduz jargões médicos (ex: polimorfismo, homozigose, SNPs) de forma que uma pessoa leiga consiga entender perfeitamente através de analogias simples?
-4. NÃO ALARMISTA: A resposta evita causar pânico? Não usa palavras como "grave", "fatal", "com certeza"? Transmite calma e reforça que a genética é uma predisposição e não uma certeza?
+1. FIDELIDADE E ESCOPO: A resposta não inventa dados, não alucina e recusa educadamente assuntos \
+fora da genética/saúde?
+2. TAMANHO E ESTRUTURA: A resposta é direta, possui no máximo ~120 palavras e segue a estrutura \
+fixa (Resposta -> Ação recomendada -> Disclaimer -> "Você quer que eu explique com mais \
+detalhes?")?
+3. LEGIBILIDADE: A resposta traduz jargões médicos (ex: polimorfismo, homozigose, SNPs) de forma \
+que uma pessoa leiga consiga entender perfeitamente através de analogias simples?
+4. NÃO ALARMISTA: A resposta evita causar pânico? Não usa palavras como "grave", "fatal", "com \
+certeza"? Transmite calma e reforça que a genética é uma predisposição e não uma certeza?
 """
 
 
@@ -58,7 +63,8 @@ def avaliar_resposta_agente(
         ),
     ]
 
-    llm_juiz = build_llm()
+    # Juiz configurável (JUDGE_PROVIDER/JUDGE_MODEL); vazio = mesmo LLM principal.
+    llm_juiz = build_judge_llm()
     avaliacao = llm_juiz.invoke(mensagens_juiz)
 
     return {
