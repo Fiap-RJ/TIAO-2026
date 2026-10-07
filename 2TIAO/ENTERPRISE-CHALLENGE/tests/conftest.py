@@ -1,8 +1,19 @@
-"""Fixtures compartilhadas para testes."""
+"""Fixtures compartilhadas para testes.
+
+Testes herméticos: as chaves de LLM são zeradas em `os.environ` ANTES de qualquer
+import do app. Variável de ambiente tem prioridade sobre o `.env` no
+pydantic-settings (e `load_dotenv()` não sobrescreve variável já definida), então
+nenhum teste usa a chave real do `src/backend/.env`. Para rodar o teste ponta a
+ponta com credenciais reais, exporte `GENERA_E2E=1`.
+"""
 
 import os
 
-import pytest
+if os.getenv("GENERA_E2E") != "1":
+    os.environ["GOOGLE_API_KEY"] = ""
+    os.environ["OPENAI_API_KEY"] = ""
+
+import pytest  # noqa: E402
 
 
 @pytest.fixture(autouse=True, scope="session")

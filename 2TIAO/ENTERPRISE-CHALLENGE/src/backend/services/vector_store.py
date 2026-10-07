@@ -5,16 +5,23 @@ Responsável pela ingestão de dados genéticos no FAISS e carregamento do índi
 """
 
 import json
+import logging
 import os
+import re
+import threading
+from datetime import datetime, timezone
+from functools import lru_cache
 from pathlib import Path
 
 from dotenv import load_dotenv
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
 
-from core.llm import build_embeddings
+from core.llm import ModeloRef, build_embeddings, embeddings_ativo
 
 load_dotenv()
+
+logger = logging.getLogger(__name__)
 
 CURRENT_DIR = Path(__file__).parent
 BACKEND_DIR = CURRENT_DIR.parent
@@ -23,6 +30,9 @@ BACKEND_DIR = CURRENT_DIR.parent
 _default_json = BACKEND_DIR.parent.parent / "proposta_estrutura_de_dados.json"
 JSON_PATH = Path(os.getenv("GENERA_DATA_PATH", str(_default_json)))
 FAISS_INDEX_PATH = Path(os.getenv("GENERA_FAISS_PATH", str(BACKEND_DIR / "faiss_index")))
+
+# Serializa a reconstrução do índice entre threads (ver `load_vector_store`).
+_LOCK_REINDEXACAO = threading.Lock()
 
 
 def _carregar_paineis(dados: dict) -> list[Document]:
@@ -92,28 +102,102 @@ def carregar_dados_json() -> list[Document]:
     return documentos
 
 
+def indice_slug(ref: ModeloRef) -> str:
+    """Nome de diretório estável para o índice de um modelo de embeddings."""
+    return f"{ref.provider}__{re.sub('[^a-z0-9]+', '-', ref.modelo.lower())}"
+
+
+def diretorio_indice(ref: ModeloRef | None = None, chave: str = "demo") -> Path:
+    """Diretório do índice: GENERA_FAISS_PATH/<slug do modelo de embeddings>/<chave>/."""
+    ref = ref or embeddings_ativo()
+    return FAISS_INDEX_PATH / indice_slug(ref) / chave
+
+
 def _build_embeddings():
-    """Constrói a instância de embeddings via factory (respeita LLM_PROVIDER)."""
-    return build_embeddings()
+    """Constrói os embeddings ativos (EMBEDDINGS_PROVIDER/EMBEDDINGS_MODEL)."""
+    return build_embeddings(embeddings_ativo())
 
 
-def criar_e_salvar_banco_vetorial():
-    """Gera embeddings e salva o índice FAISS localmente."""
+def criar_e_salvar_banco_vetorial() -> Path:
+    """Gera embeddings, salva o índice FAISS e grava o `meta.json` do modelo usado."""
+    ref = embeddings_ativo()
+    destino = diretorio_indice(ref)
     documentos = carregar_dados_json()
     embeddings = _build_embeddings()
     vector_store = FAISS.from_documents(documentos, embeddings)
-    vector_store.save_local(str(FAISS_INDEX_PATH))
-    print(f"✅ Banco Vetorial salvo com {len(documentos)} documentos em {FAISS_INDEX_PATH}")
+
+    destino.mkdir(parents=True, exist_ok=True)
+    vector_store.save_local(str(destino))
+    meta = {
+        "provider": ref.provider,
+        "modelo": ref.modelo,
+        "slug": indice_slug(ref),
+        "n_documentos": len(documentos),
+        "criado_em": datetime.now(timezone.utc).isoformat(),
+    }
+    (destino / "meta.json").write_text(
+        json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+    limpar_cache_indice()
+    print(f"✅ Banco Vetorial salvo com {len(documentos)} documentos em {destino}")
+    return destino
+
+
+@lru_cache(maxsize=4)
+def _carregar_indice(caminho: str) -> FAISS:
+    """Carrega (uma vez por caminho) o índice FAISS do disco."""
+    return FAISS.load_local(
+        caminho,
+        _build_embeddings(),
+        allow_dangerous_deserialization=True,
+    )
+
+
+def limpar_cache_indice() -> None:
+    """Invalida o cache de índices carregados (chamado ao reindexar)."""
+    _carregar_indice.cache_clear()
 
 
 def load_vector_store() -> FAISS:
-    """Carrega o índice FAISS do disco."""
-    embeddings = _build_embeddings()
-    return FAISS.load_local(
-        str(FAISS_INDEX_PATH),
-        embeddings,
-        allow_dangerous_deserialization=True,
-    )
+    """Carrega o índice FAISS do modelo de embeddings ativo.
+
+    Índice ausente, ou com `meta.json` ausente/de outro modelo, é reconstruído
+    sob demanda — nunca se carrega um índice incompatível com os embeddings ativos.
+    """
+    ref = embeddings_ativo()
+    destino = diretorio_indice(ref)
+
+    if not _indice_compativel(destino, ref):
+        # Requisições concorrentes (rotas `def` rodam no threadpool) não podem
+        # reconstruir o mesmo índice em paralelo: só uma reindexa, e as demais
+        # reconferem depois de obter o lock e reaproveitam o índice novo.
+        with _LOCK_REINDEXACAO:
+            if not (destino / "index.faiss").exists():
+                logger.info("Índice FAISS ausente em %s — reconstruindo.", destino)
+                criar_e_salvar_banco_vetorial()
+            elif _slug_do_meta(destino) != indice_slug(ref):
+                logger.warning(
+                    "Índice FAISS em %s sem meta.json compatível com %s — reconstruindo.",
+                    destino,
+                    ref,
+                )
+                criar_e_salvar_banco_vetorial()
+
+    return _carregar_indice(str(destino))
+
+
+def _indice_compativel(destino: Path, ref: ModeloRef) -> bool:
+    """Índice presente e com `meta.json` do modelo de embeddings `ref`."""
+    return (destino / "index.faiss").exists() and _slug_do_meta(destino) == indice_slug(ref)
+
+
+def _slug_do_meta(destino: Path) -> str | None:
+    """Slug registrado no `meta.json` do índice (None se ausente ou ilegível)."""
+    try:
+        meta = json.loads((destino / "meta.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    return meta.get("slug") if isinstance(meta, dict) else None
 
 
 if __name__ == "__main__":

@@ -11,10 +11,14 @@ import pytest
 from fastapi.testclient import TestClient
 
 from core.config import settings
+from core.llm import ConfiguracaoLLMInvalida
 from main import app
-from services.report_data import BACKEND_DIR
+from services.vector_store import diretorio_indice
 
-_FAISS_INDEX_DISPONIVEL = (BACKEND_DIR / "faiss_index").exists()
+try:
+    _FAISS_INDEX_DISPONIVEL = (diretorio_indice() / "index.faiss").exists()
+except ConfiguracaoLLMInvalida:
+    _FAISS_INDEX_DISPONIVEL = False
 _CREDENCIAL_DISPONIVEL = bool(settings.GOOGLE_API_KEY or settings.OPENAI_API_KEY)
 
 pytestmark = pytest.mark.skipif(
