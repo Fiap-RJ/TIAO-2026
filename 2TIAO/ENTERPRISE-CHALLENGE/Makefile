@@ -39,9 +39,9 @@ check: lint test ## Lint + testes (CI local)
 eval: ## Roda o eval do agente RAG
 	cd $(BACKEND) && poetry run python -m eval
 
-# ─── Demo (gravação do vídeo) ────────────────────────────────────────────────
+# ─── Demo ────────────────────────────────────────────────────────────────────
 
-demo: ## Sobe o stack completo para gravação do vídeo
+demo: ## Sobe o stack completo em modo demo
 	docker compose up --build -d
 	@echo "Aguardando serviços..."
 	@sleep 5

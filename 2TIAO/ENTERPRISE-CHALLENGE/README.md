@@ -312,7 +312,7 @@ Genera Intelligence é deployável em produção via [Render](https://render.com
 
 ### Local Demo
 
-Para gravar o vídeo ou fazer testes locais, suba tudo em Docker Compose com um comando:
+Para testar localmente, suba tudo em Docker Compose com um comando:
 
 ```bash
 make demo
@@ -353,7 +353,7 @@ Resultados salvos em `document/evidencias/` para auditoria.
 
 ## 🗃 Histórico de Lançamentos
 
-* **0.4.0 - Sprint 4 (Produção e Governança)**: Deploy em Render com `render.yaml`, GitHub Actions CI/CD (push lint+test, manual eval), PaddleOCR como serviço cloud, persistência multi-backend (SQLite/Postgres), variáveis de ambiente documentadas e parametrizadas, script de vídeo com demo local + IaaC + CI + monitoring, documentação de deploy completa.
+* **0.4.0 - Sprint 4 (Produção e Governança)**: Deploy em Render com `render.yaml`, GitHub Actions CI/CD (push lint+test, manual eval), PaddleOCR como serviço cloud, persistência multi-backend (SQLite/Postgres), variáveis de ambiente documentadas e parametrizadas, documentação de deploy completa.
 * **0.3.0 - 18/08/2026** - Sprint 3 (Experiência do Usuário): endpoints de riscos e ancestralidade com escala neutra, resumos automáticos cacheados, persistência de histórico em SQLite, reforço de guardrails e disclaimer automático, governança v1.1, testes de integração.
 * **0.2.0 - 29/05/2026** - Sprint 2: Motor RAG completo, multi-agentes LangGraph, multi-provider (Gemini/OpenAI), interface de Chat, guardrails, PII redaction, eval automatizado, Docker Compose end-to-end.
 * **0.1.0 - 24/04/2026** - Sprint 1: Estruturação arquitetural, definição em AWS, pipeline conceitual de anonimização.
