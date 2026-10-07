@@ -1,0 +1,209 @@
+---
+# ═════════════════════════════════════════════════════════════════════════════
+# Genera Intelligence — render.yaml
+# Multi-service infrastructure-as-code for Render deployment
+#
+# This file defines three services:
+#   1. backend: FastAPI server with FAISS vector store and LangGraph agents
+#   2. frontend: React + Nginx static site or dev server
+#   3. paddle-ocr: Optional PaddleOCR API service (profile: 'ocr')
+#
+# Deployment:
+#   1. Link this GitHub repo to your Render account
+#   2. Render will auto-detect this render.yaml and use it for deployment
+#   3. Set environment secrets on Render dashboard (GOOGLE_API_KEY, OPENAI_API_KEY, etc.)
+#   4. (Optional) Create Postgres add-on and link DATABASE_URL
+#   5. (Optional) Enable paddle-ocr service via profile selector
+#
+# No secrets are hardcoded here — all sensitive values are configured
+# as environment variables on the Render dashboard.
+# ═════════════════════════════════════════════════════════════════════════════
+
+services:
+  # ─────────────────────────────────────────────────────────────────────────
+  # Backend: FastAPI server (LangGraph + FAISS + History Store + OCR endpoint)
+  # ─────────────────────────────────────────────────────────────────────────
+  - type: web
+    name: genera-backend
+    runtime: docker
+    plan: starter
+    region: oregon  # Change to your preferred region
+
+    # Build context: EC root (.)
+    dockerfilePath: ./src/backend/Dockerfile
+    dockerContext: .
+
+    # Port exposed by the backend Dockerfile (EXPOSE 8000)
+    # Render assigns external URL and reverse-proxies to this port
+    ports:
+      - port: 8000
+
+    # Startup command: entrypoint.sh seeds FAISS index, then runs uvicorn
+    # Render sets PORT env var; we override it in entrypoint.sh
+    startCommand: sh -c "exec /app/entrypoint.sh"
+
+    # Environment variables and secrets
+    # Non-secret defaults are listed here; secrets (API keys, tokens) must be
+    # set manually on Render dashboard under "Environment" for this service
+    envVars:
+      # ─── Provider and model selection ───
+      - key: LLM_PROVIDER
+        value: gemini
+      - key: LLM_MODEL
+        value: ""  # Empty = use provider default (gemini-3.1-flash-lite)
+      - key: EMBEDDINGS_PROVIDER
+        value: gemini
+      - key: EMBEDDINGS_MODEL
+        value: ""  # Empty = use provider default (models/gemini-embedding-001)
+      - key: JUDGE_PROVIDER
+        value: ""  # Empty = use same provider as LLM
+      - key: JUDGE_MODEL
+        value: ""
+
+      # ─── LLM Parameters ───
+      - key: LLM_TEMPERATURE
+        value: "0.3"
+      - key: LLM_MAX_TOKENS
+        value: "2048"
+
+      # ─── Chat Token Limits ───
+      - key: CHAT_MAX_TOKENS_RESUMIDO
+        value: "400"
+      - key: CHAT_MAX_TOKENS_DETALHADO
+        value: "1200"
+      - key: CHAT_MAX_PALAVRAS_RESUMIDO
+        value: "120"
+
+      # ─── RAG ───
+      - key: RETRIEVER_K
+        value: "3"
+
+      # ─── OCR (ETL) ───
+      # Set to 'paddle_local' to use paddleocr service on port 8100
+      # Set to 'textract' to use AWS (requires AWS credentials via env)
+      - key: OCR_PROVIDER
+        value: paddle_local
+      # OCR_TOKEN: Set on Render dashboard (bearer token for /api/ocr/ endpoint)
+
+      # ─── Persistence Layer ───
+      # Set to 'sqlite' for SQLite (default) or 'postgres' for PostgreSQL
+      - key: DB_TYPE
+        value: sqlite
+      # DATABASE_URL: If DB_TYPE=postgres, set on Render dashboard to your PostgreSQL URI
+      # Example: postgresql://user:pass@db.render.com:5432/genera
+
+      # ─── Paths ───
+      - key: GENERA_DATA_PATH
+        value: /data/proposta_estrutura_de_dados.json
+      - key: GENERA_FAISS_PATH
+        value: /app/faiss_index
+      - key: GENERA_DB_PATH
+        value: /app/data/history.db
+
+      # ─── Secrets (set on Render dashboard) ───
+      # - GOOGLE_API_KEY: Your Google Gemini API key
+      # - OPENAI_API_KEY: Your OpenAI API key (if using OpenAI provider)
+      # - AWS_ACCESS_KEY_ID: AWS credentials (if using Textract OCR)
+      # - AWS_SECRET_ACCESS_KEY: AWS credentials (if using Textract OCR)
+      # - OCR_TOKEN: Bearer token for /api/ocr/ endpoint
+
+    # Health check: Tests /health endpoint using RENDER_EXTERNAL_URL if available,
+    # otherwise falls back to localhost (for local testing with docker-compose)
+    healthCheck:
+      path: /health
+      checkInterval: 15  # seconds between health checks
+      timeoutSeconds: 10
+      unhealthyThreshold: 5
+      initialDelaySeconds: 90  # Give startup time for FAISS seeding
+
+    # Persistent disk for vector store and database
+    # Without disk, FAISS index is regenerated on every restart (expensive)
+    disk:
+      name: genera-data
+      mountPath: /app/data
+      sizeGB: 2  # Adjust based on index size
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Frontend: React + Nginx (static build)
+  # ─────────────────────────────────────────────────────────────────────────
+  - type: web
+    name: genera-frontend
+    runtime: docker
+    plan: starter
+    region: oregon
+
+    # Multi-stage build: node:20 builds React, nginx:alpine serves static files
+    dockerfilePath: ./src/frontend/Dockerfile
+    dockerContext: .
+
+    ports:
+      - port: 80
+
+    # Frontend runs on port 80 (nginx), no startup command needed
+    # (CMD in Dockerfile handles nginx startup)
+
+    # Environment variables for frontend runtime
+    # Backend URL is injected at build time (React build) or runtime
+    envVars:
+      # Nginx proxy passes to backend; set to backend service URL
+      # When using Render's internal DNS, backend URL is: http://genera-backend:8000
+      # For Render, this is typically set via nginx.conf or .env
+      - key: API_URL
+        value: ""  # Empty = frontend uses relative paths (/api/...) or Nginx proxy
+
+    # No disk needed for static frontend (can use ephemeral filesystem)
+    # But if you want to cache node_modules across rebuilds:
+    # disk:
+    #   name: frontend-cache
+    #   mountPath: /app/node_modules
+    #   sizeGB: 1
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # PaddleOCR: Optional API service for document OCR
+  # (Only deployed if explicitly enabled via Render profiles)
+  # ─────────────────────────────────────────────────────────────────────────
+  - type: web
+    name: genera-paddle-ocr
+    runtime: docker
+    plan: starter
+    region: oregon
+
+    # Optional profile: only deploy if user selects 'ocr' profile on Render dashboard
+    # This keeps the service available but reduces cost if not needed
+    profiles:
+      - ocr
+
+    # Build context: EC root (.)
+    # Dockerfile is at scripts/docker/paddle-ocr/Dockerfile
+    # Build copies scripts/docker/paddle-ocr/requirements.txt and app.py
+    dockerfilePath: ./scripts/docker/paddle-ocr/Dockerfile
+    dockerContext: .
+
+    ports:
+      - port: 8001
+
+    # Paddle startup
+    startCommand: sh -c "uvicorn app:app --host 0.0.0.0 --port 8001"
+
+    envVars:
+      # Paddle model download behavior
+      - key: DISABLE_MODEL_SOURCE_CHECK
+        value: "true"
+      - key: PADDLE_PDX_DISABLE_MODEL_SOURCE_CHECK
+        value: "true"
+
+    # Health check: POST /ocr/ (simple 200 if ready)
+    healthCheck:
+      path: /health
+      checkInterval: 15
+      timeoutSeconds: 10
+      unhealthyThreshold: 5
+      initialDelaySeconds: 120  # Paddle models take longer to download
+
+    # Persistent disk for cached Paddle models
+    # Without disk, models are re-downloaded on every restart
+    disk:
+      name: paddle-models
+      mountPath: /root/.paddleocr
+      sizeGB: 3
+
