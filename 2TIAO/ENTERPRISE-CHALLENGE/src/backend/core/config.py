@@ -79,6 +79,16 @@ class Settings(BaseSettings):
     AWS_ACCESS_KEY_ID: str = ""
     AWS_SECRET_ACCESS_KEY: str = ""
 
+    # ─── Persistência (Histórico) ──────────────────────────────
+    # DB_TYPE: "sqlite" (padrão) ou "postgres"
+    DB_TYPE: str = "sqlite"
+    # DATABASE_URL: connection string Postgres (ex: postgresql://user:pass@host/db)
+    # Apenas usado se DB_TYPE=postgres
+    DATABASE_URL: str = ""
+    # Caminho para o arquivo SQLite (ex: /app/data/history.db)
+    # Apenas usado se DB_TYPE=sqlite
+    GENERA_DB_PATH: str = str(BACKEND_DIR / "data" / "history.db")
+
     # `src/backend/.env` é lido mesmo quando o processo roda a partir da raiz do
     # projeto (ex.: `make serve`); `.env` relativo ao cwd continua aceito.
     model_config = {

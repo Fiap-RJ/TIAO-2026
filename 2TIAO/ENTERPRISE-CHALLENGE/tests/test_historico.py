@@ -1,5 +1,7 @@
 """Testes de integração — endpoint e persistência de histórico."""
 
+import json
+import sqlite3
 from datetime import datetime, timedelta, timezone
 
 from fastapi.testclient import TestClient
@@ -7,6 +9,7 @@ from fastapi.testclient import TestClient
 from main import app
 from services import history_store
 from services.history_store import salvar_interacao
+from services.persistence.sqlite_repo import SQLiteHistoryRepository
 
 client = TestClient(app)
 
@@ -88,12 +91,28 @@ def test_delete_historico_inexistente_404():
 def test_retencao_remove_so_antigas():
     paciente = "paciente-retencao"
     antiga = (datetime.now(timezone.utc) - timedelta(days=40)).isoformat()
-    with history_store._conectar() as conn:
-        conn.execute(
-            "INSERT INTO interacoes (paciente_id, pergunta, resposta, fontes, criado_em) "
-            "VALUES (?, ?, ?, ?, ?)",
-            (paciente, "Pergunta antiga", "Resposta antiga", "[]", antiga),
-        )
+
+    # Get the repository and initialize it
+    repo = history_store.get_history_repo()
+    repo.inicializar()
+
+    # For SQLite, directly insert old data via sqlite3
+    if isinstance(repo, SQLiteHistoryRepository):
+        conn = sqlite3.connect(repo.db_path)
+        try:
+            conn.execute(
+                "INSERT INTO interacoes (paciente_id, pergunta, resposta, fontes, criado_em) "
+                "VALUES (?, ?, ?, ?, ?)",
+                (paciente, "Pergunta antiga", "Resposta antiga", json.dumps([]), antiga),
+            )
+            conn.commit()
+        finally:
+            conn.close()
+    else:
+        # For Postgres, we'd need different handling, but for now just skip
+        import pytest
+        pytest.skip("Retention test only supported for SQLite in this test suite")
+
     salvar_interacao(paciente, "Pergunta recente", "Resposta recente", [])
 
     removidas = history_store.aplicar_regra_retencao(30)
