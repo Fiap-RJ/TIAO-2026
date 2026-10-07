@@ -6,7 +6,7 @@
 
 <br>
 
-# Genera Intelligence: RAG Multimodelo para Laudos Genéticos (Sprint 3)
+# Genera Intelligence: RAG Multimodelo para Laudos Genéticos (Sprint 4)
 
 ## Grupo: Squad AI Engineering
 
@@ -66,7 +66,8 @@ O projeto visa resolver o gargalo de interpretação de dados genéticos do prod
 A nossa solução é uma camada de inteligência baseada em **RAG (Retrieval-Augmented Generation)**. Através de um assistente conversacional inteligente, o usuário pode "conversar" com o seu DNA, recebendo explicações em linguagem simples, recomendações personalizadas e visualizações intuitivas de riscos e predisposições.
 
 ## 📺 Apresentação do Projeto
-* **Sprint 3 (Atual - Experiência do Usuário):** _link do vídeo a ser adicionado após a gravação (coordenação em andamento)_
+* **Sprint 4 (Atual - Produção e Governança):** [Script e vídeo de apresentação](document/script-video-sprint4.md) — demonstração completa com deploy local, IaaC, CI/CD e monitoramento
+* **Sprint 3 (Experiência do Usuário):** _link do vídeo a ser adicionado após a gravação (coordenação em andamento)_
 * **Sprint 2 (Motor RAG & Agentes):** [Link para o YouTube](https://youtu.be/y-MmL1nKIFg)
 * **Sprint 1 (Fundação e Arquitetura):** [Link para o YouTube](https://youtu.be/mASJnbO3dqo)
 
@@ -298,11 +299,57 @@ para a tela de histórico do dashboard.
 
 ---
 
+## 🚀 Deployment & Infrastructure-as-Code (Sprint 4)
+
+Genera Intelligence é deployável em produção via [Render](https://render.com), com infrastructure-as-code definida em `render.yaml`.
+
+### Local Demo
+
+Para gravar o vídeo ou fazer testes locais, suba tudo em Docker Compose com um comando:
+
+```bash
+make demo
+```
+
+Isso inicia três serviços:
+- **Backend** (FastAPI): http://localhost:8000
+  - Swagger docs: http://localhost:8000/docs
+  - Health check: GET http://localhost:8000/health
+- **Frontend** (React + Nginx): http://localhost:3000
+- **PaddleOCR** (opcional): http://localhost:8001
+
+O backend seed do índice FAISS automaticamente na primeira execução — nenhum passo manual necessário.
+
+### Render Cloud Deploy
+
+Consulte o [Render Setup Guide](config/render/RENDER_SETUP.md) para instruções passo-a-passo:
+
+1. **Connect GitHub**: Link seu repositório ao Render
+2. **Set Secrets**: Configure API keys na dashboard do Render
+3. **Deploy**: Render lê `render.yaml` e provisiona automaticamente backend, frontend e PaddleOCR
+4. **Verify**: Teste healthchecks e endpoints
+
+Recursos:
+- Infrastructure-as-Code: [`render.yaml`](render.yaml)
+- Deployment docs: [`config/render/RENDER_SETUP.md`](config/render/RENDER_SETUP.md)
+
+### CI/CD Automation
+
+GitHub Actions validam código antes de cada deploy:
+
+- **Push Workflow** (`.github/workflows/ci-push.yml`): Lint (Ruff) + testes a cada commit
+- **Manual Eval** (`.github/workflows/eval-manual.yml`): LLM-as-a-Judge com casos de teste — dispara manualmente ou por tag
+
+Resultados salvos em `document/evidencias/` para auditoria.
+
+---
+
 ## 🗃 Histórico de Lançamentos
 
-* **0.3.0 - 18/08/2026** - Sprint 3 (parte Backend/Integração/Governança): endpoints de riscos e ancestralidade com escala neutra, resumos automáticos cacheados do relatório e das interações, persistência de histórico em SQLite, reforço de guardrails (lista de termos alarmistas ampliada + disclaimer automático de risco poligênico) e governança atualizada para v1.1, suíte de testes de integração para os novos endpoints.
+* **0.4.0 - Sprint 4 (Produção e Governança)**: Deploy em Render com `render.yaml`, GitHub Actions CI/CD (push lint+test, manual eval), PaddleOCR como serviço cloud, persistência multi-backend (SQLite/Postgres), variáveis de ambiente documentadas e parametrizadas, script de vídeo com demo local + IaaC + CI + monitoring, documentação de deploy completa.
+* **0.3.0 - 18/08/2026** - Sprint 3 (Experiência do Usuário): endpoints de riscos e ancestralidade com escala neutra, resumos automáticos cacheados, persistência de histórico em SQLite, reforço de guardrails e disclaimer automático, governança v1.1, testes de integração.
 * **0.2.0 - 29/05/2026** - Sprint 2: Motor RAG completo, multi-agentes LangGraph, multi-provider (Gemini/OpenAI), interface de Chat, guardrails, PII redaction, eval automatizado, Docker Compose end-to-end.
-* **0.1.0 - 24/04/2026** - Sprint 1: Estruturação arquitetural do projeto, definição em AWS e pipeline conceitual de anonimização.
+* **0.1.0 - 24/04/2026** - Sprint 1: Estruturação arquitetural, definição em AWS, pipeline conceitual de anonimização.
 
 ## 📋 Licença
 
