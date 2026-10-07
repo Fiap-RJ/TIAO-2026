@@ -18,4 +18,7 @@ COPY proposta_estrutura_de_dados.json /data/proposta_estrutura_de_dados.json
 
 EXPOSE 8000
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+COPY src/backend/entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+CMD ["/app/entrypoint.sh"]

@@ -1,4 +1,4 @@
-.PHONY: install dev seed serve serve-front test lint format check up down logs clean help
+.PHONY: install dev seed serve serve-front test lint format check up down logs demo demo-down clean help
 
 BACKEND := src/backend
 FRONTEND := src/frontend
@@ -38,6 +38,20 @@ check: lint test ## Lint + testes (CI local)
 
 eval: ## Roda o eval do agente RAG
 	cd $(BACKEND) && poetry run python -m eval
+
+# ─── Demo (gravação do vídeo) ────────────────────────────────────────────────
+
+demo: ## Sobe o stack completo para gravação do vídeo
+	docker compose up --build -d
+	@echo "Aguardando serviços..."
+	@sleep 5
+	@docker compose ps
+	@echo ""
+	@echo "Frontend: http://localhost:3000"
+	@echo "API docs: http://localhost:8000/docs"
+
+demo-down: ## Para e remove os containers da demo
+	docker compose down
 
 # ─── Docker (experiência completa) ───────────────────────────────────────────
 

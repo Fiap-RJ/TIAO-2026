@@ -1,6 +1,7 @@
 services:
   # ─────────────────────────────────────────
   # Backend: FastAPI + LangGraph + FAISS
+  # Entrypoint gera o índice FAISS se ausente, depois sobe o uvicorn.
   # ─────────────────────────────────────────
   backend:
     build:
@@ -16,33 +17,15 @@ services:
       - GENERA_FAISS_PATH=/app/faiss_index
       - GENERA_DB_PATH=/app/data/history.db
     volumes:
-      - faiss_data:/app/faiss_index
-      - history_data:/app/data
+      - ./faiss_index:/app/faiss_index
+      - ./data:/app/data
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 15s
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
     restart: unless-stopped
-
-  # ─────────────────────────────────────────
-  # Seed: Popula o banco vetorial FAISS
-  # ─────────────────────────────────────────
-  seed:
-    build:
-      context: .
-      dockerfile: src/backend/Dockerfile
-    container_name: genera_seed
-    env_file:
-      - src/backend/.env
-    environment:
-      - GENERA_DATA_PATH=/data/proposta_estrutura_de_dados.json
-      - GENERA_FAISS_PATH=/app/faiss_index
-    volumes:
-      - faiss_data:/app/faiss_index
-    command: ["python", "-m", "services.vector_store"]
-    restart: "no"
 
   # ─────────────────────────────────────────
   # Frontend: React + Nginx (proxy reverso)
@@ -58,7 +41,3 @@ services:
       backend:
         condition: service_healthy
     restart: unless-stopped
-
-volumes:
-  faiss_data:
-  history_data:
