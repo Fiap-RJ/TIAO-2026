@@ -1,15 +1,19 @@
 import { useId, useState } from 'react';
-import { getRiskLevel } from './riskLevelMap';
+import { getRiskLevel, getRiskLevelPorNivel } from './riskLevelMap';
 
 /**
  * RiskCard — card de uma característica genética (A2).
  * Exibe característica, nível neutro e conclusão curta; o botão "ver detalhes"
  * expande a explicação detalhada e as recomendações.
+ * O nível vem de `risco.nivel` (normalizado pelo backend); só se ausente cai no
+ * mapeamento por `categoria_impacto`.
  */
 export default function RiskCard({ risco }) {
   const [aberto, setAberto] = useState(false);
   const detalhesId = useId();
-  const { label, badgeClasses } = getRiskLevel(risco.categoria_impacto);
+  const { label, badgeClasses } = risco.nivel
+    ? getRiskLevelPorNivel(risco.nivel)
+    : getRiskLevel(risco.categoria_impacto);
 
   return (
     <article className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">

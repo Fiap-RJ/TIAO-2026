@@ -1,11 +1,23 @@
 import { describe, it, expect } from 'vitest';
 import {
   getRiskLevel,
+  getRiskLevelPorNivel,
   CATEGORIA_PARA_NIVEL,
   NIVEIS,
 } from './riskLevelMap';
 
 describe('riskLevelMap', () => {
+  it('getRiskLevelPorNivel usa o nível normalizado do backend', () => {
+    expect(getRiskLevelPorNivel('baixo')).toBe(NIVEIS.baixo);
+    expect(getRiskLevelPorNivel('moderado')).toBe(NIVEIS.moderado);
+    expect(getRiskLevelPorNivel('atencao')).toBe(NIVEIS.atencao);
+  });
+
+  it('getRiskLevelPorNivel cai em "moderado" para níveis desconhecidos', () => {
+    expect(getRiskLevelPorNivel('alto').nivel).toBe('moderado');
+    expect(getRiskLevelPorNivel(undefined).nivel).toBe('moderado');
+  });
+
   it('mapeia as categorias conhecidas do laudo para níveis neutros', () => {
     expect(getRiskLevel('Cuidados relevantes').nivel).toBe('baixo');
     expect(getRiskLevel('Pontos de atenção').nivel).toBe('moderado');

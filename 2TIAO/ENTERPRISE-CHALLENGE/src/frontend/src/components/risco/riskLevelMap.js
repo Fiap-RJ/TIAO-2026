@@ -47,3 +47,11 @@ export function getRiskLevel(categoriaImpacto) {
   const nivel = CATEGORIA_PARA_NIVEL[categoriaImpacto] ?? 'moderado';
   return NIVEIS[nivel];
 }
+
+/**
+ * Retorna o descritor de nível a partir do `nivel` já normalizado pelo backend
+ * (baixo / moderado / atencao). Valores desconhecidos caem em "moderado".
+ */
+export function getRiskLevelPorNivel(nivel) {
+  return NIVEIS[nivel] ?? NIVEIS.moderado;
+}

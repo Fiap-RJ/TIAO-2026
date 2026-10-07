@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import logoGenera from '../../assets/logo-genera.png';
 import { usePacienteId } from '../../hooks/usePacienteId';
+import { postChat } from '../../services/api';
 import MessageBubble from './MessageBubble';
 
 /**
  * ChatWindow — interface de chat com o agente (A5).
- * Extraído do App.jsx original, mantendo o comportamento 1:1: envio de
- * mensagem, upload de PDF (mock) e exibição de fontes. Usa usePacienteId em
- * vez do id hardcoded e MessageBubble para renderizar as mensagens.
+ * Envia as perguntas via `postChat` (modo resumido por padrão). Cada resposta
+ * resumida guarda a pergunta de origem e oferece "Quero mais detalhes", que
+ * reenvia a mesma pergunta com `nivelDetalhe: 'detalhado'` (M1.2).
+ * O upload de PDF ainda é simulado; o upload real chega com o ETL (E-ETL6).
  */
 export default function ChatWindow() {
   const pacienteId = usePacienteId();
@@ -15,43 +17,27 @@ export default function ChatWindow() {
   const [inputUsuario, setInputUsuario] = useState('');
   const [carregando, setCarregando] = useState(false);
 
-  const enviarMensagem = async () => {
-    if (!inputUsuario) return;
-
-    const novaMensagemPaciente = { remetente: 'paciente', texto: inputUsuario };
-    setMensagens((msgsAntigas) => [...msgsAntigas, novaMensagemPaciente]);
-    setInputUsuario('');
+  const perguntarAoAgente = async (pergunta, nivelDetalhe) => {
     setCarregando(true);
-
     try {
-      const resposta = await fetch('/api/chat/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({
-          paciente_id: pacienteId,
-          mensagem: novaMensagemPaciente.texto,
-        }),
+      const dadosIA = await postChat({
+        pacienteId,
+        mensagem: pergunta,
+        nivelDetalhe,
       });
-
-      if (!resposta.ok) {
-        throw new Error('Falha na comunicação com a API do servidor');
-      }
-
-      const dadosIA = await resposta.json();
 
       const novaMensagemIA = {
         remetente: 'ia',
-        texto:
-          dadosIA.resposta ||
-          dadosIA.texto ||
-          'Resposta recebida, mas formato inesperado.',
+        texto: dadosIA.resposta || 'Resposta recebida, mas formato inesperado.',
         fontes: dadosIA.fontes || [],
+        painelUtilizado: dadosIA.painel_utilizado,
+        guardrailsAcionados: dadosIA.guardrails_acionados || [],
+        perguntaOrigem: pergunta,
+        nivelDetalhe,
       };
 
       setMensagens((msgsAntigas) => [...msgsAntigas, novaMensagemIA]);
+      return true;
     } catch (erro) {
       console.error('Erro detalhado na requisição:', erro);
       const mensagemErro = {
@@ -61,8 +47,41 @@ export default function ChatWindow() {
         fontes: [],
       };
       setMensagens((msgsAntigas) => [...msgsAntigas, mensagemErro]);
+      return false;
     } finally {
       setCarregando(false);
+    }
+  };
+
+  const enviarMensagem = async () => {
+    if (!inputUsuario || carregando) return;
+
+    const pergunta = inputUsuario;
+    setMensagens((msgsAntigas) => [
+      ...msgsAntigas,
+      { remetente: 'paciente', texto: pergunta },
+    ]);
+    setInputUsuario('');
+    await perguntarAoAgente(pergunta, 'resumido');
+  };
+
+  // Reenvia a pergunta de origem no modo detalhado. O botão só some da
+  // mensagem resumida quando o pedido detalhado dá certo; se falhar, continua
+  // disponível para nova tentativa (enquanto carrega, fica desabilitado).
+  const pedirDetalhes = async (indice) => {
+    const mensagem = mensagens[indice];
+    if (!mensagem?.perguntaOrigem || carregando) return;
+
+    const sucesso = await perguntarAoAgente(
+      mensagem.perguntaOrigem,
+      'detalhado',
+    );
+    if (sucesso) {
+      setMensagens((msgsAntigas) =>
+        msgsAntigas.map((m, i) =>
+          i === indice ? { ...m, detalhesSolicitados: true } : m,
+        ),
+      );
     }
   };
 
@@ -101,6 +120,17 @@ export default function ChatWindow() {
               remetente={msg.remetente}
               texto={msg.texto}
               fontes={msg.fontes}
+              painelUtilizado={msg.painelUtilizado}
+              guardrailsAcionados={msg.guardrailsAcionados}
+              onPedirDetalhes={
+                msg.remetente === 'ia' &&
+                  msg.nivelDetalhe === 'resumido' &&
+                  msg.perguntaOrigem &&
+                  !msg.detalhesSolicitados
+                  ? () => pedirDetalhes(index)
+                  : undefined
+              }
+              desabilitarDetalhes={carregando}
             />
           ))
         )}
