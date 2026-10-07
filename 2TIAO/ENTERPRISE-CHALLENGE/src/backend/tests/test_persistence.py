@@ -124,12 +124,14 @@ class TestSQLiteRepository:
 class TestPostgresRepository:
     """Tests for Postgres implementation (mocked)."""
 
+    @pytest.mark.requires_api_key
     def test_postgres_repo_requires_psycopg2(self):
         """Test that Postgres repo raises ImportError if psycopg2 is missing."""
         with patch("services.persistence.postgres_repo.psycopg2", side_effect=ImportError):
             with pytest.raises(ImportError, match="psycopg2-binary"):
                 PostgresHistoryRepository("postgresql://localhost/test")
 
+    @pytest.mark.requires_api_key
     def test_postgres_repo_initialization_with_url(self):
         """Test Postgres repo accepts connection string."""
         # Just test that it doesn't raise during init with valid URL format
@@ -141,6 +143,7 @@ class TestPostgresRepository:
             # psycopg2 might not be installed in test env
             pytest.skip("psycopg2-binary not installed")
 
+    @pytest.mark.requires_api_key
     def test_postgres_insert_mock(self):
         """Test Postgres insert with mocked connection."""
         try:
