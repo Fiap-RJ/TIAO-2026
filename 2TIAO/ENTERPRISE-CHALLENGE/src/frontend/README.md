@@ -29,25 +29,18 @@ src/
 │   ├── historico/          # HistoryList (paginação client-side)
 │   ├── chat/               # ChatWindow + MessageBubble
 │   └── feedback/           # LoadingState, EmptyState, ErrorState
-├── services/api.js         # client único de API (mock -> real)
-├── mocks/                  # dados mockados enquanto os endpoints M1–M4 não existem
+├── services/api.js         # client único de API (backend real)
+├── test/fixtures/          # respostas reais do backend usadas nos testes
 └── hooks/usePacienteId.js  # centraliza o paciente_id
 ```
 
-## Camada de dados (mock → real)
+## Camada de dados
 
-Os endpoints do backend (riscos, ancestralidade, histórico — tarefas M1–M4) ainda
-não existem. Enquanto isso, `services/api.js` lê de `src/mocks/` com a flag
-`USE_MOCKS = true`. Cada função já segue o contrato de API esperado, então trocar
-para os endpoints reais é só virar a flag para `false` — os componentes não mudam.
-
-### Ancestralidade: dados ilustrativos
-
-A fonte estruturada (`proposta_estrutura_de_dados.json`) **não contém dados de
-ancestralidade**. Conforme alinhado com o time, a tela de ancestralidade usa dados
-fictícios (marcados com `ilustrativo: true` no mock e com aviso visível na UI),
-apenas para demonstrar a visualização. O ponto de troca para o dado real fica
-isolado em `services/api.js`.
+`services/api.js` consome o backend real (`/api/riscos`, `/api/ancestralidade`,
+`/api/historico`, `/api/chat/`) e adapta o contrato do servidor ao formato das
+páginas. A base da URL vem de `VITE_API_BASE_URL`; vazio = caminhos relativos
+(proxy do vite em dev, nginx no container). Os testes usam `fetch` mockado com
+fixtures em `src/test/fixtures/`, copiadas de respostas reais do backend.
 
 ## Comunicação responsável
 

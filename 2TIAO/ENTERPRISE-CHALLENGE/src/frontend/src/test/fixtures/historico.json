@@ -1,0 +1,59 @@
+{
+  "paciente_id": "uuid-123",
+  "interacoes": [
+    {
+      "id": 2,
+      "paciente_id": "uuid-123",
+      "pergunta": "QUal meu maior risco genetico? ",
+      "resposta": "Com base no seu laudo, ao analisarmos as informações disponíveis, identificamos dois pontos principais de atenção:\n\n**1. Sobre a sua saúde óssea (Painel Genera Fit):**\nO seu laudo indica uma predisposição para uma menor densidade óssea. Pense nos seus ossos como a estrutura de uma construção: esta variação genética sugere que a \"estrutura\" pode precisar de um pouco mais de suporte para se manter forte ao longo do tempo. Por isso, é muito importante monitorar os níveis de cálcio e vitamina D, além de manter a prática de atividades físicas adequadas, sempre com orientação profissional.\n\n**2. Sobre a sua pele (Painel Genera Skin):**\nIdentificamos uma predisposição para o desenvolvimento de acne, associada ao marcador rs7531806 em homozigose (duas cópias do alelo A). Imagine que a sua pele possui uma tendência natural a reagir de forma mais intensa a estímulos, o que pode facilitar o surgimento de cravos e espinhas. A genética é apenas uma parte da história; fatores como rotina de limpeza, hidratação e alimentação desempenham um papel fundamental no controle dessa característica.\n\n**3. Sobre o risco de câncer de mama (Painel de Saúde):**\nO seu laudo aponta um risco calculado de 6.01% para câncer de mama, classificado como \"risco aumentado\" dentro da escala apresentada. É importante esclarecer que este é um dado estatístico baseado em marcadores genéticos (como o SNP rs7902587). Isso não significa que você desenvolverá a condição, mas sim que este é um ponto que merece atenção especial no seu histórico de saúde e acompanhamento médico preventivo.\n\n**Considerações finais:**\nNão é possível definir qual desses pontos é o \"maior\" risco, pois eles pertencem a categorias diferentes (saúde óssea, dermatologia e saúde sistêmica). O mais importante é que você utilize essas informações como um guia para o seu autocuidado e para conversas mais produtivas com seus médicos.\n\n⚠️ **Importante:** Este assistente é puramente informativo e não substitui uma consulta médica. Os dados genéticos indicam predisposições, não certezas. Recomendamos fortemente que você consulte um médico geneticista ou especialista clínico para correlacionar esses achados com seu histórico pessoal e familiar.\n\n⚠️ **Nota sobre Risco Poligênico:** Os percentuais apresentados representam uma estimativa estatística baseada em estudos populacionais. Fatores ambientais, estilo de vida e histórico familiar são igualmente determinantes. Um risco \"aumentado\" não significa que a condição se manifestará.",
+      "fontes": [
+        {
+          "painel": "Escala de Risco Genético",
+          "marcador": "Câncer de mama",
+          "gene": "Intergênico",
+          "conclusao_curta": "Risco aumentado — 6.01%"
+        },
+        {
+          "painel": "Genera Fit",
+          "marcador": "Densidade óssea (força dos ossos)",
+          "gene": "WNT16",
+          "conclusao_curta": "Predisposição para menor densidade óssea"
+        },
+        {
+          "painel": "Genera Skin",
+          "marcador": "Acne",
+          "gene": "SELL",
+          "conclusao_curta": "Maior predisposição para desenvolver acne"
+        }
+      ],
+      "criado_em": "2026-08-22T02:13:46.273976+00:00"
+    },
+    {
+      "id": 3,
+      "paciente_id": "uuid-123",
+      "pergunta": "Como eu metabolizo a cafeina?",
+      "resposta": "O seu laudo indica que você possui um metabolismo lento para a cafeína. Pense no seu corpo como um filtro que processa essa substância de forma mais gradual; por isso, o efeito do café ou de pré-treinos pode durar mais tempo em você.\n\n**O que fazer:** Tente limitar o consumo a 1 ou 2 xícaras por dia e evite ingerir cafeína após as 16h para não prejudicar a qualidade do seu sono ou causar desconfortos como ansiedade.\n\n⚠️ Importante: Este assistente é informativo e não substitui consulta médica. A genética indica tendências, não certezas.\n\nVocê quer que eu explique com mais detalhes?",
+      "fontes": [
+        {
+          "painel": "Genera Nutri",
+          "marcador": "Sensibilidade à Cafeína",
+          "gene": "CYP1A2",
+          "conclusao_curta": "Metabolismo lento de cafeína"
+        },
+        {
+          "painel": "Genera Farma",
+          "marcador": "Sensibilidade ao Omeprazol",
+          "gene": "CYP2C19",
+          "conclusao_curta": "Metabolizador ultrarrápido"
+        },
+        {
+          "painel": "Genera Fit",
+          "marcador": "Densidade óssea (força dos ossos)",
+          "gene": "WNT16",
+          "conclusao_curta": "Predisposição para menor densidade óssea"
+        }
+      ],
+      "criado_em": "2026-10-06T23:43:41.737336+00:00"
+    }
+  ]
+}
