@@ -1,4 +1,5 @@
 import uuid
+import os
 from fastapi import FastAPI, UploadFile, File
 from paddleocr import PaddleOCR
 import numpy as np
@@ -7,8 +8,13 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from pdf2image import convert_from_bytes
 
-DATA_DIR = Path("/data/results")
-DATA_DIR.mkdir(parents=True, exist_ok=True)
+# In-memory processing by default; only write to disk if DEBUG=true
+DEBUG = os.getenv("DEBUG", "false").lower() == "true"
+
+DATA_DIR = None
+if DEBUG:
+    DATA_DIR = Path("/data/results")
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 ocr = None
 ready = False
@@ -20,6 +26,7 @@ async def lifespan(app: FastAPI):
 
     ocr = PaddleOCR(use_angle_cls=True, lang="pt")
     ready = True
+    print("✓ PaddleOCR initialized and ready")
 
     yield
 
@@ -68,9 +75,12 @@ async def ocr_file(file: UploadFile = File(...)):
         return {"error": f"Tipo de arquivo não suportado: {ext}"}
 
     request_id = str(uuid.uuid4())
-    output_file = DATA_DIR / f"{request_id}.txt"
 
-    with open(output_file, "w", encoding="utf-8") as f:
-        f.write("\n".join(all_texts))
+    # Only write to disk if DEBUG mode is enabled
+    if DEBUG and DATA_DIR:
+        output_file = DATA_DIR / f"{request_id}.txt"
+        with open(output_file, "w", encoding="utf-8") as f:
+            f.write("\n".join(all_texts))
 
     return {"request_id": request_id, "lines": len(all_texts), "texts": all_texts}
+
