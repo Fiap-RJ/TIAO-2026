@@ -1,4 +1,5 @@
 # Script — Vídeo de Apresentação Sprint 4
+
 **Genera Intelligence · Challenge Dasa · 2TIAO**  
 Duração alvo: **≤ 5 minutos** | Formato: narração humana, sem cortes longos
 
@@ -9,14 +10,14 @@ Duração alvo: **≤ 5 minutos** | Formato: narração humana, sem cortes longo
 | # | Cena | Tela | Tempo |
 |---|------|------|-------|
 | 1 | Abertura | Slide ou terminal | 0:00 – 0:20 |
-| 2 | Stack rodando local | Terminal — `make demo` | 0:20 – 0:50 |
-| 3 | Dashboard de Riscos | Browser :3000 | 0:50 – 1:25 |
-| 4 | Chat conversacional | Página Chat | 1:25 – 2:30 |
-| 5 | Histórico de Interações | Página Histórico | 2:30 – 2:50 |
-| 6 | Monitoramento de Pipeline | `/metrics/` no browser | 2:50 – 3:20 |
-| 7 | Governança e LGPD | Arquivo de governança / código | 3:20 – 4:00 |
-| 8 | CI e Automações | GitHub Actions | 4:00 – 4:30 |
-| 9 | Encerramento | Slide ou terminal | 4:30 – 4:55 |
+| 2 | Deploy local (make demo) | Terminal com output | 0:20 – 1:00 |
+| 3 | render.yaml overview | Editor + explicação | 1:00 – 1:30 |
+| 4 | GitHub Actions CI | GitHub UI — workflow runs | 1:30 – 2:00 |
+| 5 | Dashboard de Riscos | Browser :3000 | 2:00 – 2:30 |
+| 6 | Chat conversacional | Página Chat | 2:30 – 3:30 |
+| 7 | Monitoramento (/metrics) | `/metrics/` endpoint + dashboard | 3:30 – 4:00 |
+| 8 | Governança e LGPD | Arquivo de governança | 4:00 – 4:30 |
+| 9 | Encerramento | Slide ou terminal | 4:30 – 5:00 |
 
 ---
 
@@ -33,88 +34,98 @@ Duração alvo: **≤ 5 minutos** | Formato: narração humana, sem cortes longo
 
 ---
 
-### CENA 2 — Stack subindo (0:20 – 0:50)
+### CENA 2 — Deploy local (0:20 – 1:00)
 **Tela:** Terminal. Rodar `make demo` ao vivo.
 
-> "Para subir o ambiente completo, basta um único comando: `make demo`.
-> O Docker Compose constrói as imagens do backend em FastAPI e do frontend em React, e o entrypoint do backend gera automaticamente o índice vetorial FAISS na primeira execução — sem precisar de nenhum passo manual.
-> Em segundos temos o backend saudável na porta 8000 e o frontend na porta 3000."
+> "Para subir o ambiente completo localmente, basta um único comando: `make demo`.
+> O Docker Compose orquestra três containers: backend em FastAPI na porta 8000, frontend em React na porta 3000, e opcionalmente o PaddleOCR na porta 8001.
+> O entrypoint do backend gera automaticamente o índice vetorial FAISS na primeira execução — sem passos manuais.
+> Veja o terminal: em poucos segundos todos os serviços estão saudáveis."
 
-*[Mostrar o output do terminal com os dois containers `(healthy)`.]*
+*[Mostrar o output do terminal com status `(healthy)` para backend, frontend e paddle-ocr.]*
+
+> "Agora temos um ambiente de produção completo rodando localmente — pronto para gravar o vídeo, pronto para deploy na nuvem."
 
 ---
 
-### CENA 3 — Dashboard de Riscos (0:50 – 1:25)
+### CENA 3 — Infrastructure-as-Code: render.yaml (1:00 – 1:30)
+**Tela:** Abrir `render.yaml` em um editor.
+
+> "Quando levamos isso para a nuvem via Render, a estrutura é definida em Infrastructure-as-Code através do `render.yaml`.
+> Aqui definimos os três serviços: backend, frontend e paddle-ocr — com seus ports, healthchecks, volumes persistentes e variáveis de ambiente.
+> Render lê este arquivo automaticamente quando você conecta seu GitHub, provisiona os recursos e inicia o deploy — sem cliques na UI."
+
+*[Navegar pelo arquivo mostrando os três serviços `genera-backend`, `genera-frontend`, `genera-paddle-ocr`.]*
+
+> "Cada serviço tem um `healthCheck` configurado — Render monitora a saúde e reinicia se necessário. Os discos persistentes garantem que o índice FAISS não é perdido em um redeploy."
+
+---
+
+### CENA 4 — CI/CD: GitHub Actions (1:30 – 2:00)
+**Tela:** GitHub → Actions tab mostrando workflows.
+
+> "Antes de qualquer deploy, o código passa por validação contínua via GitHub Actions.
+> Temos dois workflows: um de **push** que roda lint com Ruff e os testes automaticamente a cada commit, e outro de **avaliação manual** que executa o LLM-as-a-Judge com casos de teste reais e salva o relatório."
+
+*[Mostrar o histórico de runs, com ✓ (verde) para runs bem-sucedidos.]*
+
+> "Isso garante que qualquer código que chegue à branch main passou por rigor técnico — linting, testes unitários e validação de qualidade do modelo."
+
+---
+
+### CENA 5 — Dashboard de Riscos (2:00 – 2:30)
 **Tela:** Browser em `http://localhost:3000`. Navegar para a seção de Riscos.
 
-> "Aqui está o dashboard. A primeira seção mostra os riscos genéticos do paciente organizados por painel — Genera Nutri, Genera Fit, Genera Skin e outros.
-> Cada marcador traz o gene envolvido, a classificação normalizada em três níveis — baixo, moderado e atenção — e a conclusão do laudo em linguagem acessível.
-> Nenhum dado é inventado: tudo vem do JSON estruturado do laudo Genera, servido pelo backend em tempo real."
+> "Aqui está o dashboard do paciente. A primeira seção mostra seus riscos genéticos por painel — Genera Nutri, Fit, Skin e outros.
+> Cada marcador traz o gene, a classificação em três níveis — baixo, moderado, atenção — e a interpretação do laudo em linguagem clara.
+> Sem dados inventados: tudo vem do JSON estruturado do laudo Genera, servido pelo backend em tempo real."
 
-*[Rolar a página mostrando alguns cards de risco.]*
+*[Rolar mostrando alguns cards de risco.]*
 
 ---
 
-### CENA 4 — Chat conversacional (1:25 – 2:30)
-**Tela:** Página de Chat do frontend. Digitar a primeira pergunta.
+### CENA 6 — Chat conversacional (2:30 – 3:30)
+**Tela:** Página de Chat do frontend.
 
-> "O coração do produto é o chat. Vou fazer uma pergunta real."
+> "O coração do produto é o chat. Vou fazer uma pergunta."
 
 *[Digitar: `"O que significa eu metabolizar a cafeína de forma lenta?"`]*
 
-> "O agente usa RAG — Retrieval-Augmented Generation — para buscar os trechos relevantes do laudo no FAISS e gerar uma resposta fundamentada.
-> Veja: a resposta está em linguagem simples, dentro do limite de palavras configurado para o modo resumido, e termina sempre com o disclaimer obrigatório indicando que o assistente é informativo e não substitui consulta médica."
+> "O agente usa RAG — Retrieval-Augmented Generation — para buscar trechos relevantes do laudo no FAISS e gerar uma resposta fundamentada, em linguagem simples, com disclaimer obrigatório."
 
-*[Mostrar a resposta com o disclaimer visível.]*
+*[Mostrar resposta com disclaimer.]*
 
-> "Vou fazer uma segunda pergunta para testar um guardrail."
+> "Agora vou testar um guardrail — uma pergunta que toca em conduta terapêutica."
 
 *[Digitar: `"Posso tomar Omeprazol?"`]*
 
-> "Quando a pergunta envolve conduta terapêutica — prescrição, automedicação — o guardrail de segurança é acionado. O agente recusa a resposta e orienta o paciente a procurar um médico. Esse mecanismo está registrado no campo `guardrails_acionados` da resposta."
+> "O guardrail de segurança bloqueia a resposta e orienta o paciente a consultar um médico. Este mecanismo é rastreado no campo `guardrails_acionados`."
 
 ---
 
-### CENA 5 — Histórico de Interações (2:30 – 2:50)
-**Tela:** Navegar para a página de Histórico.
+### CENA 7 — Monitoramento e Métricas (3:30 – 4:00)
+**Tela:** Navegar para `http://localhost:8000/metrics` (ou seção de Monitoramento no dashboard).
 
-> "Todo diálogo é persistido em SQLite e pode ser consultado na tela de histórico.
-> Isso fecha o requisito de rastreabilidade — cada interação tem timestamp, paciente ID e o painel genético utilizado na resposta."
+> "Para operação em produção, temos um endpoint de métricas que agrega dados do pipeline em tempo real.
+> Aqui vemos: total de requisições processadas, latência média, taxa de bloqueio dos guardrails, e últimas violações.
+> Essas métricas alimentam o dashboard de monitoramento — permitindo à equipe acompanhar a saúde do sistema sem abrir logs."
 
----
-
-### CENA 6 — Monitoramento de Pipeline (2:50 – 3:20)
-**Tela:** Navegar para a seção de Monitoramento no dashboard (ou abrir `http://localhost:3000/metrics/` no browser).
-
-> "Para operação em produção, implementamos um endpoint de métricas que agrega dados do pipeline em tempo real.
-> Aqui vemos o total de requisições processadas, a latência média, a taxa de bloqueio dos guardrails e as últimas violações registradas.
-> Essas métricas alimentam o dashboard de monitoramento do frontend, permitindo acompanhar a saúde do sistema sem precisar abrir logs."
+*[Mostrar JSON com métricas ou gráficos do dashboard.]*
 
 ---
 
-### CENA 7 — Governança e LGPD (3:20 – 4:00)
+### CENA 8 — Governança e LGPD (4:00 – 4:30)
 **Tela:** Abrir `document/governanca_e_riscos.md` no editor ou no GitHub.
 
-> "A governança de IA é documentada na nossa Política de Governança, que cobre três eixos.
+> "A governança de IA é crítica. Nossa política cobre LGPD — base legal, finalidade, minimização de dados — o sistema não armazena o laudo, só o histórico de chat e com direito de exclusão via API.
 >
-> Primeiro, LGPD: base legal, finalidade, minimização de dados — o sistema não armazena o laudo, só o histórico de chat — e o direito de exclusão implementado via `DELETE /api/historico/{paciente_id}`.
+> Logging estruturado: cada requisição gera um log JSON com latência por nó do grafo — sanitize, retrieve, generate, guardrail — sem PII.
 >
-> Segundo, logging estruturado: cada requisição gera um log JSON com request ID, latência por nó do grafo — sanitize, retrieve, generate, guardrail — e violações registradas sem PII.
->
-> Terceiro, explicabilidade: toda resposta do chat informa o painel especialista usado, as fontes recuperadas e os guardrails acionados, tornando o raciocínio do agente auditável."
+> Explicabilidade: toda resposta informa o painel especialista usado, as fontes recuperadas e guardrails acionados, tornando o agente auditável."
 
 ---
 
-### CENA 8 — CI e Automações (4:00 – 4:30)
-**Tela:** Aba do GitHub Actions ou arquivo `.github/workflows/`.
-
-> "Para automação, configuramos o GitHub Actions com dois workflows.
-> O workflow de push roda lint com Ruff e o conjunto de testes a cada commit.
-> O workflow de avaliação — que também pode ser disparado manualmente — executa o LLM-as-a-Judge com 30 casos de teste e salva o relatório comparativo em `document/evidencias/`, permitindo rastrear a evolução da qualidade do modelo sprint a sprint."
-
----
-
-### CENA 9 — Encerramento (4:30 – 4:55)
+### CENA 9 — Encerramento (4:30 – 5:00)
 **Tela:** Voltar para o dashboard ou slide final.
 
 > "O Genera Intelligence entrega o que a Sprint 4 pede: um produto em produção, monitorável, rastreável e responsável.

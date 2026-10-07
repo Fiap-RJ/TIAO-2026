@@ -1,0 +1,19 @@
+{
+  "name": "enterprise-challenge",
+  "version": "1.0.0",
+  "description": "<p align=\"center\"> <a href= \"https://www.fiap.com.br/\"><img src=\"assets/logo-fiap.png\" alt=\"FIAP - Faculdade de Informática e Administração Paulista\" border=\"0\" width=40% height=40%></a> </p>",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "markdownlint-cli": "^0.49.1"
+  }
+}

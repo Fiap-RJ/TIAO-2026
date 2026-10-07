@@ -130,3 +130,83 @@ mas não derruba a resposta ao usuário.
 - Banco criado automaticamente no primeiro uso — sem migração manual.
 - Caminho configurável via `GENERA_DB_PATH` (padrão: `data/history.db`, não versionado — ver `.gitignore` na raiz do repositório).
 - Ver `document/governanca_e_riscos.md` (§3.3, R9) para a justificativa LGPD e as limitações conhecidas dessa persistência.
+
+## Variáveis de Ambiente
+
+Todas as configurações são controladas via variáveis de ambiente carregadas do arquivo `.env` (template: `.env.example`).
+O sistema suporta múltiplos providers de LLM, embeddings, OCR e persistência — selecionáveis via env vars.
+
+### Providers e Modelos
+
+| Variável | Padrão | Descrição |
+|----------|--------|-----------|
+| `LLM_PROVIDER` | `gemini` | Provider do LLM: `gemini` ou `openai` |
+| `LLM_MODEL` | vazio | Modelo específico (vazio = usa default do provider) |
+| `EMBEDDINGS_PROVIDER` | `gemini` | Provider de embeddings: `gemini` ou `openai` |
+| `EMBEDDINGS_MODEL` | vazio | Modelo de embeddings (vazio = usa default) |
+| `JUDGE_PROVIDER` | vazio | Provider do juiz (LLM-as-a-Judge); vazio = usa `LLM_PROVIDER` |
+| `JUDGE_MODEL` | vazio | Modelo do juiz (vazio = usa default do `JUDGE_PROVIDER`) |
+
+### Google Gemini
+
+| Variável | Exemplo | Descrição |
+|----------|---------|-----------|
+| `GOOGLE_API_KEY` | (secret) | Chave API do Google Gemini (obrigatória se `LLM_PROVIDER=gemini`) |
+| `GEMINI_MODEL` | `gemini-3.1-flash-lite` | Modelo Gemini de geração |
+| `GEMINI_EMBEDDING_MODEL` | `models/gemini-embedding-001` | Modelo Gemini de embeddings |
+
+### OpenAI
+
+| Variável | Exemplo | Descrição |
+|----------|---------|-----------|
+| `OPENAI_API_KEY` | (secret) | Chave API da OpenAI (obrigatória se `LLM_PROVIDER=openai`) |
+| `OPENAI_MODEL` | `gpt-4o-mini` | Modelo OpenAI de geração |
+| `OPENAI_EMBEDDING_MODEL` | `text-embedding-3-small` | Modelo OpenAI de embeddings |
+
+### Parâmetros do LLM
+
+| Variável | Padrão | Descrição |
+|----------|--------|-----------|
+| `LLM_TEMPERATURE` | `0.3` | Temperatura (0.0–1.0): menor = mais determinístico |
+| `LLM_MAX_TOKENS` | `2048` | Máximo de tokens na resposta |
+
+### Chat: Limites por Nível de Detalhe
+
+| Variável | Padrão | Descrição |
+|----------|--------|-----------|
+| `CHAT_MAX_TOKENS_RESUMIDO` | `400` | Máximo de tokens para modo resumido |
+| `CHAT_MAX_TOKENS_DETALHADO` | `1200` | Máximo de tokens para modo detalhado |
+| `CHAT_MAX_PALAVRAS_RESUMIDO` | `120` | Máximo de palavras para modo resumido |
+
+### RAG
+
+| Variável | Padrão | Descrição |
+|----------|--------|-----------|
+| `RETRIEVER_K` | `3` | Número de documentos recuperados do FAISS por query |
+
+### OCR (ETL)
+
+| Variável | Padrão | Descrição |
+|----------|--------|-----------|
+| `OCR_PROVIDER` | `paddle_local` | Provider de OCR: `paddle_local` (HTTP local) ou `textract` (AWS) |
+| `OCR_TOKEN` | (vazio) | Bearer token para autenticação do endpoint `/api/ocr/` |
+| `TEXTRACT_REGION` | `us-east-1` | Região AWS Textract (ignorada se `OCR_PROVIDER != textract`) |
+| `AWS_ACCESS_KEY_ID` | (vazio) | Credencial AWS (ignorada se `OCR_PROVIDER != textract`) |
+| `AWS_SECRET_ACCESS_KEY` | (vazio) | Credencial AWS (ignorada se `OCR_PROVIDER != textract`) |
+
+### Persistência: Camada de Dados
+
+| Variável | Padrão | Descrição |
+|----------|--------|-----------|
+| `DB_TYPE` | `sqlite` | Tipo de banco: `sqlite` ou `postgres` |
+| `DATABASE_URL` | (vazio) | Connection string Postgres (ex: `postgresql://user:pass@host/db`); obrigatório se `DB_TYPE=postgres` |
+| `GENERA_DB_PATH` | `data/history.db` | Caminho do arquivo SQLite (usado se `DB_TYPE=sqlite`) |
+
+### Caminhos de Dados
+
+| Variável | Padrão | Descrição |
+|----------|--------|-----------|
+| `GENERA_DATA_PATH` | `proposta_estrutura_de_dados.json` | Caminho do JSON estruturado de dados genéticos |
+| `GENERA_FAISS_PATH` | `faiss_index/` | Diretório do índice FAISS |
+
+Consulte `.env.example` para o template completo com comentários de cada variável.
