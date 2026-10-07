@@ -2,6 +2,7 @@
 
 from fastapi import APIRouter
 
+from api.params import PacienteIdPath
 from domain.schemas import DoencaRisco, NivelRisco, PainelRisco, ResultadoRisco, RiscosResponse
 from services.report_data import carregar_relatorio
 
@@ -29,6 +30,22 @@ def _classificar(categoria: str | None, mapa: dict[str, NivelRisco]) -> NivelRis
 @router.get("/", response_model=RiscosResponse)
 async def obter_riscos() -> RiscosResponse:
     """Retorna os riscos por painel e a escala de risco poligênico, com nível normalizado."""
+    return _montar_riscos(None)
+
+
+# `:path` faz IDs com "/" (ex.: "..%2F..") chegarem à validação (422), em vez de 404.
+@router.get("/{paciente_id:path}", response_model=RiscosResponse)
+async def obter_riscos_paciente(paciente_id: PacienteIdPath) -> RiscosResponse:
+    """Riscos do paciente informado.
+
+    Nesta fase devolve o laudo de DEMONSTRAÇÃO ecoando o `paciente_id` pedido;
+    a troca para o laudo do próprio paciente vem com o ETL de laudos.
+    """
+    return _montar_riscos(paciente_id)
+
+
+def _montar_riscos(paciente_id: str | None) -> RiscosResponse:
+    """Monta a resposta de riscos a partir do laudo; `None` usa o ID do próprio laudo."""
     dados = carregar_relatorio()
 
     paineis = [
@@ -64,7 +81,7 @@ async def obter_riscos() -> RiscosResponse:
     ]
 
     return RiscosResponse(
-        paciente_id=dados.get("paciente_id", "N/A"),
+        paciente_id=paciente_id or dados.get("paciente_id", "N/A"),
         paineis=paineis,
         escala_risco_genetico=escala_risco,
     )

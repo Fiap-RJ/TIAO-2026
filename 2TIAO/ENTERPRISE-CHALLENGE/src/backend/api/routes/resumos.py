@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 
 from fastapi import APIRouter
 
+from api.params import PacienteIdPath
 from domain.schemas import ResumoInteracoesResponse, ResumoRelatorioResponse
 from services.history_store import contar_interacoes
 from services.resumo import gerar_resumo_interacoes, gerar_resumo_relatorio
@@ -12,7 +13,7 @@ router = APIRouter()
 
 
 @router.get("/relatorio/{paciente_id}", response_model=ResumoRelatorioResponse)
-async def obter_resumo_relatorio(paciente_id: str) -> ResumoRelatorioResponse:
+async def obter_resumo_relatorio(paciente_id: PacienteIdPath) -> ResumoRelatorioResponse:
     """Resumo executivo automático do relatório genético."""
     resumo = gerar_resumo_relatorio(paciente_id)
     return ResumoRelatorioResponse(
@@ -23,7 +24,7 @@ async def obter_resumo_relatorio(paciente_id: str) -> ResumoRelatorioResponse:
 
 
 @router.get("/interacoes/{paciente_id}", response_model=ResumoInteracoesResponse)
-async def obter_resumo_interacoes(paciente_id: str) -> ResumoInteracoesResponse:
+async def obter_resumo_interacoes(paciente_id: PacienteIdPath) -> ResumoInteracoesResponse:
     """Resumo automático do histórico de interações do paciente com o agente."""
     resumo = gerar_resumo_interacoes(paciente_id)
     return ResumoInteracoesResponse(
