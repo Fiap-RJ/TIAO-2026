@@ -30,3 +30,8 @@ def test_resumo_interacoes_sem_historico():
     body = response.json()
     assert body["quantidade_interacoes"] == 0
     assert "não fez" in body["resumo"].lower() or "nao fez" in body["resumo"].lower()
+
+
+def test_resumos_rejeitam_paciente_id_invalido():
+    assert client.get("/api/resumos/relatorio/id.invalido").status_code == 422
+    assert client.get("/api/resumos/interacoes/id.invalido").status_code == 422
