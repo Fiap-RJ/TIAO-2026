@@ -1,0 +1,87 @@
+{
+  "paciente_id": "uuid-123",
+  "paineis": [
+    {
+      "nome_painel": "Genera Skin",
+      "descricao": "Influência da genética nos cuidados com a pele.",
+      "resultados": [
+        {
+          "caracteristica": "Acne",
+          "nivel": "baixo",
+          "categoria_original": "Cuidados relevantes",
+          "conclusao_curta": "Maior predisposição para desenvolver acne",
+          "explicacao_detalhada": "Você possui duas cópias do alelo rs7531806-A, o que indica que você pode apresentar maior predisposição para desenvolver acne. A genética oferece uma visão sobre a predisposição, mas não é o único fator envolvido...",
+          "recomendacoes": [
+            "Fazer acompanhamento médico para indicação de tratamento",
+            "Manter rotina de cuidados com a pele e dieta adequada"
+          ],
+          "gene": "SELL"
+        }
+      ]
+    },
+    {
+      "nome_painel": "Genera Fit",
+      "descricao": "Desempenho físico e prevenção de lesões durante exercícios.",
+      "resultados": [
+        {
+          "caracteristica": "Densidade óssea (força dos ossos)",
+          "nivel": "moderado",
+          "categoria_original": "Pontos de atenção",
+          "conclusao_curta": "Predisposição para menor densidade óssea",
+          "explicacao_detalhada": "Os ossos desempenham funções muito importantes, uma vez que sustentam nosso corpo. O risco de fraturas e doenças ósseas, como a osteoporose, está relacionado a essa densidade...",
+          "recomendacoes": [
+            "Monitorar ingestão de cálcio e vitamina D",
+            "Praticar atividades físicas adequadas com supervisão"
+          ],
+          "gene": "WNT16"
+        }
+      ]
+    },
+    {
+      "nome_painel": "Genera Nutri",
+      "descricao": "Resposta do corpo a nutrientes e vitaminas.",
+      "resultados": [
+        {
+          "caracteristica": "Sensibilidade à Cafeína",
+          "nivel": "moderado",
+          "categoria_original": "Pontos de atenção",
+          "conclusao_curta": "Metabolismo lento de cafeína",
+          "explicacao_detalhada": "O seu genótipo indica uma metabolização lenta da cafeína. O consumo excessivo de café ou pré-treinos pode estar associado a um maior risco de hipertensão, ansiedade ou dificuldades no sono.",
+          "recomendacoes": [
+            "Limitar o consumo de café a 1 a 2 xícaras por dia",
+            "Evitar o consumo de cafeína após as 16h"
+          ],
+          "gene": "CYP1A2"
+        }
+      ]
+    },
+    {
+      "nome_painel": "Genera Farma",
+      "descricao": "Resposta genética a medicamentos.",
+      "resultados": [
+        {
+          "caracteristica": "Sensibilidade ao Omeprazol",
+          "nivel": "atencao",
+          "categoria_original": "Intervenção médica recomendada",
+          "conclusao_curta": "Metabolizador ultrarrápido",
+          "explicacao_detalhada": "A sua genética sugere que você metaboliza o omeprazol de forma ultrarrápida, o que pode reduzir significativamente a eficácia da dosagem padrão do medicamento no tratamento de condições gástricas.",
+          "recomendacoes": [
+            "Discutir possível ajuste de dosagem com o médico assistente",
+            "Avaliar terapias alternativas para proteção gástrica"
+          ],
+          "gene": "CYP2C19"
+        }
+      ]
+    }
+  ],
+  "escala_risco_genetico": [
+    {
+      "doenca": "Câncer de mama",
+      "nivel": "atencao",
+      "risco_calculado_percentual": 6.01,
+      "intervalo_minimo": 5.22,
+      "intervalo_maximo": 6.72,
+      "classificacao_original": "Risco aumentado"
+    }
+  ]
+}

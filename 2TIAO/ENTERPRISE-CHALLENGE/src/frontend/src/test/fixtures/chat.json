@@ -1,0 +1,25 @@
+{
+  "resposta": "O seu laudo indica que você possui um metabolismo lento para a cafeína. Pense no seu corpo como um filtro que processa essa substância de forma mais gradual; por isso, o efeito do café ou de pré-treinos pode durar mais tempo em você.\n\n**O que fazer:** Tente limitar o consumo a 1 ou 2 xícaras por dia e evite ingerir cafeína após as 16h para não prejudicar a qualidade do seu sono ou causar desconfortos como ansiedade.\n\n⚠️ Importante: Este assistente é informativo e não substitui consulta médica. A genética indica tendências, não certezas.\n\nVocê quer que eu explique com mais detalhes?",
+  "fontes": [
+    {
+      "painel": "Genera Nutri",
+      "marcador": "Sensibilidade à Cafeína",
+      "gene": "CYP1A2",
+      "conclusao_curta": "Metabolismo lento de cafeína"
+    },
+    {
+      "painel": "Genera Farma",
+      "marcador": "Sensibilidade ao Omeprazol",
+      "gene": "CYP2C19",
+      "conclusao_curta": "Metabolizador ultrarrápido"
+    },
+    {
+      "painel": "Genera Fit",
+      "marcador": "Densidade óssea (força dos ossos)",
+      "gene": "WNT16",
+      "conclusao_curta": "Predisposição para menor densidade óssea"
+    }
+  ],
+  "painel_utilizado": "Genera Nutri",
+  "guardrails_acionados": []
+}
