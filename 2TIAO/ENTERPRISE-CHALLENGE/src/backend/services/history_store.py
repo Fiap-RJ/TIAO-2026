@@ -13,14 +13,13 @@ como dado sensível em qualquer ambiente real de produção.
 """
 
 import json
+import logging
 import os
 import sqlite3
-import logging
 from contextlib import contextmanager
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 CURRENT_DIR = Path(__file__).parent
@@ -71,7 +70,7 @@ def salvar_interacao(paciente_id: str, pergunta: str, resposta: str, fontes: lis
                 pergunta,
                 resposta,
                 json.dumps(fontes, ensure_ascii=False),
-                datetime.now(timezone.utc).isoformat(),
+                datetime.now(timezone.utc).isoformat(timespec="microseconds"),
             ),
         )
 
@@ -110,9 +109,11 @@ def contar_interacoes(paciente_id: str) -> int:
         )
         return cursor.fetchone()["total"]
 
-    def excluir_historico_paciente(paciente_id: str) -> bool:
+
+def excluir_historico_paciente(paciente_id: str) -> bool:
     """Exclui todo o histórico de um paciente específico (Direito de Exclusão - LGPD)."""
     try:
+        inicializar_banco()
         with _conectar() as conn:
             cursor = conn.cursor()
             # O parâmetro posicional '?' evita injeções de código SQL
@@ -122,18 +123,24 @@ def contar_interacoes(paciente_id: str) -> int:
         logger.error("Erro ao excluir histórico do paciente %s: %s", paciente_id, e)
         return False
 
+
 def aplicar_regra_retencao(dias_retencao: int = 30) -> int:
     """
     Remove interações mais antigas que o período de retenção estabelecido,
     purgando automaticamente os dados expirados.
+
+    O corte é calculado em Python no mesmo formato ISO 8601 (UTC, `+00:00`)
+    usado por `salvar_interacao`, para que a comparação textual no SQLite
+    seja ISO com ISO.
     """
+    corte = (datetime.now(timezone.utc) - timedelta(days=dias_retencao)).isoformat(
+        timespec="microseconds"
+    )
     try:
+        inicializar_banco()
         with _conectar() as conn:
             cursor = conn.cursor()
-            cursor.execute(
-                "DELETE FROM interacoes WHERE criado_em <= datetime('now', ?)", 
-                (f'-{dias_retencao} days',)
-            )
+            cursor.execute("DELETE FROM interacoes WHERE criado_em < ?", (corte,))
             return cursor.rowcount
     except Exception as e:
         logger.error("Erro ao purgar dados antigos do histórico: %s", e)

@@ -1,7 +1,11 @@
 from enum import Enum
-from typing import List
+from typing import List, Literal
 
 from pydantic import BaseModel, Field
+
+# Formato aceito para `paciente_id` em qualquer rota ou body (ex.: "uuid-123").
+# Restringe a letras, números, "_" e "-" para impedir path traversal e IDs arbitrários.
+PACIENTE_ID_PATTERN = r"^[A-Za-z0-9_-]{1,64}$"
 
 
 class ChatRequest(BaseModel):
@@ -10,9 +14,18 @@ class ChatRequest(BaseModel):
     """
 
     paciente_id: str = Field(
-        ..., description="ID único do paciente para busca de contexto"
+        ...,
+        pattern=PACIENTE_ID_PATTERN,
+        description="ID único do paciente para busca de contexto (letras, números, _ e -)",
     )
     mensagem: str = Field(..., description="A dúvida ou pergunta em linguagem natural")
+    nivel_detalhe: Literal["resumido", "detalhado"] = Field(
+        default="resumido",
+        description=(
+            "Nível de detalhe da resposta: 'resumido' (curta, termina com convite para "
+            "detalhar) ou 'detalhado' (explicação mais longa)"
+        ),
+    )
 
 
 class FonteDado(BaseModel):
@@ -27,9 +40,7 @@ class FonteDado(BaseModel):
         description="O marcador ou característica analisada (ex: Sensibilidade à Cafeína)",
     )
     gene: str = Field(..., description="O gene associado à característica")
-    conclusao_curta: str = Field(
-        ..., description="A conclusão técnica resumida presente no laudo"
-    )
+    conclusao_curta: str = Field(..., description="A conclusão técnica resumida presente no laudo")
 
 
 class ChatResponse(BaseModel):
@@ -37,9 +48,7 @@ class ChatResponse(BaseModel):
     Estrutura final da resposta enviada ao Front-end.
     """
 
-    resposta: str = Field(
-        ..., description="Resposta em linguagem clara gerada pelo Agente de IA"
-    )
+    resposta: str = Field(..., description="Resposta em linguagem clara gerada pelo Agente de IA")
     fontes: List[FonteDado] = Field(
         default_factory=list, description="Lista de referências técnicas do laudo"
     )
@@ -47,7 +56,8 @@ class ChatResponse(BaseModel):
         default="Geral", description="Painel genético especialista utilizado para gerar a resposta"
     )
     guardrails_acionados: List[str] = Field(
-        default_factory=list, description="Lista de regras de guardrail que foram violadas/acionadas"
+        default_factory=list,
+        description="Lista de regras de guardrail que foram violadas/acionadas",
     )
 
 
