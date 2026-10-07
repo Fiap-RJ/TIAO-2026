@@ -68,6 +68,17 @@ class Settings(BaseSettings):
     # ─── Parâmetros do RAG ─────────────────────────────────────
     RETRIEVER_K: int = 3
 
+    # ─── OCR (ETL) ──────────────────────────────────────────
+    # Provider: "paddle_local" (HTTP client to localhost:8100) ou "textract" (AWS).
+    OCR_PROVIDER: str = "paddle_local"
+    # Bearer token para autenticar requests ao endpoint /api/ocr/
+    OCR_TOKEN: str = ""
+    # AWS Textract region (ex.: 'us-east-1'); ignorado se OCR_PROVIDER != 'textract'
+    TEXTRACT_REGION: str = "us-east-1"
+    # AWS credenciais (ignoradas se OCR_PROVIDER != 'textract')
+    AWS_ACCESS_KEY_ID: str = ""
+    AWS_SECRET_ACCESS_KEY: str = ""
+
     # `src/backend/.env` é lido mesmo quando o processo roda a partir da raiz do
     # projeto (ex.: `make serve`); `.env` relativo ao cwd continua aceito.
     model_config = {

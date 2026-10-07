@@ -1,0 +1,62 @@
+services:
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../src:/app/src:ro
+      - pfm-data:/app/data
+    env_file:
+      - ../.env
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    depends_on:
+      paddle-ocr:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.frontend
+    ports:
+      - "8501:8501"
+    volumes:
+      - ../src/ui:/app/src/ui:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+      - API_URL=http://backend:8000
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+  paddle-ocr:
+    build: 
+      context: ..
+      dockerfile: docker/paddle-ocr/Dockerfile
+    container_name: paddle-ocr-api
+    ports:
+      - "8001:8001"
+    restart: unless-stopped
+    volumes:
+      - ../docker/paddle-ocr/app.py:/app/app.py:ro
+      - ../docker/paddle-ocr/results:/data/results:rw
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 25s
+      retries: 5
+      start_period: 30s
+volumes:
+  pfm-data:
+    driver: local

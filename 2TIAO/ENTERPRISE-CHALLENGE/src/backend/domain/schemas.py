@@ -162,3 +162,12 @@ class ResumoInteracoesResponse(BaseModel):
     resumo: str = Field(..., description="Resumo das principais dúvidas discutidas até agora")
     quantidade_interacoes: int = Field(..., description="Total de interações consideradas")
     gerado_em: str = Field(..., description="Timestamp ISO 8601 (UTC) de geração do resumo")
+
+
+class OCRResponse(BaseModel):
+    """Response from OCR document processing endpoint."""
+
+    request_id: str = Field(..., description="Unique request identifier (UUID)")
+    lines: List[str] = Field(default_factory=list, description="Extracted text lines from document")
+    texts: str = Field(default="", description="Combined text from all lines")
+

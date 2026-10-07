@@ -1,0 +1,40 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies for PaddleOCR and PDF processing
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libpoppler-cpp-dev \
+    poppler-utils \
+    libgl1 \
+    libglib2.0-0 \
+    libgomp1 \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Poetry
+RUN pip install --no-cache-dir poetry
+
+# Copy dependency files
+# Files are located one level up from this Dockerfile
+COPY ../pyproject.toml ../poetry.lock ./
+
+# Configure Poetry to not create virtual environment
+RUN poetry config virtualenvs.create false
+
+# Install dependencies
+RUN poetry install --no-interaction --no-ansi --no-root
+
+# Copy application code
+# Source is one level up from this Dockerfile
+COPY ../src/ ./src/
+
+# Create data directories
+RUN mkdir -p data/database data/uploads
+
+# Expose API port
+EXPOSE 8000
+
+# Run the FastAPI backend
+CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
