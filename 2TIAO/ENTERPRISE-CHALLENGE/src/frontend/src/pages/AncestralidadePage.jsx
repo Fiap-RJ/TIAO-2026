@@ -83,6 +83,15 @@ export default function AncestralidadePage() {
           <AncestryChart componentes={componentes} />
         </div>
       )}
+
+      {!carregando && !erro && dados?.observacao && (
+        <p
+          role="note"
+          className="mt-4 max-w-2xl text-sm text-genera-roxo/70"
+        >
+          {dados.observacao}
+        </p>
+      )}
     </section>
   );
 }

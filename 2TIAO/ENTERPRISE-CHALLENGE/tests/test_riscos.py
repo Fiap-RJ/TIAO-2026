@@ -43,3 +43,23 @@ def test_categoria_original_preservada():
 
     resultado = body["paineis"][0]["resultados"][0]
     assert resultado["categoria_original"]
+
+
+def test_obter_riscos_por_paciente_ecoa_id():
+    response = client.get("/api/riscos/uuid-123")
+    assert response.status_code == 200
+
+    body = response.json()
+    demo = client.get("/api/riscos/").json()
+    assert body["paciente_id"] == "uuid-123"
+    assert len(body["paineis"]) == len(demo["paineis"])
+    assert len(body["escala_risco_genetico"]) == len(demo["escala_risco_genetico"])
+
+
+def test_obter_riscos_rejeita_paciente_id_invalido():
+    assert client.get("/api/riscos/id.invalido").status_code == 422
+    assert client.get("/api/riscos/" + "a" * 65).status_code == 422
+
+
+def test_obter_riscos_rejeita_path_traversal():
+    assert client.get("/api/riscos/..%2F..").status_code == 422

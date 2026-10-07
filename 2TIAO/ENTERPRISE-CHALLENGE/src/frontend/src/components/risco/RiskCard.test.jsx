@@ -26,6 +26,26 @@ describe('RiskCard', () => {
     ).toBeInTheDocument();
   });
 
+  it('prioriza o nível normalizado do backend sobre a categoria original', () => {
+    // Formato real: categoria do laudo "Cuidados relevantes" mas nivel "atencao".
+    render(
+      <RiskCard
+        risco={{
+          ...RISCO,
+          nivel: 'atencao',
+          categoria_impacto: 'Cuidados relevantes',
+        }}
+      />,
+    );
+    expect(screen.getByText('Atenção')).toBeInTheDocument();
+    expect(screen.queryByText('Baixo')).not.toBeInTheDocument();
+  });
+
+  it('cai na categoria de impacto quando o nível está ausente', () => {
+    render(<RiskCard risco={{ ...RISCO, nivel: undefined }} />);
+    expect(screen.getByText('Moderado')).toBeInTheDocument();
+  });
+
   it('mantém os detalhes ocultos até o usuário expandir', () => {
     render(<RiskCard risco={RISCO} />);
     expect(

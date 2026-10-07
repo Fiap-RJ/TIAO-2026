@@ -1,6 +1,32 @@
 services:
   # ─────────────────────────────────────────
+  # PaddleOCR: Standalone OCR API service
+  # Processes PDFs/images to extract text
+  # ─────────────────────────────────────────
+  paddle-ocr:
+    build:
+      context: .
+      dockerfile: scripts/docker/paddle-ocr/Dockerfile
+    container_name: genera_paddle_ocr
+    ports:
+      - "8100:8100"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DEBUG=false
+    volumes:
+      - paddle-data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8100/health')"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+    restart: unless-stopped
+
+  # ─────────────────────────────────────────
   # Backend: FastAPI + LangGraph + FAISS
+  # Entrypoint gera o índice FAISS se ausente, depois sobe o uvicorn.
+  # Espera pelo paddle-ocr estar saudável antes de iniciar.
   # ─────────────────────────────────────────
   backend:
     build:
@@ -12,37 +38,25 @@ services:
     env_file:
       - src/backend/.env
     environment:
+      - PYTHONUNBUFFERED=1
       - GENERA_DATA_PATH=/data/proposta_estrutura_de_dados.json
       - GENERA_FAISS_PATH=/app/faiss_index
       - GENERA_DB_PATH=/app/data/history.db
+      - PADDLE_OCR_URL=http://paddle-ocr:8100
     volumes:
-      - faiss_data:/app/faiss_index
-      - history_data:/app/data
+      - ./faiss_index:/app/faiss_index
+      - ./data:/app/data
+      - ./proposta_estrutura_de_dados.json:/data/proposta_estrutura_de_dados.json:ro
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 15s
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
     restart: unless-stopped
-
-  # ─────────────────────────────────────────
-  # Seed: Popula o banco vetorial FAISS
-  # ─────────────────────────────────────────
-  seed:
-    build:
-      context: .
-      dockerfile: src/backend/Dockerfile
-    container_name: genera_seed
-    env_file:
-      - src/backend/.env
-    environment:
-      - GENERA_DATA_PATH=/data/proposta_estrutura_de_dados.json
-      - GENERA_FAISS_PATH=/app/faiss_index
-    volumes:
-      - faiss_data:/app/faiss_index
-    command: ["python", "-m", "services.vector_store"]
-    restart: "no"
+    depends_on:
+      paddle-ocr:
+        condition: service_healthy
 
   # ─────────────────────────────────────────
   # Frontend: React + Nginx (proxy reverso)
@@ -54,11 +68,19 @@ services:
     container_name: genera_frontend
     ports:
       - "3000:80"
+    environment:
+      - API_URL=http://backend:8000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     depends_on:
       backend:
         condition: service_healthy
     restart: unless-stopped
 
 volumes:
-  faiss_data:
-  history_data:
+  paddle-data:
+    driver: local

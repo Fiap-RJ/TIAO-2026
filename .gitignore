@@ -29,3 +29,7 @@ faiss_index/
 
 .agents/
 *.aider*
+
+node_modules/
+document/video_script.md
+2TIAO/ENTERPRISE-CHALLENGE/document/video_script.md

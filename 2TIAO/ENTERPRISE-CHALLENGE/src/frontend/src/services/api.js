@@ -1,63 +1,108 @@
 /**
- * Client único de API do dashboard.
+ * Client único de API do dashboard, consumindo o backend real (FastAPI).
  *
- * Hoje as funções leem de mocks locais (`src/mocks/`) porque os endpoints do
- * backend (M1–M4, responsabilidade do Michael) ainda não existem. Quando eles
- * ficarem prontos, basta virar a flag `USE_MOCKS` para `false`: as assinaturas
- * das funções e o formato de retorno já seguem os contratos da seção 3 do
- * spec, então os componentes não precisam mudar.
- *
- * Cada tarefa acrescenta sua função aqui: A2 → getRiscos, A4 → getHistorico,
- * A3 → getAncestralidade.
+ * `API_BASE` vem de `VITE_API_BASE_URL`; vazio = URLs relativas, que funcionam
+ * com o proxy do vite (dev) e do nginx (container). As funções adaptam o
+ * contrato do backend ao formato que as páginas consomem, para que os
+ * componentes não dependam dos nomes de campo do servidor.
  */
-import riscosMock from '../mocks/riscos.mock.json';
-import ancestralidadeMock from '../mocks/ancestralidade.mock.json';
-import historicoMock from '../mocks/historico.mock.json';
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? '';
 
-// Ponto de troca mock → real. Vire para `false` quando os endpoints existirem.
-export const USE_MOCKS = true;
-
-// Pequeno atraso para simular latência de rede e permitir testar loading states.
-const MOCK_DELAY_MS = 300;
-
-function mockResponse(data) {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(structuredClone(data)), MOCK_DELAY_MS);
-  });
-}
-
-async function getJson(url) {
+async function requisitar(caminho, opcoes = {}) {
+  const url = `${API_BASE}${caminho}`;
   const resposta = await fetch(url, {
-    headers: { Accept: 'application/json' },
+    ...opcoes,
+    headers: { Accept: 'application/json', ...opcoes.headers },
   });
   if (!resposta.ok) {
     throw new Error(`Falha ao consultar ${url} (HTTP ${resposta.status})`);
   }
+  return resposta;
+}
+
+async function getJson(caminho) {
+  const resposta = await requisitar(caminho);
   return resposta.json();
 }
 
-/** GET /api/riscos/{paciente_id} */
+const idCodificado = (pacienteId) => encodeURIComponent(pacienteId);
+
+/**
+ * GET /api/riscos/{paciente_id}
+ * → { riscos: [{ painel, caracteristica, nivel, categoria_impacto, ... }],
+ *     escala: [{ doenca, nivel, risco_calculado_percentual, intervalo_minimo,
+ *               intervalo_maximo, classificacao_original }],
+ *     laudoOrigem }
+ * A lista de painéis do backend é achatada; `categoria_impacto` recebe a
+ * categoria original do laudo (usada só como fallback quando falta `nivel`).
+ */
 export async function getRiscos(pacienteId) {
-  if (USE_MOCKS) return mockResponse(riscosMock);
-  return getJson(`/api/riscos/${pacienteId}`);
+  const dados = await getJson(`/api/riscos/${idCodificado(pacienteId)}`);
+  const paineis = dados.paineis ?? [];
+  return {
+    riscos: paineis.flatMap((p) =>
+      (p.resultados ?? []).map((r) => ({
+        painel: p.nome_painel,
+        ...r,
+        categoria_impacto: r.categoria_original,
+      })),
+    ),
+    escala: dados.escala_risco_genetico ?? [],
+    laudoOrigem: dados.laudo_origem,
+  };
 }
 
 /**
  * GET /api/ancestralidade/{paciente_id}
- * Formato provisório (ver seção 2 do spec): { componentes: [{ regiao, percentual }] }.
- * O mock traz `ilustrativo: true` porque a fonte estruturada ainda não expõe
- * ancestralidade — dado fictício apenas para demonstração da UI.
+ * → { componentes: [{ regiao, percentual }], observacao, ilustrativo: false }
  */
 export async function getAncestralidade(pacienteId) {
-  if (USE_MOCKS) return mockResponse(ancestralidadeMock);
-  return getJson(`/api/ancestralidade/${pacienteId}`);
+  const dados = await getJson(`/api/ancestralidade/${idCodificado(pacienteId)}`);
+  return {
+    componentes: dados.composicao ?? [],
+    observacao: dados.observacao ?? '',
+    ilustrativo: false,
+  };
 }
 
 /**
  * GET /api/historico/{paciente_id}
- * → [{ id, timestamp, pergunta, resposta, fontes[] }] em ordem cronológica reversa.
+ * O backend devolve em ordem cronológica (mais antiga primeiro); aqui vira
+ * [{ id: string, timestamp, pergunta, resposta, fontes }] do mais recente
+ * para o mais antigo.
  */
 export async function getHistorico(pacienteId) {
-  if (USE_MOCKS) return mockResponse(historicoMock);
-  return getJson(`/api/historico/${pacienteId}`);
+  const dados = await getJson(`/api/historico/${idCodificado(pacienteId)}`);
+  return (dados.interacoes ?? [])
+    .map((i) => ({ ...i, id: String(i.id), timestamp: i.criado_em }))
+    .reverse();
+}
+
+/**
+ * DELETE /api/historico/{paciente_id} — direito de exclusão (LGPD).
+ * 204 (apagado) e 404 (nada a apagar) contam como sucesso.
+ */
+export async function deleteHistorico(pacienteId) {
+  const url = `${API_BASE}/api/historico/${idCodificado(pacienteId)}`;
+  const resposta = await fetch(url, { method: 'DELETE' });
+  if (!resposta.ok && resposta.status !== 404) {
+    throw new Error(`Falha ao apagar ${url} (HTTP ${resposta.status})`);
+  }
+}
+
+/**
+ * POST /api/chat/
+ * → { resposta, fontes: [{ painel, marcador, gene, conclusao_curta }],
+ *     painel_utilizado, guardrails_acionados: string[] }
+ * `nivelDetalhe`: 'resumido' (padrão do backend) ou 'detalhado'.
+ */
+export async function postChat({ pacienteId, mensagem, nivelDetalhe }) {
+  const corpo = { paciente_id: pacienteId, mensagem };
+  if (nivelDetalhe) corpo.nivel_detalhe = nivelDetalhe;
+  const resposta = await requisitar('/api/chat/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(corpo),
+  });
+  return resposta.json();
 }

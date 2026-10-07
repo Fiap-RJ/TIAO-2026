@@ -1,0 +1,32 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install minimal system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Poetry
+RUN pip install --no-cache-dir poetry
+
+# Copy dependency files
+# Files are located one level up from this Dockerfile
+COPY ../pyproject.toml ../poetry.lock ./
+
+# Configure Poetry to not create virtual environment
+RUN poetry config virtualenvs.create false
+
+# Install only the dependencies needed for frontend
+# (streamlit, httpx, pandas for display)
+RUN poetry install --no-interaction --no-ansi --no-root
+
+# Copy only the UI code
+# Source is one level up from this Dockerfile
+COPY ../src/ui/ ./src/ui/
+
+# Expose Streamlit port
+EXPOSE 8501
+
+# Run the Streamlit frontend
+CMD ["streamlit", "run", "src/ui/app.py", "--server.address", "0.0.0.0", "--server.port", "8501"]

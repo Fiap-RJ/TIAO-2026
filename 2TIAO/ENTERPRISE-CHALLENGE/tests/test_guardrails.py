@@ -1,6 +1,8 @@
 """Testes unitários — guardrails de comunicação responsável."""
 
-from services.guardrails import validar_resposta
+from agents.nodes.guardrail import guardrail
+from agents.state import AgentState
+from services.guardrails import RESPOSTA_BLOQUEADA, validar_resposta
 
 
 def test_resposta_neutra_recebe_disclaimer_padrao():
@@ -71,3 +73,18 @@ def test_disclaimer_de_risco_poligenico_nao_duplica():
     resultado = validar_resposta(resposta)
 
     assert resultado.resposta_final.count("Risco Poligênico") == 1
+
+
+def test_no_guardrail_propaga_bloqueio():
+    resultado = guardrail(AgentState(answer="Seu diagnóstico é X."))
+
+    assert resultado["bloqueado"] is True
+    assert any("[DIAGNÓSTICO]" in v for v in resultado["violacoes"])
+    assert resultado["answer"] == RESPOSTA_BLOQUEADA
+
+
+def test_no_guardrail_alarmismo_nao_bloqueia():
+    resultado = guardrail(AgentState(answer="Essa é uma condição grave e muito perigosa."))
+
+    assert resultado["bloqueado"] is False
+    assert any("[ALARMISMO]" in v for v in resultado["violacoes"])

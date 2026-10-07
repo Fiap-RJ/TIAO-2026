@@ -1,5 +1,6 @@
 """Runner do eval — executa os casos e gera o relatório."""
 
+import os
 from datetime import datetime
 
 from agents import app
@@ -59,17 +60,36 @@ def avaliar_caso(caso: dict) -> EvalResult:
 
 
 def executar_eval() -> list[EvalResult]:
-    """Executa o eval completo e imprime o relatório."""
+    """Executa o eval completo e imprime o relatório.
+
+    Respeita a variável de ambiente EVAL_LEVEL:
+    - 'smoke' (5 casos, rápido)
+    - 'full' (todos os casos, 30+)
+    Padrão: 'full' se não definida.
+    """
+    eval_level = os.getenv("EVAL_LEVEL", "full").lower()
+
+    # Determinar quais casos rodar
+    if eval_level == "smoke":
+        # Smoke: primeiros 5 casos
+        casos_para_rodar = EVAL_CASES[:5]
+        eval_title = "SMOKE EVAL (5 casos rápidos)"
+    elif eval_level == "full":
+        casos_para_rodar = EVAL_CASES
+        eval_title = "FULL EVAL (Todos os casos)"
+    else:
+        raise ValueError(f"EVAL_LEVEL inválido: {eval_level}. Use 'smoke' ou 'full'.")
+
     print("=" * 60)
-    print("  EVAL — Genera Intelligence Agent")
+    print(f"  {eval_title}")
     print(f"  Data: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print("=" * 60)
 
     resultados: list[EvalResult] = []
-    total = len(EVAL_CASES)
+    total = len(casos_para_rodar)
     aprovados = 0
 
-    for i, caso in enumerate(EVAL_CASES, 1):
+    for i, caso in enumerate(casos_para_rodar, 1):
         print(f"\n[{i}/{total}] Caso {caso['id']}: {caso['pergunta']}")
         print("-" * 40)
 
@@ -98,7 +118,7 @@ def executar_eval() -> list[EvalResult]:
 
     categorias = sorted(set(c["categoria"] for c in EVAL_CASES))
     for cat in categorias:
-        casos_cat = [r for r, c in zip(resultados, EVAL_CASES) if c["categoria"] == cat]
+        casos_cat = [r for r, c in zip(resultados, casos_para_rodar) if c["categoria"] == cat]
         aprovados_cat = sum(1 for r in casos_cat if r.passou)
         print(f"    [{cat.upper()}] {aprovados_cat}/{len(casos_cat)}")
 

@@ -1,9 +1,15 @@
 """Testes de integração — endpoint e persistência de histórico."""
 
+import json
+import sqlite3
+from datetime import datetime, timedelta, timezone
+
 from fastapi.testclient import TestClient
 
 from main import app
+from services import history_store
 from services.history_store import salvar_interacao
+from services.persistence.sqlite_repo import SQLiteHistoryRepository
 
 client = TestClient(app)
 
@@ -63,3 +69,59 @@ def test_historico_nao_mistura_pacientes():
 
     resposta_a = client.get("/api/historico/paciente-a").json()["interacoes"]
     assert all(i["paciente_id"] == "paciente-a" for i in resposta_a)
+
+
+def test_delete_historico_remove_interacoes():
+    salvar_interacao("paciente-delete", "Pergunta 1", "Resposta 1", [])
+    salvar_interacao("paciente-delete", "Pergunta 2", "Resposta 2", [])
+
+    response = client.delete("/api/historico/paciente-delete")
+    assert response.status_code == 204
+
+    depois = client.get("/api/historico/paciente-delete")
+    assert depois.status_code == 200
+    assert depois.json()["interacoes"] == []
+
+
+def test_delete_historico_inexistente_404():
+    response = client.delete("/api/historico/paciente-nunca-visto")
+    assert response.status_code == 404
+
+
+def test_retencao_remove_so_antigas():
+    paciente = "paciente-retencao"
+    antiga = (datetime.now(timezone.utc) - timedelta(days=40)).isoformat()
+
+    # Get the repository and initialize it
+    repo = history_store.get_history_repo()
+    repo.inicializar()
+
+    # For SQLite, directly insert old data via sqlite3
+    if isinstance(repo, SQLiteHistoryRepository):
+        conn = sqlite3.connect(repo.db_path)
+        try:
+            conn.execute(
+                "INSERT INTO interacoes (paciente_id, pergunta, resposta, fontes, criado_em) "
+                "VALUES (?, ?, ?, ?, ?)",
+                (paciente, "Pergunta antiga", "Resposta antiga", json.dumps([]), antiga),
+            )
+            conn.commit()
+        finally:
+            conn.close()
+    else:
+        # For Postgres, we'd need different handling, but for now just skip
+        import pytest
+        pytest.skip("Retention test only supported for SQLite in this test suite")
+
+    salvar_interacao(paciente, "Pergunta recente", "Resposta recente", [])
+
+    removidas = history_store.aplicar_regra_retencao(30)
+
+    assert removidas >= 1
+    restantes = history_store.listar_historico(paciente)
+    assert [r["pergunta"] for r in restantes] == ["Pergunta recente"]
+
+
+def test_historico_rejeita_paciente_id_invalido():
+    assert client.get("/api/historico/id.invalido").status_code == 422
+    assert client.delete("/api/historico/id.invalido").status_code == 422

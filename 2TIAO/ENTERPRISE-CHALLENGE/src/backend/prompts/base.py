@@ -48,13 +48,10 @@ que poderá ser benéfico ter uma atenção especial ao consumo desta vitamina n
 alimentar."
 ---------------------------------
 
-6. DISCLAIMER OBRIGATÓRIO: Toda resposta DEVE encerrar com o seguinte parágrafo \
-(adapte minimamente se necessário):
-
-"⚠️ **Importante:** Este assistente é puramente informativo e não substitui uma \
-consulta médica. Os dados genéticos indicam predisposições, não certezas. \
-Recomendamos fortemente que você consulte um médico geneticista ou especialista \
-clínico para correlacionar esses achados com seu histórico pessoal e familiar."
+6. FORMATO, TAMANHO E DISCLAIMER: O formato e o tamanho da resposta seguem as \
+DIRETRIZES DE PERSONALIZAÇÃO E COMUNICAÇÃO ao final destas instruções. Em QUALQUER modo, \
+a resposta deve conter obrigatoriamente o disclaimer: "⚠️ Importante: Este assistente é \
+informativo e não substitui consulta médica. A genética indica tendências, não certezas."
 
 7. ESCOPO RESTRITO: Se o usuário perguntar algo fora do escopo genético (receitas, \
 notícias, programação, etc.), recuse educadamente e redirecione para o propósito do sistema.

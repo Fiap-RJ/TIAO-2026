@@ -1,0 +1,56 @@
+name: Eval (Manual, Full 30 Cases)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  eval-full:
+    name: Full Eval (30 cases, LLM-as-Judge)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: latest
+          virtualenvs-in-project: true
+
+      - name: Cache Poetry virtualenv
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: poetry-${{ runner.os }}-py3.12-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            poetry-${{ runner.os }}-py3.12-
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Create eval reports directory
+        run: mkdir -p eval-reports
+
+      - name: Run full eval (30 cases)
+        run: poetry run python -m eval > eval-reports/eval-result.txt 2>&1 || true
+        env:
+          PYTHONPATH: src/backend
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          EVAL_LEVEL: full
+          LLM_PROVIDER: gemini
+          EMBEDDINGS_PROVIDER: gemini
+
+      - name: Upload eval report
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-report-${{ github.run_id }}
+          path: eval-reports/
+          retention-days: 30
+
+      - name: Display eval result
+        run: cat eval-reports/eval-result.txt
