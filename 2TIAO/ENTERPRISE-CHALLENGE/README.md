@@ -66,7 +66,14 @@ O projeto visa resolver o gargalo de interpretação de dados genéticos do prod
 A nossa solução é uma camada de inteligência baseada em **RAG (Retrieval-Augmented Generation)**. Através de um assistente conversacional inteligente, o usuário pode "conversar" com o seu DNA, recebendo explicações em linguagem simples, recomendações personalizadas e visualizações intuitivas de riscos e predisposições.
 
 ## 📺 Apresentação do Projeto
-* **Sprint 4 (Atual - Produção e Governança):** [Script e vídeo de apresentação](document/script-video-sprint4.md) — demonstração completa com deploy local, IaaC, CI/CD e monitoramento
+
+> ### 🎬 **SPRINT 4 - VÍDEO DE APRESENTAÇÃO**
+> #### **[▶ Assista a Demonstração Completa no YouTube](https://youtu.be/UzV9BVh9IHs)**
+> Produção e Governança: Deploy local, Infrastructure-as-Code, CI/CD e Monitoramento
+
+---
+
+* **Sprint 4 (Atual - Produção e Governança):** [Vídeo de apresentação](https://youtu.be/UzV9BVh9IHs) — demonstração completa com deploy local, IaaC, CI/CD e monitoramento
 * **Sprint 3 (Experiência do Usuário):** _link do vídeo a ser adicionado após a gravação (coordenação em andamento)_
 * **Sprint 2 (Motor RAG & Agentes):** [Link para o YouTube](https://youtu.be/y-MmL1nKIFg)
 * **Sprint 1 (Fundação e Arquitetura):** [Link para o YouTube](https://youtu.be/mASJnbO3dqo)
