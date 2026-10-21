@@ -1,0 +1,31 @@
+%% Arquitetura multiagente do CardioIA Fase 6 (fluxograma).
+%% Exportar: npx -y @mermaid-js/mermaid-cli@12.0.0 -i docs/fonte/arquitetura.mmd -o assets/arquitetura_multiagente.png -s 3 -b white
+flowchart TB
+    U([Operador / CLI — src/main.py]) -->|JSON do paciente| V[DadosPaciente<br/>normalização + validação]
+    V -->|ContextoAtendimento| GI
+    V -. "--sem-llm" .-> D2[services: risco + protocolos<br/>origem=sem_llm]
+
+    subgraph SDK["OpenAI Agents SDK — Runner.run(context, session=SQLiteSession, max_turns)"]
+        direction TB
+        GI{{input_guardrail: validar_entrada_atendimento<br/>bloqueia dose/prescrição, vazio, > 2000 car.}}
+        GI --> O[Orquestrador]
+        O -- "handoff (risco_pendente)" --> A[Analista de Risco]
+        A -- tool --> T1[[calcular_risco_paciente]]
+        A -- "handoff + NotaHandoff (protocolos_pendentes)" --> E[Especialista em Protocolos]
+        E -- tool --> T2[[consultar_protocolos_aplicaveis]]
+        E -- "handoff + NotaHandoff (pronto_para_planejar)" --> P[Planejador de Resposta<br/>output_type=RecomendacaoFinal]
+        O -. "retomada (protocolos_pendentes)" .-> E
+        O -. "acompanhamento (pronto_para_planejar)" .-> P
+        P -- tool --> T3[[obter_resumo_atendimento]]
+        P -- "tool (opcional)" --> T4[[listar_base_protocolos]]
+        P --> GO{{output_guardrail: validar_recomendacao_final<br/>V1–V5 contra o contexto}}
+    end
+
+    T1 --> M[(models/modelo_pico_risco.joblib<br/>Random Forest)]
+    T2 --> B[(BASE_PROTOCOLOS P01–P10)]
+    T4 --> B
+    GO -->|RecomendacaoFinal válida| R[pipeline: RespostaAtendimento<br/>valores do contexto + aviso legal<br/>origem: agentes, fallback ou sem_llm]
+    GO -. "violação, MaxTurns, erro de API, fluxo fora de ordem" .-> D[fallback: montar_recomendacao_deterministica<br/>origem=fallback_deterministico]
+    D --> R
+    D2 --> R
+    R --> S([Saída na CLI: texto legível ou --json])

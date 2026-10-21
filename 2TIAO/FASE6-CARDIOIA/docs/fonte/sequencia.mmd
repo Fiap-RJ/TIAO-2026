@@ -1,0 +1,31 @@
+%% Diagrama de sequência de um atendimento do CardioIA Fase 6.
+%% Exportar: npx -y @mermaid-js/mermaid-cli@12.0.0 -i docs/fonte/sequencia.mmd -o assets/sequencia_atendimento.png -s 3 -b white
+sequenceDiagram
+    participant CLI as CLI (main.py)
+    participant Pipe as pipeline.executar_atendimento
+    participant O as Orquestrador
+    participant A as Analista de Risco
+    participant E as Especialista em Protocolos
+    participant P as Planejador de Resposta
+    CLI->>Pipe: DadosPaciente (+ pergunta opcional)
+    Pipe->>O: Runner.run(input, context, session, max_turns=12)
+    O->>O: input_guardrail (bloqueante)
+    alt pedido de dose / prescrição, mensagem vazia ou > 2000 caracteres
+        O-->>Pipe: InputGuardrailTripwireTriggered
+        Pipe-->>CLI: EntradaBloqueadaError (exit 3 ou aviso no modo interativo)
+    end
+    O->>A: handoff (risco_pendente)
+    A->>A: calcular_risco_paciente() → ctx.avaliacao_risco
+    A->>E: handoff(NotaHandoff) (protocolos_pendentes)
+    E->>E: consultar_protocolos_aplicaveis() → ctx.resultado_protocolos
+    E->>P: handoff(NotaHandoff) (pronto_para_planejar)
+    P->>P: obter_resumo_atendimento() [+ listar_base_protocolos()]
+    P->>P: output_guardrail V1–V5 contra o contexto
+    alt RecomendacaoFinal válida
+        P-->>Pipe: RecomendacaoFinal
+        Pipe-->>CLI: RespostaAtendimento (origem="agentes")
+    else violação, MaxTurnsExceeded, erro de API ou fluxo fora de ordem
+        Pipe->>Pipe: montar_recomendacao_deterministica()
+        Pipe-->>CLI: RespostaAtendimento (origem="fallback_deterministico")
+    end
+    Note over CLI,P: Acompanhamento (--interativo, mesma SQLiteSession e mesmo contexto):<br/>só o handoff Orquestrador → Planejador fica habilitado

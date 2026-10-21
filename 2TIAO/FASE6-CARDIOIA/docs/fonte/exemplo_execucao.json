@@ -1,0 +1,110 @@
+{
+  "atendimento_id": "f2c80576f3e248758ebcb7eb5b41aa87",
+  "gerado_em": "2026-10-21T02:10:42.982705Z",
+  "paciente": {
+    "idade_media": 62.0,
+    "carga_sistema": 92.0,
+    "tempo_espera": 75.0,
+    "fc_media": 118.0,
+    "spo2_media": 89.0,
+    "pa_sistolica": 100.0,
+    "temperatura": 37.5,
+    "densidade_eventos": 7,
+    "eventos_24h": 5,
+    "disponibilidade_recursos": 25.0
+  },
+  "avaliacao_risco": {
+    "probabilidade": 0.99,
+    "classificacao": "ALTO",
+    "pico_risco_previsto": true,
+    "limiar_decisao": 0.5,
+    "modelo_versao": "rf-v1",
+    "avisos": []
+  },
+  "protocolos": [
+    {
+      "id": "P02",
+      "texto": "Se carga do sistema > 85% → abrir unidades temporárias",
+      "variavel": "carga_sistema",
+      "valor_observado": 92.0,
+      "limiar": 85.0,
+      "justificativa": "carga_sistema=92 > 85"
+    },
+    {
+      "id": "P05",
+      "texto": "Se disponibilidade_recursos < 30% → redistribuir insumos",
+      "variavel": "disponibilidade_recursos",
+      "valor_observado": 25.0,
+      "limiar": 30.0,
+      "justificativa": "disponibilidade_recursos=25 < 30"
+    },
+    {
+      "id": "P08",
+      "texto": "Se densidade_eventos > 6 → ativar plano de contingência",
+      "variavel": "densidade_eventos",
+      "valor_observado": 7.0,
+      "limiar": 6.0,
+      "justificativa": "densidade_eventos=7 > 6"
+    },
+    {
+      "id": "P10",
+      "texto": "Se risco sistêmico alto → ativar estado de emergência",
+      "variavel": "classificacao_risco",
+      "valor_observado": "ALTO",
+      "limiar": "ALTO",
+      "justificativa": "classificacao_risco=ALTO"
+    }
+  ],
+  "sinais_de_atencao": [
+    {
+      "variavel": "tempo_espera",
+      "valor": 75.0,
+      "limiar_risco": 60.0,
+      "limiar_protocolo": 90.0,
+      "protocolo_id": "P06",
+      "mensagem": "tempo_espera=75 (risco > 60; P06 aciona > 90)"
+    },
+    {
+      "variavel": "fc_media",
+      "valor": 118.0,
+      "limiar_risco": 110.0,
+      "limiar_protocolo": 120.0,
+      "protocolo_id": "P03",
+      "mensagem": "fc_media=118 (risco > 110; P03 aciona > 120)"
+    },
+    {
+      "variavel": "spo2_media",
+      "valor": 89.0,
+      "limiar_risco": 92.0,
+      "limiar_protocolo": 88.0,
+      "protocolo_id": "P01",
+      "mensagem": "spo2_media=89 (risco < 92; P01 aciona < 88)"
+    },
+    {
+      "variavel": "eventos_24h",
+      "valor": 5.0,
+      "limiar_risco": 4.0,
+      "limiar_protocolo": 5.0,
+      "protocolo_id": "P04",
+      "mensagem": "eventos_24h=5 (risco > 4; P04 aciona > 5)"
+    }
+  ],
+  "acoes_operacionais": [
+    "Abrir unidades temporárias devido à carga do sistema elevada (92% > 85%).",
+    "Redistribuir insumos por baixa disponibilidade de recursos (25% < 30%).",
+    "Ativar plano de contingência pela alta densidade de eventos (7 > 6).",
+    "Ativar estado de emergência por risco sistêmico alto (classificação ALTO).",
+    "Monitorar sinais de atenção: tempo de espera elevado (75 min > limiar de risco 60 min), frequência cardíaca média alta (118 bpm > limiar de risco 110 bpm), saturação de oxigênio próxima ao limiar (89% > 88%), e eventos nas últimas 24h no limite (5 eventos)."
+  ],
+  "explicacao": "O paciente apresenta risco sistêmico alto com probabilidade prevista de 99%, ultrapassando o limiar decisório de 0.5, indicando necessidade de ações urgentes. Foram acionados os protocolos P02 (abrir unidades temporárias pela carga do sistema de 92% > 85%), P05 (redistribuir insumos pela disponibilidade de recursos baixa em 25% < 30%), P08 (ativar plano de contingência pela densidade de eventos de 7 > 6) e P10 (ativar estado de emergência devido à classificação de risco ALTO). Sinais de atenção importantes incluem tempo de espera de 75 minutos, que está acima do limiar de risco de 60 minutos, frequência cardíaca média de 118 bpm, superior ao limiar de risco de 110 bpm, saturação de oxigênio de 89%, que está acima do limiar para protocolo P01 (<88%), e eventos nas últimas 24 horas em 5, no limite para acionamento do protocolo P04 (>5). Esses indicadores reforçam a necessidade das ações operacionais recomendadas para mitigar o risco e melhorar a resposta do sistema.",
+  "cadeia_agentes": [
+    "Orquestrador",
+    "Analista de Risco",
+    "Especialista em Protocolos",
+    "Planejador de Resposta"
+  ],
+  "origem": "agentes",
+  "violacoes_guardrail": [],
+  "motivo_fallback": null,
+  "aviso_legal": "Aviso: o CardioIA é um sistema acadêmico, informativo e de apoio à decisão operacional, baseado em dados sintéticos. Não realiza diagnóstico, não prescreve tratamentos e não substitui a avaliação de um profissional de saúde."
+}

@@ -1,0 +1,18 @@
+# Segredos (chave da OpenAI fica em src/.env)
+.env
+# Caches do Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+# Ambiente virtual local
+.venv/
+venv/
+ENV/
+# Sistema operacional
+.DS_Store
+Thumbs.db
+# Jupyter
+.ipynb_checkpoints/
+# Histórico de sessões (SQLiteSession)
+data/*.db

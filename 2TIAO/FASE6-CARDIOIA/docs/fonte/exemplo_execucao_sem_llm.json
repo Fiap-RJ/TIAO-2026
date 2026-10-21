@@ -1,0 +1,110 @@
+{
+  "atendimento_id": "c0dc89c6fab745dc8cead621ebf3d1c4",
+  "gerado_em": "2026-10-20T23:51:25.093778Z",
+  "paciente": {
+    "idade_media": 62.0,
+    "carga_sistema": 92.0,
+    "tempo_espera": 75.0,
+    "fc_media": 118.0,
+    "spo2_media": 89.0,
+    "pa_sistolica": 100.0,
+    "temperatura": 37.5,
+    "densidade_eventos": 7,
+    "eventos_24h": 5,
+    "disponibilidade_recursos": 25.0
+  },
+  "avaliacao_risco": {
+    "probabilidade": 0.99,
+    "classificacao": "ALTO",
+    "pico_risco_previsto": true,
+    "limiar_decisao": 0.5,
+    "modelo_versao": "rf-v1",
+    "avisos": []
+  },
+  "protocolos": [
+    {
+      "id": "P02",
+      "texto": "Se carga do sistema > 85% → abrir unidades temporárias",
+      "variavel": "carga_sistema",
+      "valor_observado": 92.0,
+      "limiar": 85.0,
+      "justificativa": "carga_sistema=92 > 85"
+    },
+    {
+      "id": "P05",
+      "texto": "Se disponibilidade_recursos < 30% → redistribuir insumos",
+      "variavel": "disponibilidade_recursos",
+      "valor_observado": 25.0,
+      "limiar": 30.0,
+      "justificativa": "disponibilidade_recursos=25 < 30"
+    },
+    {
+      "id": "P08",
+      "texto": "Se densidade_eventos > 6 → ativar plano de contingência",
+      "variavel": "densidade_eventos",
+      "valor_observado": 7.0,
+      "limiar": 6.0,
+      "justificativa": "densidade_eventos=7 > 6"
+    },
+    {
+      "id": "P10",
+      "texto": "Se risco sistêmico alto → ativar estado de emergência",
+      "variavel": "classificacao_risco",
+      "valor_observado": "ALTO",
+      "limiar": "ALTO",
+      "justificativa": "classificacao_risco=ALTO"
+    }
+  ],
+  "sinais_de_atencao": [
+    {
+      "variavel": "tempo_espera",
+      "valor": 75.0,
+      "limiar_risco": 60.0,
+      "limiar_protocolo": 90.0,
+      "protocolo_id": "P06",
+      "mensagem": "tempo_espera=75 (risco > 60; P06 aciona > 90)"
+    },
+    {
+      "variavel": "fc_media",
+      "valor": 118.0,
+      "limiar_risco": 110.0,
+      "limiar_protocolo": 120.0,
+      "protocolo_id": "P03",
+      "mensagem": "fc_media=118 (risco > 110; P03 aciona > 120)"
+    },
+    {
+      "variavel": "spo2_media",
+      "valor": 89.0,
+      "limiar_risco": 92.0,
+      "limiar_protocolo": 88.0,
+      "protocolo_id": "P01",
+      "mensagem": "spo2_media=89 (risco < 92; P01 aciona < 88)"
+    },
+    {
+      "variavel": "eventos_24h",
+      "valor": 5.0,
+      "limiar_risco": 4.0,
+      "limiar_protocolo": 5.0,
+      "protocolo_id": "P04",
+      "mensagem": "eventos_24h=5 (risco > 4; P04 aciona > 5)"
+    }
+  ],
+  "acoes_operacionais": [
+    "Abrir unidades temporárias",
+    "Redistribuir insumos",
+    "Ativar plano de contingência",
+    "Ativar estado de emergência",
+    "Acompanhar tempo_espera (valor 75; protocolo P06 aciona em > 90)",
+    "Acompanhar fc_media (valor 118; protocolo P03 aciona em > 120)",
+    "Acompanhar spo2_media (valor 89; protocolo P01 aciona em < 88)",
+    "Acompanhar eventos_24h (valor 5; protocolo P04 aciona em > 5)"
+  ],
+  "explicacao": "O modelo preditivo estimou probabilidade de pico de risco de 0,9900 (faixa ALTO). Protocolos acionados pelas regras da base simulada: P02, P05, P08, P10. Sinais de atenção (acima do limiar de risco, abaixo do gatilho do protocolo): tempo_espera, fc_media, spo2_media, eventos_24h. Recomendação montada por regras determinísticas, para apoio à decisão operacional.",
+  "cadeia_agentes": [
+    "Orquestrador"
+  ],
+  "origem": "sem_llm",
+  "violacoes_guardrail": [],
+  "motivo_fallback": null,
+  "aviso_legal": "Aviso: o CardioIA é um sistema acadêmico, informativo e de apoio à decisão operacional, baseado em dados sintéticos. Não realiza diagnóstico, não prescreve tratamentos e não substitui a avaliação de um profissional de saúde."
+}
