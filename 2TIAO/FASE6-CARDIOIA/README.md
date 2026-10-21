@@ -10,12 +10,6 @@
 
 **Fase 6 — "Coração Sob Controle": sistema preditivo multiagente para picos de risco**
 
-> **Vídeo demonstrativo (YouTube, não listado):** [inserir link do vídeo aqui](URL_DO_VIDEO)
-
-## Nome do grupo
-
-________
-
 ## 👨‍🎓 Integrantes:
 - <a href="https://www.linkedin.com/in/michaelrodriguess/">Michael Rodrigues</a>
 - <a href="https://www.linkedin.com/in/arthur-alentejo/">Arthur Alentejo</a>
