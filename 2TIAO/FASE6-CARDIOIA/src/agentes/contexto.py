@@ -6,9 +6,9 @@ Contexto do atendimento — CardioIA Fase 6
 passado como ``context=`` ao ``Runner.run`` e chega às tools, aos guardrails e
 aos callbacks de handoff como ``RunContextWrapper[ContextoAtendimento]``
 (``ctx.context``). Ele **não** é enviado ao LLM: é por ele que a predição
-calculada pelo Analista chega ao Especialista e ao Planejador (R11.3).
+calculada pelo Analista chega ao Especialista e ao Planejador.
 
-Escopo dos campos (R10.4):
+Escopo dos campos:
 
 - ``cadeia_agentes``: agentes do turno corrente; o pipeline a reinicia em cada
   chamada de ``executar_atendimento``;

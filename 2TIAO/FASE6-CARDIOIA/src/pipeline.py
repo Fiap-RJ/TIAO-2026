@@ -8,7 +8,7 @@ testes (o parâmetro ``hooks`` permite observar a execução sem alterá-la).
 Fluxo:
 
 1. cria ou reaproveita o ``ContextoAtendimento`` e reinicia a cadeia do turno
-   (``["Orquestrador"]``; R10.4). Risco, protocolos e notas persistem;
+   (``["Orquestrador"]``). Risco, protocolos e notas persistem;
 2. ``usar_llm=False``: calcula tudo por ``services`` e devolve ``origem="sem_llm"``;
 3. com LLM: exige ``OPENAI_API_KEY`` (``ConfiguracaoError``), inicializa o SDK
    uma vez e executa ``Runner.run`` a partir do Orquestrador;
@@ -197,7 +197,7 @@ async def executar_atendimento(
         contexto = ContextoAtendimento(
             atendimento_id=uuid4().hex, paciente=paciente, preditor=obter_preditor()
         )
-    # A cadeia é do turno: cada chamada recomeça no Orquestrador (R10.4).
+    # A cadeia é do turno: cada chamada recomeça no Orquestrador.
     contexto.cadeia_agentes = ["Orquestrador"]
     logger.info(
         "início do atendimento | id=%s | usar_llm=%s | acompanhamento=%s",

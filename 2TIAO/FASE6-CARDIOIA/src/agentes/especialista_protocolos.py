@@ -4,7 +4,7 @@ Agente Especialista em Protocolos — CardioIA Fase 6
 
 Chama ``consultar_protocolos_aplicaveis`` (seleção determinística na base
 P01–P10) e transfere ao Planejador de Resposta com uma ``NotaHandoff``.
-Nunca acrescenta protocolos fora do retorno da tool (A2).
+Nunca acrescenta protocolos fora do retorno da tool.
 """
 
 from agents import Agent, Handoff

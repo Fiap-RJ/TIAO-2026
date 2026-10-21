@@ -3,9 +3,9 @@ Testes do pipeline com ``Runner.run`` mockado (sem rede)
 ========================================================
 
 Mapeamento de exceções → fallback/erro, inicialização idempotente do SDK,
-cadeia de agentes por turno e modo ``sem_llm`` (R10.4, R13.4, R15.1–R15.3,
-CA11, CA12 parte). Os casos de ``UserError`` encadeado reproduzem o embrulho
-real do SDK para exceções levantadas dentro de tools.
+cadeia de agentes por turno e modo ``sem_llm``. Os casos de ``UserError``
+encadeado reproduzem o embrulho real do SDK para exceções levantadas dentro
+de tools.
 """
 
 import asyncio

@@ -2,7 +2,7 @@
 Testes de ``domain.schemas``
 ============================
 
-Cobre a validação de ``DadosPaciente`` (R6.1–R6.4, CA5): normalização de
+Cobre a validação de ``DadosPaciente``: normalização de
 chaves, colisão, campos extras/ausentes, faixas, NaN, tipos, booleanos e
 coerções aceitas. Também confere que ``RecomendacaoFinal`` gera schema estrito.
 """

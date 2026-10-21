@@ -4,8 +4,7 @@ Testes dos agentes, tools e guardrails (sem LLM)
 
 Construção dos quatro agentes (inclui a checagem de assinatura de
 ``on_handoff`` feita pelo SDK), callbacks de handoff, gating mutuamente
-exclusivo, tools com pré-condições e guardrails chamados diretamente
-(R9.1, R10.2, R11.1, R13.1–R13.3, CA10, CA13).
+exclusivo, tools com pré-condições e guardrails chamados diretamente.
 """
 
 import asyncio

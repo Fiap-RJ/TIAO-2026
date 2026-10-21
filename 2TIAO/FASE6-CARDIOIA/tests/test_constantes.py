@@ -4,7 +4,7 @@ Testes de ``domain.constantes``
 
 Regexes de termos prescritivos usadas pelo guardrail de entrada
 (``PEDIDOS_PRESCRICAO``) e pela verificação V5 da saída
-(``TERMOS_PRESCRITIVOS``) — R13.3, CA13 — e coerência básica das constantes.
+(``TERMOS_PRESCRITIVOS``) e coerência básica das constantes.
 """
 
 import pytest

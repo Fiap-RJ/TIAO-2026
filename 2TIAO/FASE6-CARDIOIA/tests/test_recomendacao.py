@@ -2,8 +2,7 @@
 Testes de ``services.recomendacao``
 ===================================
 
-Verificações V1–V5 da saída do LLM e recomendação determinística
-(R13.2, R13.4, CA10, CA13).
+Verificações V1–V5 da saída do LLM e recomendação determinística.
 """
 
 import pytest

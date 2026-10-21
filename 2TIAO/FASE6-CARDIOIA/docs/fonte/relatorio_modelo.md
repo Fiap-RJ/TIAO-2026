@@ -65,4 +65,4 @@ As 6 features da regra somam 0,9587. O resíduo das outras 4 vem de divisões al
 
 Dados reais rotulados por especialistas, ruído e rótulos incertos na simulação, validação temporal (treino no passado, teste no futuro), calibração de probabilidade (`CalibratedClassifierCV`), ajuste do limiar de decisão pelo custo do falso negativo e monitoramento de drift das features contra as `faixas_treino` salvas nos metadados.
 
-<p class="pequeno" markdown="1">Reprodutibilidade: sementes fixas (42) e o `.joblib` com o mesmo SHA-256 em execuções repetidas. Se o notebook for reexecutado em outro runtime (por exemplo, o Colab com outras versões), confira que esta tabela e o Markdown da seção 12 do notebook continuam batendo com as saídas das células 8–11 e regere este PDF.</p>
+<p class="pequeno" markdown="1">Reprodutibilidade: sementes fixas (42) e o `.joblib` com o mesmo SHA-256 em execuções repetidas. Em outro runtime (por exemplo, o Colab com outras versões de bibliotecas), as métricas podem variar levemente.</p>

@@ -10,16 +10,16 @@
 
 **Fase 6 — "Coração Sob Controle": sistema preditivo multiagente para picos de risco**
 
+> **Vídeo demonstrativo (YouTube, não listado):** [inserir link do vídeo aqui](URL_DO_VIDEO)
+
 ## Nome do grupo
 
-`<NOME-DO-GRUPO>` ⚠️ **PREENCHER**
+________
 
 ## 👨‍🎓 Integrantes:
-- <a href="https://www.linkedin.com/in/michaelrodriguess/">Michael Rodrigues</a> — RM00000 ⚠️ **PREENCHER**
-- <a href="https://www.linkedin.com/in/arthur-alentejo/">Arthur Alentejo</a> — RM00000 ⚠️ **PREENCHER**
-- <a href="https://www.linkedin.com/in/nathalia-vasconcelos-18a390292/">Nathalia Vasconcelos</a> — RM00000 ⚠️ **PREENCHER**
-- `<NOME-4º-INTEGRANTE>` — RM00000 ⚠️ **PREENCHER** (o ponto extra do critério 9 exige de 4 a 5 integrantes; apague a linha se não houver)
-- `<NOME-5º-INTEGRANTE>` — RM00000 ⚠️ **PREENCHER** (opcional; apague a linha se não houver)
+- <a href="https://www.linkedin.com/in/michaelrodriguess/">Michael Rodrigues</a>
+- <a href="https://www.linkedin.com/in/arthur-alentejo/">Arthur Alentejo</a>
+- <a href="https://www.linkedin.com/in/nathalia-vasconcelos-18a390292/">Nathalia Vasconcelos</a>
 
 ## 👩‍🏫 Professores:
 ### Tutor(a)
@@ -149,33 +149,19 @@ Dependências só "para dentro": `agentes` e `pipeline` usam `services`, `ml`, `
 | `agentes` | contexto, tools, guardrails e fábricas dos agentes | `core`, `domain`, `services`, `agents` (SDK) |
 | `pipeline.py` / `main.py` | execução de um turno com fallback / CLI | todos acima + `ml`, `openai` |
 
-## 🧭 Decisões de projeto
+## 🧭 Interpretações do enunciado e decisões de projeto
 
-| # | Ambiguidade do enunciado | Decisão |
+| # | Ponto do enunciado | Decisão |
 |---|---|---|
-| A1 | Chave `"disponibilidade recursos"` (com espaço) no `novo_caso` | `DadosPaciente` normaliza as chaves (trim, minúsculas, espaço/hífen → `_`), detecta colisões e rejeita campos extras. O notebook faz `rename` explícito, com comentário. |
-| A2 | O exemplo de resposta do enunciado (0,91; P01, P02, P05) diverge das regras | Seleção determinística com comparação estrita: o `novo_caso` aciona **P02, P05, P08 e P10**. P01 não aciona (SpO2 89 não é < 88) e aparece como sinal de atenção; P08 aciona (densidade 7 > 6); P10 aciona (risco ALTO). O exemplo é tratado como ilustração de formato. |
-| A3 | Limiares do alvo × limiares dos protocolos | Camadas diferentes: as 6 regras do alvo ensinam o modelo e geram os "sinais de atenção"; os 10 protocolos são gatilhos de ação, mais severos. |
-| A4 | Acurácia ~100% | Explicada como base sintética trivialmente separável (não é vazamento), com as importâncias como evidência. LR como contraponto (0,816). |
-| A5 | Faixas de risco e "risco sistêmico alto" (P10) | BAIXO < 0,40 ≤ MODERADO < 0,70 ≤ ALTO; limiar de decisão 0,50; P10 ⇔ ALTO. Constantes em `domain/constantes.py`. |
-| A6 | Provedor de LLM | OpenAI direto via `openai-agents`, `OPENAI_MODEL=gpt-4.1-mini`, chave só em `src/.env`. `--sem-llm` permite rodar e testar tudo sem chave. |
-| A7 | Integrantes e RMs | Nomes e LinkedIn da Fase 5; RMs, nome do grupo e links como placeholders "PREENCHER". |
-| A8 | Local do modelo e reprodutibilidade | O notebook gera `.joblib` + `.metadata.json`, versionados em `models/`. O `requirements.txt` fixa as versões de ML do runtime de treino; o sistema valida as features e avisa se a versão do scikit-learn mudar. |
+| 1 | Chave `"disponibilidade recursos"` (com espaço) no `novo_caso` | `DadosPaciente` normaliza as chaves (trim, minúsculas, espaço/hífen → `_`), detecta colisões e rejeita campos extras. O notebook faz `rename` explícito, com comentário. |
+| 2 | O exemplo de resposta do enunciado (0,91; P01, P02, P05) diverge das regras | Seleção determinística com comparação estrita: o `novo_caso` aciona **P02, P05, P08 e P10**. P01 não aciona (SpO2 89 não é < 88) e aparece como sinal de atenção; P08 aciona (densidade 7 > 6); P10 aciona (risco ALTO). O exemplo é tratado como ilustração de formato. |
+| 3 | Limiares do alvo × limiares dos protocolos | Camadas diferentes: as 6 regras do alvo ensinam o modelo e geram os "sinais de atenção"; os 10 protocolos são gatilhos de ação, mais severos. |
+| 4 | Acurácia ~100% | Explicada como base sintética trivialmente separável (não é vazamento), com as importâncias como evidência. LR como contraponto (0,816). |
+| 5 | Faixas de risco e "risco sistêmico alto" (P10) | BAIXO < 0,40 ≤ MODERADO < 0,70 ≤ ALTO; limiar de decisão 0,50; P10 ⇔ ALTO. Constantes em `domain/constantes.py`. |
+| 6 | Provedor de LLM | OpenAI direto via `openai-agents`, `OPENAI_MODEL=gpt-4.1-mini`, chave só em `src/.env`. `--sem-llm` permite rodar e testar tudo sem chave. |
+| 7 | Local do modelo e reprodutibilidade | O notebook gera `.joblib` + `.metadata.json`, versionados em `models/`. O `requirements.txt` fixa as versões de ML do runtime de treino; o sistema valida as features e avisa se a versão do scikit-learn mudar. |
 
-Pontos de implementação além do design: o campo opcional `RespostaAtendimento.motivo_fallback` (aparece no `--json`), o módulo `agentes/instrucoes.py` (prefixo do SDK, regra de escopo e `ModelSettings`) e os predicados de gating em `agentes/contexto.py`, reexportados por `agentes/orquestrador.py`.
-
-### Correspondência com o template da coordenação
-
-A fase segue o padrão das Fases 4 e 5 deste repositório (`2TIAO/FASE6-CARDIOIA/`) em vez do caminho literal do template (`2TIAO/FASE6/<ATIVIDADE>/`). A estrutura interna adota as pastas do template:
-
-| Template da coordenação | Nesta fase |
-|---|---|
-| `docs/` | [`docs/`](docs/): PDFs do relatório do modelo e da arquitetura; fontes Markdown e Mermaid em `docs/fonte/` |
-| `data/` | [`data/`](data/): `novo_caso.json` (a base é regerada por código) |
-| `src/` | [`src/`](src/): notebook, CLI, pipeline e pacotes `core`, `domain`, `ml`, `services`, `agentes` |
-| `assets/` | [`assets/`](assets/): logo, matriz de confusão e diagramas |
-| `Ir Além/` | não realizado (a pasta só tem um README explicando isso) |
-| `README.md` | este arquivo |
+Detalhes de implementação adicionais: o campo opcional `RespostaAtendimento.motivo_fallback` (aparece no `--json`), o módulo `agentes/instrucoes.py` (prefixo do SDK, regra de escopo e `ModelSettings`) e os predicados de gating em `agentes/contexto.py`, reexportados por `agentes/orquestrador.py`.
 
 ## 🔧 Como executar o código
 
@@ -279,7 +265,7 @@ FASE6-CARDIOIA/
 ├── docs/
 │   ├── relatorio_modelo.pdf         # relatório do modelo (≤ 2 págs.)
 │   ├── arquitetura_multiagente.pdf  # arquitetura multiagente (≤ 3 págs.)
-│   └── fonte/                       # fontes: .md dos PDFs, .mmd dos diagramas, exemplos JSON, roteiro e checklist
+│   └── fonte/                       # fontes: .md dos PDFs, .mmd dos diagramas e exemplos JSON
 ├── models/
 │   ├── modelo_pico_risco.joblib     # Random Forest treinado no notebook
 │   └── modelo_pico_risco.metadata.json  # features, limiar, métricas, faixas de treino, versões
@@ -304,19 +290,16 @@ FASE6-CARDIOIA/
 ├── conftest.py                      # fixtures compartilhadas de tests/
 ├── pytest.ini                       # pythonpath = src; marker llm
 ├── requirements.txt                 # dependências diretas com versões exatas
-├── ENTREGA.txt                      # conteúdo do .txt enviado no Portal
 └── README.md
 ```
 
 ## 🎥 Vídeo
 
-Vídeo demonstrativo (até 4 min, YouTube "não listado"): `<URL-VIDEO-PRINCIPAL>` ⚠️ **PREENCHER**
-
-Roteiro: [`docs/fonte/roteiro_video.md`](docs/fonte/roteiro_video.md).
+Vídeo demonstrativo (YouTube, "não listado"): [inserir link do vídeo aqui](URL_DO_VIDEO)
 
 ## 🚀 Ir Além
 
-Não realizado: os desafios opcionais 1 e 2 ficaram fora do escopo desta entrega.
+Não realizado: os desafios opcionais 1 e 2 ficaram fora do escopo desta entrega (a pasta [`Ir Além/`](Ir%20Além/README.md) só registra isso).
 
 ## 🗃 Histórico de lançamentos
 

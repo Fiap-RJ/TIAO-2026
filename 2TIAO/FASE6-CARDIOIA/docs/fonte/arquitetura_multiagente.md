@@ -78,7 +78,7 @@ O enunciado mostra, para o `novo_caso`, RISCO PREVISTO 0,91 e os protocolos P01,
 
 Tratamos o exemplo do enunciado como ilustração de formato. Deixar o LLM escolher os protocolos seria menos auditável, não reprodutível e poderia copiar o exemplo. O output guardrail (V3) rejeita qualquer conjunto diferente do calculado.
 
-## 7. Pontos de implementação além do design
+## 7. Detalhes de implementação
 
 - `RespostaAtendimento.motivo_fallback` (opcional, `null` fora do fallback) aparece no `--json` e em `exemplo_execucao.json`.
 - `agentes/instrucoes.py` reúne o `RECOMMENDED_PROMPT_PREFIX`, a regra de escopo comum e o `ModelSettings` (sem `temperature` se `OPENAI_TEMPERATURE` estiver vazio).

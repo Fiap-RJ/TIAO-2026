@@ -3,7 +3,7 @@ Testes de ``core.config``
 =========================
 
 Parse preguiçoso das variáveis de ambiente e ``ConfiguracaoError`` com o nome
-da variável (R16.1, R16.3, RNF3). Usa a fixture ``settings_limpas``.
+da variável. Usa a fixture ``settings_limpas``.
 """
 
 import subprocess

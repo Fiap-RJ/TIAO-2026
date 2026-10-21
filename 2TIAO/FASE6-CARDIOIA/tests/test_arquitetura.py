@@ -2,7 +2,7 @@
 Teste de arquitetura
 ====================
 
-Direção de dependências (R17.1, R17.2): ``core``, ``domain``, ``ml`` e
+Direção de dependências: ``core``, ``domain``, ``ml`` e
 ``services`` não importam o OpenAI Agents SDK (``agents``). Roda em
 subprocesso para não herdar módulos já importados por outros testes.
 """
