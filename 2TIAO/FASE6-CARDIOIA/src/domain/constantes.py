@@ -3,8 +3,8 @@ Constantes de domínio — CardioIA Fase 6
 =======================================
 
 Fonte única das regras fixas do sistema: ordem das features do modelo,
-limiar de decisão, faixas de risco (A5), regras de geração do alvo (A3),
-aviso legal e expressões de termos prescritivos (R13.3).
+limiar de decisão, faixas de risco, regras de geração do alvo, aviso legal e expressões de
+termos prescritivos.
 
 As faixas não são configuráveis por variável de ambiente: mudá-las é mudança
 de regra de negócio e deve passar por código e testes.
@@ -30,7 +30,7 @@ FEATURES: tuple[str, ...] = (
 # Limiar do classificador: pico_risco_previsto = probabilidade >= 0,50.
 LIMIAR_DECISAO = 0.50
 
-# Faixas de risco (A5): BAIXO < 0,40 ≤ MODERADO < 0,70 ≤ ALTO.
+# Faixas de risco: BAIXO < 0,40 ≤ MODERADO < 0,70 ≤ ALTO.
 # O limiar de decisão (0,50) cai dentro de MODERADO, a zona de incerteza.
 FAIXA_MODERADO, FAIXA_ALTO = 0.40, 0.70
 

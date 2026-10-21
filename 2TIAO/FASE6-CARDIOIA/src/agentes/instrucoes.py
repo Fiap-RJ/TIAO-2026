@@ -3,7 +3,7 @@ Trechos comuns das instruções e configuração de modelo — CardioIA Fase 6
 ========================================================================
 
 Texto compartilhado pelas instruções dos quatro agentes (regra de escopo
-informativo, R24) e a montagem do ``ModelSettings`` a partir de ``Settings``.
+informativo) e a montagem do ``ModelSettings`` a partir de ``Settings``.
 """
 
 from typing import Any

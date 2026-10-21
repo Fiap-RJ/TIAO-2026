@@ -4,7 +4,7 @@ Protocolos operacionais — CardioIA Fase 6
 
 Base simulada P01–P10 (texto literal do enunciado) e seleção determinística.
 
-Duas camadas de limiar (A3):
+Duas camadas de limiar:
 
 - os **protocolos** são gatilhos de ação (ex.: ``carga_sistema > 85`` → abrir
   unidades temporárias);
@@ -14,7 +14,7 @@ Duas camadas de limiar (A3):
 Uma feature que atende à regra do alvo, mas não ao gatilho do protocolo, vira
 "sinal de atenção" (ex.: SpO2 89 é < 92, mas não < 88: P01 não aciona).
 
-A seleção é feita por código (A2): o LLM não escolhe protocolos, e o guardrail
+A seleção é feita por código: o LLM não escolhe protocolos, e o guardrail
 de saída rejeita qualquer conjunto diferente deste.
 """
 

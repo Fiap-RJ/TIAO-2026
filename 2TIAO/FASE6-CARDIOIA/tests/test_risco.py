@@ -2,8 +2,7 @@
 Testes de ``services.risco``
 ============================
 
-Fronteiras das faixas BAIXO/MODERADO/ALTO e do limiar de decisão 0,50
-(R8.1, R8.2, CA8).
+Fronteiras das faixas BAIXO/MODERADO/ALTO e do limiar de decisão 0,50.
 """
 
 import math

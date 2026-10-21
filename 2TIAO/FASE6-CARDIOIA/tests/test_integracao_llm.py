@@ -4,8 +4,7 @@ Integração com o LLM real (``pytest -m llm``)
 
 Faz chamadas reais à OpenAI; é pulado sem ``OPENAI_API_KEY`` (ambiente ou
 ``src/.env``). Confere o fluxo completo de handoffs, a igualdade dos valores
-com o modo ``--sem-llm`` e o turno de acompanhamento na mesma sessão
-(R10.1, R10.3, R10.4, R12.1, R12.2, CA9, CA12).
+com o modo ``--sem-llm`` e o turno de acompanhamento na mesma sessão.
 """
 
 import pytest

@@ -6,7 +6,7 @@ Agente Orquestrador e montagem da cadeia — CardioIA Fase 6
 
     Orquestrador → Analista de Risco → Especialista em Protocolos → Planejador de Resposta
 
-Gating por código (R10.2): os três predicados (``risco_pendente``,
+Gating por código: os três predicados (``risco_pendente``,
 ``protocolos_pendentes`` e ``pronto_para_planejar``, definidos em
 ``agentes/contexto.py`` e reexportados aqui) são mutuamente
 exclusivos, então em cada etapa existe exatamente um handoff habilitado para o

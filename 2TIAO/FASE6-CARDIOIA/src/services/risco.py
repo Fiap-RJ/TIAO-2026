@@ -2,7 +2,7 @@
 Avaliação de risco — CardioIA Fase 6
 ====================================
 
-Fonte única da probabilidade e da faixa de risco (A5):
+Fonte única da probabilidade e da faixa de risco:
 
 - ``BAIXO``    : p < 0,40
 - ``MODERADO`` : 0,40 ≤ p < 0,70 (contém o limiar de decisão 0,50)
@@ -48,7 +48,7 @@ def classificar_risco(probabilidade: float) -> Classificacao:
 
 
 def _avisos_extrapolacao(paciente: DadosPaciente, faixas: dict[str, Any]) -> list[str]:
-    """Valores válidos, mas fora do intervalo visto no treino (R6.5): aviso, não erro."""
+    """Valores válidos, mas fora do intervalo visto no treino: aviso, não erro."""
     avisos = []
     for nome in FEATURES:
         if nome not in faixas:

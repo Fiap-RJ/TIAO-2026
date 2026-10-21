@@ -3,7 +3,7 @@ Testes de ``services.protocolos``
 =================================
 
 Comparação estrita nos limiares de P01–P09, P10 ⇔ ALTO, resultado do
-``novo_caso`` e fidelidade dos textos ao enunciado (R7.1–R7.5, CA4, CA7).
+``novo_caso`` e fidelidade dos textos ao enunciado.
 """
 
 import pytest

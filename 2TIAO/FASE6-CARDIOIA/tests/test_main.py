@@ -2,9 +2,8 @@
 Testes da CLI (``main.main(argv)``)
 ===================================
 
-Códigos de saída e saídas da CLI sem LLM (R6.3, R14.2, R15.1, R16.1, CA4,
-CA5). O loop interativo é exercitado com o pipeline substituído por um stub,
-sem rede.
+Códigos de saída e saídas da CLI sem LLM. O loop interativo é exercitado com
+o pipeline substituído por um stub, sem rede.
 """
 
 import io

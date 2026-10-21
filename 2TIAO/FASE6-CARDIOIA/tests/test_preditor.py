@@ -4,8 +4,7 @@ Testes de ``ml.preditor``
 
 Usa o artefato versionado em ``models/`` (``skip`` com motivo claro se ele
 faltar). Confere que o artefato corresponde ao pipeline do notebook: regera a
-base e o mesmo split e exige acurácia ≥ 0,98 no teste (R4.1, R4.3, R4.5,
-RNF1, CA3).
+base e o mesmo split e exige acurácia ≥ 0,98 no teste.
 """
 
 import json

@@ -5,7 +5,7 @@ Schemas Pydantic — CardioIA Fase 6
 Modelos de entrada, de resultados intermediários e de saída do atendimento.
 
 - ``DadosPaciente``: entrada validada (faixas de plausibilidade, sem campos
-  extras, sem NaN/infinito, sem booleanos) e com chaves normalizadas (A1).
+  extras, sem NaN/infinito, sem booleanos) e com chaves normalizadas.
 - ``AvaliacaoRisco``, ``ProtocoloAcionado``, ``SinalAtencao`` e
   ``ResultadoProtocolos``: resultados calculados pelo código (``services``).
 - ``NotaHandoff``: ``input_type`` dos handoffs entre especialistas.
@@ -72,7 +72,7 @@ class DadosPaciente(BaseModel):
     @model_validator(mode="before")
     @classmethod
     def normalizar_chaves(cls, dados: Any) -> Any:
-        """Normaliza chaves (A1): trim, minúsculas, espaços/hífens → ``_``.
+        """Normaliza chaves: trim, minúsculas, espaços/hífens → ``_``.
 
         Aceita, por exemplo, ``"disponibilidade recursos"`` (como no enunciado).
         Colisão (ex.: ``"disponibilidade recursos"`` e ``"disponibilidade_recursos"``
@@ -158,7 +158,7 @@ class ProtocoloAcionado(BaseModel):
 
 
 class SinalAtencao(BaseModel):
-    """Feature acima do limiar de risco do alvo, mas abaixo do gatilho do protocolo (A3)."""
+    """Feature acima do limiar de risco do alvo, mas abaixo do gatilho do protocolo."""
 
     variavel: str = Field(..., description="Feature observada")
     valor: float = Field(..., description="Valor do paciente")

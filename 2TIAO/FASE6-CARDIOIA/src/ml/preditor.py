@@ -9,7 +9,7 @@ Na construção, o preditor:
 
 1. lê os metadados e confere que ``features`` é exatamente ``FEATURES``;
 2. faz ``joblib.load`` apenas do caminho configurado (o artefato é pickle:
-   nunca carregue arquivo de terceiros — RNF3);
+   nunca carregue arquivo de terceiros);
 3. confere que o objeto tem ``predict_proba``;
 4. compara a versão do scikit-learn instalada com a do treino (aviso, não erro).
 
