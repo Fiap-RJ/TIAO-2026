@@ -1,0 +1,16 @@
+# requirements.txt — dependências diretas, versões exatas
+# ML: versões do runtime usado no treino (célula 2 do notebook), as mesmas de
+# models/modelo_pico_risco.metadata.json → "versoes". O pickle do modelo só é
+# garantido nessas versões.
+scikit-learn==1.9.1
+numpy==2.5.4
+pandas==3.0.6
+joblib==1.6.0
+matplotlib==3.11.2      # só para rodar o notebook localmente
+# Multiagente e app (pip freeze do venv validado)
+openai-agents==0.24.0
+openai==3.35.1          # importado diretamente em pipeline.py (exceções APIConnectionError, RateLimitError…)
+pydantic==2.14.1
+python-dotenv==1.2.4
+# Testes
+pytest==9.1.1
