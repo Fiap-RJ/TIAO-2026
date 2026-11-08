@@ -2,6 +2,8 @@
 
 Painel web da CardioIA: login, lista de pacientes ordenada por risco, painel do paciente (medidor de risco, sinais vitais em tempo real, protocolos, ações operacionais) e chat com o assistente.
 
+**URL pública (Vercel):** [https://tiao-2026.vercel.app](https://tiao-2026.vercel.app)
+
 ## Rodar localmente
 
 ```bash
