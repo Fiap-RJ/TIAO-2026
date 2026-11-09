@@ -1,0 +1,136 @@
+{
+  "nome": "modelo_pico_risco",
+  "versao": "rf-v1",
+  "algoritmo": "RandomForestClassifier",
+  "hiperparametros": {
+    "n_estimators": 200,
+    "random_state": 42
+  },
+  "features": [
+    "idade_media",
+    "carga_sistema",
+    "tempo_espera",
+    "fc_media",
+    "spo2_media",
+    "pa_sistolica",
+    "temperatura",
+    "densidade_eventos",
+    "eventos_24h",
+    "disponibilidade_recursos"
+  ],
+  "limiar_decisao": 0.5,
+  "dados": {
+    "seed": 42,
+    "n": 5000,
+    "test_size": 0.2,
+    "prevalencia_positiva": 0.2658
+  },
+  "metricas_teste": {
+    "acuracia": 0.999,
+    "precisao": 1.0,
+    "recall": 0.9962,
+    "f1": 0.9981,
+    "matriz_confusao": [
+      [
+        734,
+        0
+      ],
+      [
+        1,
+        265
+      ]
+    ]
+  },
+  "baseline": {
+    "algoritmo": "LogisticRegression (StandardScaler + max_iter=1000)",
+    "metricas_teste": {
+      "acuracia": 0.816,
+      "precisao": 0.6934,
+      "recall": 0.5526,
+      "f1": 0.6151,
+      "matriz_confusao": [
+        [
+          669,
+          65
+        ],
+        [
+          119,
+          147
+        ]
+      ]
+    }
+  },
+  "validacao_cruzada": {
+    "folds": 5,
+    "random_forest": {
+      "media": 0.9977,
+      "desvio": 0.0018
+    },
+    "regressao_logistica": {
+      "media": 0.8297,
+      "desvio": 0.014
+    }
+  },
+  "importancias_features": {
+    "idade_media": 0.0129,
+    "carga_sistema": 0.233,
+    "tempo_espera": 0.202,
+    "fc_media": 0.0695,
+    "spo2_media": 0.166,
+    "pa_sistolica": 0.0115,
+    "temperatura": 0.0119,
+    "densidade_eventos": 0.005,
+    "eventos_24h": 0.0641,
+    "disponibilidade_recursos": 0.2242
+  },
+  "faixas_treino": {
+    "idade_media": [
+      18.0,
+      90.0
+    ],
+    "carga_sistema": [
+      30.003697885260777,
+      99.96536327959616
+    ],
+    "tempo_espera": [
+      5.0,
+      113.57820956016427
+    ],
+    "fc_media": [
+      50.0,
+      150.0
+    ],
+    "spo2_media": [
+      83.43087401227821,
+      100.0
+    ],
+    "pa_sistolica": [
+      80.0,
+      189.30748392425664
+    ],
+    "temperatura": [
+      10.0,
+      40.0
+    ],
+    "densidade_eventos": [
+      0.0,
+      13.0
+    ],
+    "eventos_24h": [
+      0.0,
+      9.0
+    ],
+    "disponibilidade_recursos": [
+      20.04313713463069,
+      99.98937604023
+    ]
+  },
+  "versoes": {
+    "python": "3.12.3",
+    "scikit-learn": "1.9.1",
+    "numpy": "2.5.4",
+    "pandas": "3.0.6",
+    "joblib": "1.6.0"
+  },
+  "treinado_em": "2026-10-20T22:28:43Z"
+}

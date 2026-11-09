@@ -12,10 +12,18 @@ import os
 import re
 from typing import Optional
 
-from ibm_cloud_sdk_core.api_exception import ApiException
-from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
-from ibm_watson import AssistantV2
-from openai import OpenAI
+try:
+    from ibm_cloud_sdk_core.api_exception import ApiException
+    from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+    from ibm_watson import AssistantV2
+except ImportError:  # API continua disponível com fallback em ambientes locais.
+    ApiException = Exception
+    IAMAuthenticator = AssistantV2 = None
+
+try:
+    from openai import OpenAI
+except ImportError:
+    OpenAI = None
 
 logger = logging.getLogger("cardioia.services.chat")
 
@@ -46,7 +54,7 @@ class ChatIntegradorService:
         url = os.getenv("WA_URL")
         version = os.getenv("WA_VERSION", "2021-06-14")
 
-        if api_key and url and self.wa_assistant_id:
+        if AssistantV2 and api_key and url and self.wa_assistant_id:
             try:
                 auth = IAMAuthenticator(api_key)
                 self.wa_client = AssistantV2(version=version, authenticator=auth)
@@ -59,7 +67,7 @@ class ChatIntegradorService:
     def _inicializar_openai(self):
         """Inicializa o cliente OpenAI para reserva operacional."""
         api_key = os.getenv("OPENAI_API_KEY")
-        if api_key:
+        if OpenAI and api_key:
             try:
                 self.openai_client = OpenAI(api_key=api_key)
                 logger.info("Cliente OpenAI (reserva) inicializado com sucesso.")
@@ -147,7 +155,7 @@ class ChatIntegradorService:
         # Validação de escopo inspirada no guardrail da Fase 6
         if RE_PRESCRICAO.search(mensagem):
             return {
-                "origem": "openai_guardrail",
+                "origem": "openai",
                 "resposta": (
                     "O CardioIA é uma ferramenta de apoio informativo e não indica medicamentos, "
                     "prescrições ou dosagens. Para orientações farmacológicas, consulte um médico."
@@ -174,7 +182,7 @@ class ChatIntegradorService:
                 temperature=0.3,
             )
             return {
-                "origem": "openai_fallback",
+                "origem": "openai",
                 "resposta": completion.choices[0].message.content,
                 "session_id": session_id,
             }
@@ -185,7 +193,7 @@ class ChatIntegradorService:
     def _fallback_deterministico(self, session_id: Optional[str]) -> dict:
         """Garante resposta mesmo com todas as APIs cognitivas offline."""
         return {
-            "origem": "fallback_deterministico",
+            "origem": "fallback",
             "resposta": (
                 "Aviso do Sistema CardioIA: Nossos serviços de inteligência conversacional estão "
                 "temporariamente indisponíveis. Se você ou alguém próximo estiver apresentando dor ou "
