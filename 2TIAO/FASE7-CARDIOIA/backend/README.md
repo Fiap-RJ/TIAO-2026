@@ -15,7 +15,8 @@ uvicorn app.main:app --reload
 
 Consulte `http://localhost:8000/docs`. As contas demo são
 `medico@cardioia.com` e `paciente@cardioia.com`, ambas com a senha
-`cardioia`. Configure `DEVICE_KEY` igual no Render e em `iot/main.py`.
+`cardioia`. Configure `DEVICE_KEY` igual no Render e em `iot/main.py` antes
+de iniciar a simulação.
 
 ## Deploy
 
