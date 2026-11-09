@@ -14,8 +14,8 @@ WIFI_PASSWORD = ""
 
 # Alinhar a URL e chave com o Arthur (responsável pelo backend)
 API_URL = "https://cardioia-backend.onrender.com/api/leituras"
-DEVICE_KEY = "cardioia-device-secret-key"
-PACIENTE_ID = 1
+DEVICE_KEY = "INSIRA_A_DEVICE_KEY_DO_RENDER"
+PACIENTE_ID = "p-001"
 
 # Pinos dos Sensores
 PIN_DHT = 15
@@ -101,7 +101,7 @@ def atualizar_atuadores(led_ativo, fc, temp, status):
     oled.text("Estado: {}".format(status), 0, 48)
     oled.show()
 
-def enviar_para_backend(fc, temp):
+def enviar_para_backend(fc, temp, estado):
     """Encaminha telemetria para o endpoint FastAPI com tratamento de falhas."""
     headers = {
         "Content-Type": "application/json",
@@ -112,6 +112,7 @@ def enviar_para_backend(fc, temp):
         "temperatura": float(temp),
         "fc": int(fc),
         "spo2": 97.0,  # Leitura simulada padrão
+        "estado": estado.lower(),
         "ts": int(time.time())
     }
     try:
@@ -145,7 +146,7 @@ while True:
     atualizar_atuadores(led_selecionado, fc_filtrada, temperatura, estado)
 
     # 4. Transmissão para o Render via HTTP POST
-    enviar_para_backend(fc_filtrada, temperatura)
+    enviar_para_backend(fc_filtrada, temperatura, estado)
 
     # Intervalo de 5 segundos entre as amostras
     time.sleep(5)
