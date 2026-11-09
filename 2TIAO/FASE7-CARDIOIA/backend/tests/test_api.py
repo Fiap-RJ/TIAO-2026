@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
 
 from app import db
+from app import main
 from app.main import app
 
 
@@ -12,12 +13,13 @@ def login(client: TestClient, email: str, senha: str = "cardioia") -> dict[str, 
 
 def test_complete_telemetry_flow(tmp_path, monkeypatch):
     monkeypatch.setattr(db, "DATABASE_PATH", tmp_path / "cardioia.db")
+    monkeypatch.setattr(main, "DEVICE_KEY", "chave-de-teste")
     with TestClient(app) as client:
         medico = login(client, "medico@cardioia.com")
         assert client.get("/api/pacientes", headers=medico).status_code == 200
         unauthorized = client.post("/api/leituras", json={"paciente_id": "p-001", "temperatura": 38.5, "fc": 125, "spo2": 90})
         assert unauthorized.status_code == 401
-        reading = client.post("/api/leituras", headers={"X-Device-Key": "cardioia-device-secret-key"}, json={"paciente_id": "p-001", "temperatura": 38.5, "fc": 125, "spo2": 90, "estado": "critico", "ts": "2026-11-09T12:00:00Z"})
+        reading = client.post("/api/leituras", headers={"X-Device-Key": "chave-de-teste"}, json={"paciente_id": "p-001", "temperatura": 38.5, "fc": 125, "spo2": 90, "estado": "critico", "ts": "2026-11-09T12:00:00Z"})
         assert reading.status_code == 201
         assert reading.json()["reavaliado"] is True
         status = client.get("/api/pacientes/p-001/status", headers=medico)

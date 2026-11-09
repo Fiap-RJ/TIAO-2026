@@ -82,6 +82,8 @@ def evaluate_patient(paciente_id: str, usuario: dict = Depends(current_user)):
 
 @app.post("/api/leituras", status_code=status.HTTP_201_CREATED)
 def receive_reading(payload: LeituraEntrada, x_device_key: Annotated[str | None, Header()] = None):
+    if not DEVICE_KEY:
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="DEVICE_KEY não configurada no servidor.")
     if x_device_key != DEVICE_KEY:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Dispositivo não autorizado.")
     patient_or_404(payload.paciente_id)
