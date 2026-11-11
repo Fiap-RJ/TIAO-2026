@@ -51,29 +51,26 @@ TAMANHO_JANELA = 5
 # ==========================================================
 wlan = network.WLAN(network.STA_IF)
 
-def conectar_wifi(timeout_s=60):
-    """Conecta ao Wi-Fi Wokwi-GUEST com status no OLED.
+def conectar_wifi():
+    """Conecta ao Wi-Fi Wokwi-GUEST, no mesmo padrão da documentação do Wokwi.
 
-    O Wi-Fi simulado pode levar dezenas de segundos para subir, por isso a
-    espera é longa; se ainda assim falhar, o laço principal tenta de novo.
+    Chama connect() uma única vez e espera o tempo necessário: no simulador a
+    conexão leva cerca de 15 a 20 s, e chamar connect() de novo no meio da
+    tentativa a reinicia.
     """
     wlan.active(True)
     if wlan.isconnected():
-        return True
+        return
     oled.fill(0)
     oled.text("CardioIA - IoT", 0, 0)
     oled.text("Conectando WiFi", 0, 20)
     oled.show()
+    print("Conectando ao Wi-Fi", end="")
     wlan.connect(WIFI_SSID, WIFI_PASSWORD)
-    inicio = time.time()
-    while not wlan.isconnected() and time.time() - inicio < timeout_s:
-        time.sleep(0.5)
+    while not wlan.isconnected():
         print(".", end="")
-    if wlan.isconnected():
-        print("\nWi-Fi conectado:", wlan.ifconfig()[0])
-        return True
-    print("\nFalha na conexao Wi-Fi; nova tentativa no proximo ciclo.")
-    return False
+        time.sleep(0.1)
+    print("\nWi-Fi conectado:", wlan.ifconfig()[0])
 
 def calcular_media_movel(novo_valor):
     """Calcula a média móvel simples dos batimentos cardíacos."""
@@ -109,8 +106,9 @@ def atualizar_atuadores(led_ativo, fc, temp, status):
 
 def enviar_para_backend(fc, temp, estado):
     """Encaminha telemetria para o endpoint FastAPI com tratamento de falhas."""
-    if not wlan.isconnected() and not conectar_wifi(timeout_s=15):
-        print("Sem Wi-Fi: leitura mantida apenas no dispositivo.")
+    if not wlan.isconnected():
+        # O ESP32 reconecta sozinho; até lá a leitura fica só no OLED/LEDs.
+        print("Wi-Fi desconectado: leitura mantida apenas no dispositivo.")
         return
     headers = {
         "Content-Type": "application/json",
