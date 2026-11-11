@@ -19,7 +19,7 @@
 | API integradora (Render) | [https://cardioia-backend-phkq.onrender.com](https://cardioia-backend-phkq.onrender.com/api/health) |
 | Simulação Wokwi (MicroPython) | _a adicionar: link público do projeto_ |
 | Relatório técnico (PDF) | [`docs/relatorio_fase7.pdf`](docs/relatorio_fase7.pdf) |
-| Vídeo demonstrativo | _a adicionar: link do YouTube_ |
+| Vídeo demonstrativo | [https://youtu.be/OtVBNq8AOJ8](https://youtu.be/OtVBNq8AOJ8) |
 
 ## 👨‍🎓 Integrantes:
 - <a href="https://www.linkedin.com/in/michaelrodriguess/">Michael Rodrigues</a>
