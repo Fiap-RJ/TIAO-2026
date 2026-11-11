@@ -24,7 +24,7 @@ Sem `VITE_API_URL`, o app entra no **modo demonstração**, com dados simulados 
 
 | Variável | Descrição |
 |---|---|
-| `VITE_API_URL` | URL pública do backend integrador, sem barra no final (ex.: `https://cardioia-api.onrender.com`) |
+| `VITE_API_URL` | URL pública do backend integrador, sem barra no final (ex.: `https://<nome-do-servico>.onrender.com`) |
 | `VITE_USE_MOCK` | `true` força o modo demonstração |
 
 As variáveis `VITE_*` são embutidas no build. Depois de alterar na Vercel, faça um novo deploy.
