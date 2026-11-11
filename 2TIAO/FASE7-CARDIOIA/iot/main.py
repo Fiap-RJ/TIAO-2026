@@ -12,7 +12,8 @@ import ssd1306
 WIFI_SSID = "Wokwi-GUEST"
 WIFI_PASSWORD = ""
 
-# Alinhar a URL e chave com o Arthur (responsável pelo backend)
+# URL pública do backend integrador (Render). A DEVICE_KEY não é versionada:
+# no Wokwi, substitua pelo mesmo valor configurado no painel do Render.
 API_URL = "https://cardioia-backend-phkq.onrender.com/api/leituras"
 DEVICE_KEY = "INSIRA_A_DEVICE_KEY_DO_RENDER"
 PACIENTE_ID = "p-001"
@@ -113,7 +114,8 @@ def enviar_para_backend(fc, temp, estado):
         "fc": int(fc),
         "spo2": 97.0,  # Leitura simulada padrão
         "estado": estado.lower(),
-        "ts": int(time.time())
+        # Sem "ts": o ESP32 não tem relógio sincronizado (time.time() conta a
+        # partir de 2000), então o backend registra o horário de recebimento.
     }
     try:
         res = urequests.post(API_URL, data=ujson.dumps(payload), headers=headers)
