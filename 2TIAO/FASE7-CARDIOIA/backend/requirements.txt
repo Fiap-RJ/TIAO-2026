@@ -7,7 +7,6 @@ numpy==2.5.4
 pandas==3.0.6
 scikit-learn==1.9.1
 openai==3.35.1
-openai-agents==0.24.0
 ibm-watson==11.1.0
 pytest==9.1.1
 httpx==0.28.1
