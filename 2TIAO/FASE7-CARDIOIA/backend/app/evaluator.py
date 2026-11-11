@@ -43,6 +43,3 @@ def evaluate(paciente_id: str) -> dict:
     db.save_assessment(paciente_id, resultado)
     return resultado
 
-
-def needs_automatic_evaluation(leitura: dict) -> bool:
-    return leitura["estado"] == "critico" or leitura["fc"] > 110 or leitura["spo2"] < 92 or leitura["temperatura"] > 38

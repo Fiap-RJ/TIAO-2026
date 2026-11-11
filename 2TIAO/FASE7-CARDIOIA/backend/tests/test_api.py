@@ -44,3 +44,26 @@ def test_chat_contract_works_without_external_provider(tmp_path, monkeypatch):
         assert response.status_code == 200
         assert response.json()["origem"] in {"watson", "openai", "fallback"}
         assert response.json()["sessao_id"]
+
+
+def test_startup_seeds_history_and_assessment(tmp_path, monkeypatch):
+    monkeypatch.setattr(db, "DATABASE_PATH", tmp_path / "cardioia.db")
+    with TestClient(app) as client:
+        medico = login(client, "medico@cardioia.com")
+        pacientes = client.get("/api/pacientes", headers=medico).json()
+        assert all(p["ultima_leitura"] and p["classificacao"] for p in pacientes)
+
+
+def test_risk_goes_back_down_after_normal_readings(tmp_path, monkeypatch):
+    monkeypatch.setattr(db, "DATABASE_PATH", tmp_path / "cardioia.db")
+    monkeypatch.setattr(main, "DEVICE_KEY", "chave-de-teste")
+    chave = {"X-Device-Key": "chave-de-teste"}
+    with TestClient(app) as client:
+        medico = login(client, "medico@cardioia.com")
+        for _ in range(5):
+            client.post("/api/leituras", headers=chave, json={"paciente_id": "p-001", "temperatura": 38.6, "fc": 130, "spo2": 89})
+        pico = client.get("/api/pacientes/p-001/status", headers=medico).json()["avaliacao"]["avaliacao_risco"]
+        for _ in range(5):
+            client.post("/api/leituras", headers=chave, json={"paciente_id": "p-001", "temperatura": 36.6, "fc": 78, "spo2": 97})
+        normal = client.get("/api/pacientes/p-001/status", headers=medico).json()["avaliacao"]["avaliacao_risco"]
+        assert normal["probabilidade"] < pico["probabilidade"]

@@ -1,6 +1,7 @@
 """Ponto de entrada do backend integrador CardioIA."""
 
 from contextlib import asynccontextmanager
+from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, Header, HTTPException, status
@@ -10,14 +11,43 @@ from . import db
 from services.chat_service import chat_service
 from .config import CORS_ORIGINS, DEVICE_KEY
 from .dependencies import authorize_patient, current_user, require_doctor
-from .evaluator import evaluate, needs_automatic_evaluation
+from .evaluator import evaluate
 from .schemas import ChatRequest, LeituraEntrada, LoginRequest
 from .security import create_token, hash_password
+
+# Sinais iniciais (fc, spo2, temperatura) dos pacientes de demonstração.
+HISTORICO_INICIAL = {"p-001": (86, 96, 36.8), "p-002": (104, 93, 37.6)}
+
+
+def seed_demo_history() -> None:
+    """Garante que o painel não comece vazio.
+
+    No plano gratuito do Render o disco é recriado a cada reinício; aqui cada
+    paciente sem leituras recebe um histórico curto e todo paciente sem
+    avaliação é avaliado uma vez.
+    """
+    agora = datetime.now(timezone.utc)
+    for paciente_id, (fc, spo2, temperatura) in HISTORICO_INICIAL.items():
+        if not db.patient_by_id(paciente_id):
+            continue
+        if not db.readings(paciente_id, limit=1):
+            for i in range(6, 0, -1):
+                leitura = LeituraEntrada(
+                    paciente_id=paciente_id,
+                    fc=fc + (i % 3) - 1,
+                    spo2=spo2,
+                    temperatura=temperatura,
+                    ts=agora - timedelta(seconds=5 * i),
+                )
+                db.add_reading(leitura.normalized())
+        if not db.latest_assessment(paciente_id):
+            evaluate(paciente_id)
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     db.initialize()
+    seed_demo_history()
     yield
 
 
@@ -89,8 +119,10 @@ def receive_reading(payload: LeituraEntrada, x_device_key: Annotated[str | None,
     patient_or_404(payload.paciente_id)
     leitura = payload.normalized()
     db.add_reading(leitura)
-    avaliacao = evaluate(leitura["paciente_id"]) if needs_automatic_evaluation(leitura) else None
-    return {"recebida": True, "reavaliado": avaliacao is not None}
+    # Reavalia a cada leitura (modelo + regras, sem LLM): o risco sobe e também
+    # volta a baixar quando o sinal se normaliza.
+    evaluate(leitura["paciente_id"])
+    return {"recebida": True, "reavaliado": True}
 
 
 @app.post("/api/chat")

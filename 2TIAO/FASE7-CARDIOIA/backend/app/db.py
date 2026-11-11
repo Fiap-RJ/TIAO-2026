@@ -71,7 +71,7 @@ def add_reading(payload: dict) -> None:
 
 def readings(paciente_id: str, limit: int = 60):
     with connection() as conn:
-        rows = conn.execute("SELECT temperatura, fc, spo2, estado, ts FROM leituras WHERE paciente_id = ? ORDER BY ts DESC LIMIT ?", (paciente_id, limit)).fetchall()
+        rows = conn.execute("SELECT temperatura, fc, spo2, estado, ts FROM leituras WHERE paciente_id = ? ORDER BY id DESC LIMIT ?", (paciente_id, limit)).fetchall()
     return list(reversed(rows))
 
 
