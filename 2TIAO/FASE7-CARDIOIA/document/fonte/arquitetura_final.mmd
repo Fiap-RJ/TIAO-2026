@@ -1,84 +1,57 @@
-flowchart TB
-    %% Estilos visuais por camada
-    classDef bordaStyle fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:#01579b;
-    classDef backendStyle fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#1b5e20;
-    classDef iaStyle fill:#fff3e0,stroke:#ef6c00,stroke-width:2px,color:#e65100;
-    classDef frontStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#4a148c;
+flowchart LR
+    %% Fluxo do enunciado: Sensor → MicroPython → Backend Python → APIs de IA → UI
+    classDef borda fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:#01579b;
+    classDef backend fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#1b5e20;
+    classDef ia fill:#fff3e0,stroke:#ef6c00,stroke-width:2px,color:#e65100;
+    classDef front fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#4a148c;
 
-    %% CAMADA 1: Borda IoT (Wokwi)
-    subgraph BORDA [" Camada de Borda IoT (Wokwi - ESP32 / MicroPython) "]
-        S1["Sensor DHT22<br/>(Temperatura Corporal)"]
-        S2["Potenciômetro Analógico<br/>(Frequência Cardíaca Simulada)"]
-        ESP["ESP32 MicroPython (main.py)<br/>• Média móvel temporal (5 amostras)<br/>• Classificação clínica local"]
-        HMI["Interface Visual de Leito:<br/>• LEDs (Verde, Amarelo, Vermelho)<br/>• Display OLED SSD1306 (I2C)"]
-        
-        S1 --> ESP
-        S2 --> ESP
-        ESP --> HMI
+    subgraph SENSOR ["1 · Sensores (Wokwi)"]
+        DHT["DHT22<br/>temperatura"]
+        POT["Potenciômetro<br/>batimentos simulados"]
     end
 
-    %% CAMADA 2: Backend Integrador (FastAPI no Render)
-    subgraph BACKEND [" Backend Integrador (FastAPI / Render Cloud) "]
-        API["API Gateway FastAPI (Uvicorn)<br/>• Auth JWT demo (Médico / Paciente)<br/>• Header X-Device-Key"]
-        DB[("SQLite (banco local)<br/>• Usuários e Pacientes<br/>• Leituras de Sensores<br/>• Avaliações de Risco")]
-        CHAT_SRV["Serviço Integrador de Chat<br/>(services/chat_service.py)"]
-        PIPE["Pipeline de Atendimento<br/>(pipeline.py)"]
-        
-        API <--> DB
-        API --> CHAT_SRV
-        API --> PIPE
+    subgraph BORDA ["2 · ESP32 · MicroPython"]
+        ESP["main.py<br/>• média móvel (5 amostras)<br/>• classificação local<br/>normal / atenção / crítico"]
+        HMI["LEDs verde · amarelo · vermelho<br/>OLED SSD1306"]
     end
 
-    %% CAMADA 3: Camada de IA, Modelos e Serviços Cognitivos
-    subgraph IA [" Camada de Inteligência Artificial & LLMs "]
-        subgraph CHAT_COGNITIVO [" Triagem Conversacional "]
-            WATSON["IBM Watson Assistant V2<br/>(Diálogo primário de triagem)"]
-            OAI_CHAT["OpenAI GPT-4o-mini<br/>(Reserva com guardrails clínicos)"]
-            DET_CHAT["Fallback Determinístico de Chat<br/>(Orientações de emergência / SAMU 192)"]
-        end
-
-        subgraph MOTOR_PREDITIVO [" Predição de Risco & Multiagentes "]
-            RF[("Random Forest (joblib)<br/>200 árvores / 10 features")]
-            AG_ORQ["Orquestrador + Input Guardrail"]
-            AG_ANA["Analista de Risco"]
-            AG_ESP["Especialista em Protocolos"]
-            AG_PLAN["Planejador de Resposta<br/>+ Output Guardrail V1–V5"]
-            BASE_PROT[("Base P01–P10")]
-            FALLBACK_DET["Fallback Determinístico Clínico<br/>(Ações operacionais diretas)"]
-        end
+    subgraph BACK ["3 · Backend Python · FastAPI no Render"]
+        API["API integradora<br/>• JWT (médico / paciente)<br/>• X-Device-Key no dispositivo<br/>• CORS da Vercel"]
+        DB[("SQLite<br/>usuários · pacientes<br/>leituras · avaliações")]
+        AVAL["Avaliador de risco<br/>reavalia a cada<br/>leitura recebida"]
+        CHAT["Serviço de chat"]
     end
 
-    %% CAMADA 4: Camada de Apresentação
-    subgraph FRONT [" Camada de Apresentação (Aplicações de Usuário) "]
-        WEB["Aplicação Web (React + Vite)<br/>• Deploy contínuo na Vercel<br/>• Painel clínico, gauge e chat"]
-        MOBILE["Aplicativo Mobile (React Native + Expo)<br/>• Build EAS (arquivo .APK)<br/>• Painel de monitoramento no leito"]
+    subgraph IA ["4 · Motores de IA"]
+        RF[("Random Forest · Fase 6<br/>10 features")]
+        PROT["Protocolos P01–P10<br/>+ recomendação"]
+        WATSON["IBM Watson Assistant<br/>Fase 5"]
+        OAI["OpenAI<br/>reserva"]
+        FB["Resposta de segurança<br/>SAMU 192"]
     end
 
-    %% Conexões e Fluxo de Dados
-    ESP -- "HTTP POST /api/leituras<br/>(Telemetria com X-Device-Key)" --> API
+    subgraph UI ["5 · Interfaces"]
+        WEB["Web · React + Vite<br/>Vercel (CI/CD)"]
+        APK["Mobile · Expo<br/>APK via EAS Build"]
+    end
 
-    %% Fluxo do Chat
-    CHAT_SRV -- "1. Diálogo Primário" --> WATSON
-    CHAT_SRV -. "2. Falha / Timeout" .-> OAI_CHAT
-    CHAT_SRV -. "3. Indisponibilidade" .-> DET_CHAT
+    DHT --> ESP
+    POT --> ESP
+    ESP --> HMI
+    ESP -- "POST /api/leituras" --> API
+    API <--> DB
+    API --> AVAL
+    AVAL --> RF
+    RF --> PROT
+    PROT --> DB
+    API --> CHAT
+    CHAT -- "1º" --> WATSON
+    CHAT -. "2º" .-> OAI
+    CHAT -. "3º" .-> FB
+    WEB -- "login · status a cada 5 s<br/>reavaliar · chat" --> API
+    APK -- "login · status a cada 5 s<br/>chat" --> API
 
-    %% Fluxo do Pipeline Multiagente
-    PIPE --> AG_ORQ
-    AG_ORQ -- "Handoff" --> AG_ANA
-    AG_ANA -- "Tool" --> RF
-    AG_ANA -- "Handoff" --> AG_ESP
-    AG_ESP -- "Tool" --> BASE_PROT
-    AG_ESP -- "Handoff" --> AG_PLAN
-    AG_PLAN -. "Violação / Erro" .-> FALLBACK_DET
-    AG_PLAN --> DB
-    FALLBACK_DET --> DB
-
-    %% Consumo Front-End
-    WEB -- "Polling 5s (GET /status)<br/>POST /api/chat" --> API
-    MOBILE -- "Polling 5s (GET /status)<br/>POST /api/chat" --> API
-
-    %% Aplicação de Classes
-    class S1,S2,ESP,HMI bordaStyle;
-    class API,DB,CHAT_SRV,PIPE backendStyle;
-    class WATSON,OAI_CHAT,DET_CHAT,RF,AG_ORQ,AG_ANA,AG_ESP,AG_PLAN,BASE_PROT,FALLBACK_DET iaStyle;
-    class WEB,MOBILE frontStyle;
+    class DHT,POT,ESP,HMI borda;
+    class API,DB,AVAL,CHAT backend;
+    class RF,PROT,WATSON,OAI,FB ia;
+    class WEB,APK front;

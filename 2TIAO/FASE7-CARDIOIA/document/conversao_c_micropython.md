@@ -39,7 +39,7 @@ Ao atingir a **Fase 7 (MVP Integrado)**, os requisitos do ecossistema evoluíram
 
 ### 3.3. Transição do Protocolo: MQTT vs. HTTP Integrador
 * **Fase 3 (C++):** A dependência de um broker MQTT externo (HiveMQ) criava um ponto único de falha desvinculado das regras de negócio do backend central. Os dados precisavam ser assinados em tópicos segmentados (`cardioia/sensor/temperatura` e `cardioia/sensor/batimentos`).
-* **Fase 7 (MicroPython):** A unificação do tráfego através de chamadas HTTP POST atômicas para `/api/leituras` permitiu o empacotamento das variáveis (`paciente_id`, `fc`, `temperatura`, `spo2`, `ts`) em um único objeto JSON estruturado. Isso reduziu o tráfego de rede e possibilitou que o backend em FastAPI persista as leituras no SQLite e dispare a reavaliação de risco preditivo de forma síncrona.
+* **Fase 7 (MicroPython):** A unificação do tráfego através de chamadas HTTP POST atômicas para `/api/leituras` permitiu o empacotamento das variáveis (`paciente_id`, `fc`, `temperatura`, `spo2`, `estado`) em um único objeto JSON estruturado. O horário da leitura é registrado pelo backend no recebimento, porque o ESP32 simulado não tem relógio sincronizado. Isso reduziu o tráfego de rede e possibilitou que o backend em FastAPI persista as leituras no SQLite e dispare a reavaliação de risco preditivo de forma síncrona.
 
 ---
 

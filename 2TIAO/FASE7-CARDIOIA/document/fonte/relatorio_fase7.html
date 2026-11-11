@@ -1,0 +1,166 @@
+<!doctype html>
+<!--
+  Fonte do relatório técnico da Fase 7. Para gerar o PDF (a partir de 2TIAO/FASE7-CARDIOIA):
+  google-chrome --headless --no-pdf-header-footer --print-to-pdf=docs/relatorio_fase7.pdf document/fonte/relatorio_fase7.html
+-->
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>CardioIA — Relatório Técnico da Fase 7</title>
+<style>
+  @page { size: A4; margin: 16mm 17mm 16mm 17mm; }
+  * { box-sizing: border-box; }
+  body { font-family: "Noto Sans", "Segoe UI", Arial, sans-serif; font-size: 9.6pt; line-height: 1.42; color: #1b1f24; margin: 0; }
+  h1 { font-size: 17pt; margin: 0 0 2px; color: #a00d24; }
+  h2 { font-size: 12pt; margin: 14px 0 6px; color: #a00d24; border-bottom: 1px solid #e4c3c8; padding-bottom: 2px; }
+  h3 { font-size: 10pt; margin: 10px 0 4px; }
+  p { margin: 0 0 6px; text-align: justify; }
+  ul, ol { margin: 0 0 6px; padding-left: 18px; }
+  li { margin-bottom: 2px; }
+  table { width: 100%; border-collapse: collapse; margin: 4px 0 8px; font-size: 8.8pt; }
+  th, td { border: 1px solid #d5d9de; padding: 3px 6px; text-align: left; vertical-align: top; }
+  th { background: #f3f4f6; }
+  code { font-family: "DejaVu Sans Mono", monospace; font-size: 8.4pt; background: #f3f4f6; padding: 0 3px; border-radius: 3px; }
+  .capa { display: flex; align-items: center; gap: 16px; margin-bottom: 8px; }
+  .capa img { width: 120px; }
+  .sub { color: #5b6470; font-size: 10pt; margin: 0; }
+  .meta { font-size: 8.8pt; color: #5b6470; margin: 6px 0 10px; }
+  figure { margin: 6px 0 10px; text-align: center; }
+  figure img { width: 100%; border: 1px solid #e3e6ea; }
+  figcaption { font-size: 8.4pt; color: #5b6470; margin-top: 3px; }
+  .aviso { border-left: 3px solid #b26a00; background: #fdf6e8; padding: 5px 8px; font-size: 8.6pt; margin: 6px 0; }
+  .pendente { color: #b26a00; font-style: italic; }
+  .quebra { break-before: page; }
+  .evitar { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+</style>
+</head>
+<body>
+
+<div class="capa">
+  <img src="../../assets/logo-fiap.png" alt="FIAP">
+  <div>
+    <h1>CardioIA — Relatório Técnico da Fase 7</h1>
+    <p class="sub">Coração Sob Controle: plataforma integrada de previsão de crises com IA</p>
+  </div>
+</div>
+<p class="meta">
+  <b>Integrantes:</b> Michael Rodrigues · Arthur Alentejo · Nathalia Vasconcelos &nbsp;|&nbsp;
+  <b>Tutor:</b> Caique &nbsp;|&nbsp; <b>Coordenador:</b> André Godói &nbsp;|&nbsp; FIAP, turma 2TIAO, 2026
+</p>
+
+<table>
+  <tr><th style="width:30%">Entregável</th><th>Endereço</th></tr>
+  <tr><td>Aplicação Web (Vercel)</td><td>https://tiao-2026.vercel.app</td></tr>
+  <tr><td>APK Android (EAS Build)</td><td>expo.dev/accounts/microdri/projects/cardioia/builds/182ecc37-8deb-4059-8612-1fac1bcf6171</td></tr>
+  <tr><td>API integradora (Render)</td><td>https://cardioia-backend-phkq.onrender.com</td></tr>
+  <tr><td>Simulação Wokwi</td><td class="pendente">link público do projeto (a adicionar)</td></tr>
+  <tr><td>Vídeo demonstrativo</td><td class="pendente">link do YouTube (a adicionar)</td></tr>
+  <tr><td>Código-fonte</td><td>github.com/Fiap-RJ/TIAO-2026, pasta <code>2TIAO/FASE7-CARDIOIA</code> (repositório privado, compartilhado com o tutor)</td></tr>
+</table>
+
+<h2>1. Objetivo</h2>
+<p>As fases anteriores da CardioIA produziram peças independentes: coleta por sensores (Fase 3), visão computacional sobre ECG (Fase 4), um assistente conversacional no IBM Watson (Fase 5) e um modelo preditivo de picos de risco com agentes (Fase 6). A Fase 7 junta essas peças num produto funcional. Um dispositivo simulado mede o paciente, um backend em Python aplica os modelos de IA, e médico e paciente acompanham o resultado em tempo real pela Web e por um aplicativo Android.</p>
+<p>Os requisitos atendidos são: (1) deploy da aplicação Web com CI/CD e distribuição do aplicativo como APK; (2) refinamento da experiência de uso dos indicadores de risco; (3) um backend Python que conecta as interfaces aos motores de IA das Fases 5 e 6; (4) conversão da lógica dos sensores de C/C++ para MicroPython, simulada no Wokwi.</p>
+
+<h2>2. Arquitetura final</h2>
+<figure class="evitar">
+  <img src="../../assets/arquitetura_final.png" alt="Diagrama da arquitetura final">
+  <figcaption>Figura 1 — Fluxo Sensor → MicroPython → Backend Python → APIs de IA → UI. Fonte: <code>document/fonte/arquitetura_final.mmd</code>.</figcaption>
+</figure>
+<p>A arquitetura tem cinco camadas, na ordem em que o dado percorre o sistema:</p>
+<table class="evitar">
+  <tr><th style="width:22%">Camada</th><th style="width:30%">Tecnologia</th><th>Responsabilidade</th></tr>
+  <tr><td>1. Sensores</td><td>DHT22 e potenciômetro (Wokwi)</td><td>Temperatura e frequência cardíaca simulada.</td></tr>
+  <tr><td>2. Borda</td><td>ESP32 com MicroPython</td><td>Filtra o sinal, classifica o estado localmente, dá feedback em LEDs e OLED e envia a leitura por HTTP.</td></tr>
+  <tr><td>3. Backend</td><td>FastAPI, SQLite, Render</td><td>Autentica usuários e dispositivo, persiste leituras e avaliações, dispara a reavaliação de risco e atende o chat.</td></tr>
+  <tr><td>4. Motores de IA</td><td>Random Forest (Fase 6), Watson (Fase 5), OpenAI</td><td>Probabilidade de pico de risco, protocolos P01–P10, ações operacionais e triagem conversacional.</td></tr>
+  <tr><td>5. Interfaces</td><td>React + Vite (Vercel), Expo (APK)</td><td>Painel do médico e do paciente com risco, sinais vitais em tempo real, recomendação e chat.</td></tr>
+</table>
+
+<h2>3. Fluxo de dados fim a fim</h2>
+<ol>
+  <li><b>Captura:</b> a cada 5 s o ESP32 lê o DHT22 e o potenciômetro (0–4095 → 40–180 bpm) e calcula a média móvel das últimas 5 leituras de frequência cardíaca.</li>
+  <li><b>Decisão na borda:</b> o firmware classifica o paciente como <i>crítico</i> (FC &lt; 50 ou &gt; 120 bpm, ou temperatura &gt; 38 °C), <i>atenção</i> (FC 50–59 ou 101–120 bpm, ou temperatura 37,5–38 °C) ou <i>normal</i>. Acende o LED correspondente e mostra FC, temperatura e estado no OLED, sem depender da rede.</li>
+  <li><b>Envio:</b> <code>POST /api/leituras</code> com <code>paciente_id</code>, <code>fc</code>, <code>temperatura</code>, <code>spo2</code> e <code>estado</code>, autenticado pelo header <code>X-Device-Key</code>. Falhas de rede são tratadas sem travar o laço de leitura.</li>
+  <li><b>Persistência e reavaliação:</b> o backend valida a chave e os limites fisiológicos, registra a leitura com o horário do servidor e recalcula o risco imediatamente, a cada leitura. Assim a classificação sobe numa crise e volta a baixar quando o sinal se normaliza.</li>
+  <li><b>Inferência:</b> o avaliador monta as 10 features do modelo da Fase 6 com a média das 5 leituras mais recentes (FC, SpO₂, temperatura) e os indicadores operacionais simulados do paciente. O Random Forest devolve a probabilidade, a faixa de risco é aplicada e as regras P01–P10 selecionam protocolos, sinais de atenção e ações. O resultado é salvo no formato <code>RespostaAtendimento</code> da Fase 6.</li>
+  <li><b>Entrega:</b> Web e APK consultam <code>GET /api/pacientes/{id}/status</code> a cada 5 s e atualizam o medidor de risco, os gráficos e a recomendação. O médico pode pedir uma reavaliação manual, e qualquer perfil pode conversar com o assistente por <code>POST /api/chat</code>.</li>
+</ol>
+
+<h2>4. Componentes</h2>
+
+<h3>4.1 IoT: de C/C++ para MicroPython</h3>
+<p>O firmware da Fase 3 (Arduino/C++) lia os sensores e publicava valores brutos via MQTT, sem interface no dispositivo. A versão em MicroPython (<code>iot/main.py</code>) transforma o ESP32 em um nó de borda com decisão local.</p>
+<table class="evitar">
+  <tr><th style="width:24%">Aspecto</th><th style="width:38%">Fase 3 (C/C++)</th><th>Fase 7 (MicroPython)</th></tr>
+  <tr><td>Tratamento do sinal</td><td><code>map()</code> direto do ADC</td><td>ADC com atenuação de 11 dB e média móvel de 5 amostras</td></tr>
+  <tr><td>Classificação</td><td>Inexistente</td><td>Normal, atenção e crítico no próprio dispositivo</td></tr>
+  <tr><td>Feedback</td><td>Monitor serial</td><td>3 LEDs e display OLED SSD1306 (I2C, GPIO 21/22)</td></tr>
+  <tr><td>Comunicação</td><td>MQTT com broker externo</td><td>HTTP POST direto para a API, com <code>X-Device-Key</code></td></tr>
+  <tr><td>Resiliência</td><td>Buffer em <code>String</code></td><td><code>try/except</code> no envio e liberação do socket</td></tr>
+</table>
+<p>A comparação completa está em <code>document/conversao_c_micropython.md</code>. Na simulação, o DHT22 inicia em 36,6 °C e a SpO₂ é enviada fixa em 97 %, já que o circuito não tem oxímetro.</p>
+
+<h3>4.2 Backend integrador (Python)</h3>
+<table class="evitar">
+  <tr><th style="width:34%">Rota</th><th style="width:16%">Consumidor</th><th>Função</th></tr>
+  <tr><td><code>POST /api/auth/login</code></td><td>Web, APK</td><td>Login com JWT (HMAC-SHA256, 8 h) e perfil médico ou paciente; senhas com PBKDF2.</td></tr>
+  <tr><td><code>POST /api/leituras</code></td><td>ESP32</td><td>Recebe a telemetria (chave obrigatória) e reavalia o risco a cada leitura.</td></tr>
+  <tr><td><code>GET /api/pacientes</code></td><td>Web, APK</td><td>Pacientes com última leitura e último risco; o paciente vê só o próprio cadastro.</td></tr>
+  <tr><td><code>GET /api/pacientes/{id}/status</code></td><td>Web, APK</td><td>Últimas 60 leituras e a avaliação mais recente.</td></tr>
+  <tr><td><code>POST /api/pacientes/{id}/avaliar</code></td><td>Web</td><td>Reavaliação manual, restrita ao perfil médico.</td></tr>
+  <tr><td><code>POST /api/chat</code></td><td>Web, APK</td><td>Assistente de triagem com sessão reaproveitada entre mensagens.</td></tr>
+  <tr><td><code>GET /api/health</code></td><td>Render</td><td>Verificação de saúde do serviço.</td></tr>
+</table>
+<p>O código da Fase 6 (modelo, domínio, protocolos e recomendação) foi copiado para <code>backend/cardioia/</code>, o que deixa o deploy da fase independente. Os testes automatizados cobrem o fluxo completo de telemetria, o isolamento entre pacientes e o contrato do chat sem provedores externos.</p>
+
+<h3>4.3 Motores de IA</h3>
+<ul>
+  <li><b>Modelo preditivo (Fase 6):</b> Random Forest com 200 árvores sobre 10 indicadores. No conjunto de teste da Fase 6, acurácia de 0,999 e F1 de 0,998 para a classe de pico. Faixas: BAIXO (&lt; 0,40), MODERADO (0,40–0,70) e ALTO (≥ 0,70).</li>
+  <li><b>Protocolos e recomendação (Fase 6):</b> as regras P01–P10 comparam cada indicador com o seu gatilho, apontam sinais de atenção (acima do limiar de risco, abaixo do gatilho) e geram ações operacionais com justificativa.</li>
+  <li><b>Chat (Fase 5):</b> o IBM Watson Assistant V2 faz a triagem e recria a sessão quando ela expira. Se o Watson falhar, o OpenAI responde com instruções que proíbem diagnóstico e prescrição; nesse caminho, perguntas sobre doses ou medicamentos são recusadas antes mesmo da chamada ao modelo. Sem nenhum provedor disponível, o sistema devolve uma orientação fixa de emergência (SAMU 192).</li>
+</ul>
+
+<h3>4.4 Interfaces Web e Mobile</h3>
+<p>As duas aplicações usam o mesmo contrato de API e as mesmas telas: login; lista de pacientes ordenada pelo risco, com borda colorida por faixa; painel com medidor semicircular da probabilidade (marcas em 0,40 e 0,70), sinais vitais com tendência e linhas de limiar, protocolos acionados, sinais de atenção, ações e explicação; e o chat. As decisões de experiência de uso foram:</p>
+<ul>
+  <li>a cor nunca aparece sozinha: toda faixa e todo estado têm rótulo em texto;</li>
+  <li>o aviso legal fica visível em todas as telas de dados;</li>
+  <li>quando o backend demora (inicialização do Render gratuito), a interface avisa que o servidor está iniciando em vez de parecer travada;</li>
+  <li>o paciente vê apenas o próprio painel, e ações clínicas como a reavaliação ficam restritas ao médico;</li>
+  <li>sem backend configurado, os apps entram num modo de demonstração identificado na tela, útil para desenvolvimento e testes.</li>
+</ul>
+
+<h2>5. Deploy e distribuição</h2>
+<table class="evitar">
+  <tr><th style="width:18%">Alvo</th><th>Configuração</th></tr>
+  <tr><td>Web (Vercel)</td><td>Projeto ligado ao GitHub com Root Directory <code>2TIAO/FASE7-CARDIOIA/web</code>. O <code>vercel.json</code> reescreve todas as rotas para <code>index.html</code>, o que permite abrir ou recarregar qualquer rota da SPA. Cada push na <code>main</code> gera um deploy de produção, e cada pull request gera uma URL de pré-visualização. A URL da API entra como <code>VITE_API_URL</code>.</td></tr>
+  <tr><td>Mobile (EAS)</td><td><code>app.json</code> com <code>android.package</code> <code>br.com.fiap.cardioia</code> (domínio invertido); <code>eas.json</code> com o perfil <code>preview</code>, distribuição interna e <code>buildType: "apk"</code>. O build roda na nuvem do Expo, que gera e guarda a keystore de assinatura. A URL da API entra como <code>EXPO_PUBLIC_API_URL</code> no momento do build.</td></tr>
+  <tr><td>Backend (Render)</td><td>Serviço web Python definido em <code>render.yaml</code>, com health check em <code>/api/health</code> e deploy automático a partir da <code>main</code>. Segredos (<code>JWT_SECRET</code>, <code>DEVICE_KEY</code>, chaves do Watson e do OpenAI) ficam só no painel do Render.</td></tr>
+  <tr><td>Verificação</td><td>Workflow do GitHub Actions que, a cada push ou pull request, roda lint e build do Web e typecheck, lint, <code>expo-doctor</code> e geração do bundle Android do app.</td></tr>
+</table>
+<p><b>Validação:</b> a aplicação Web foi testada na URL pública, incluindo o acesso direto a rotas internas, e o APK foi instalado em um aparelho Android real para validar o login e a visualização dos dados cardíacos. As evidências estão em <code>assets/prints/</code> e no vídeo demonstrativo.</p>
+
+<h2>6. Decisões de projeto</h2>
+<ul>
+  <li><b>Avaliação em tempo real sem LLM.</b> O pipeline com agentes da Fase 6 leva alguns segundos e tem custo por chamada. Executá-lo a cada leitura do sensor, a cada 5 s, seria lento e caro. Por isso a reavaliação automática usa diretamente o modelo e as regras da Fase 6, que são os componentes que calculam os números também no pipeline com agentes. O LLM fica no chat, onde a conversa justifica a latência.</li>
+  <li><b>HTTP em vez de MQTT.</b> O envio direto para a API elimina o broker externo, deixa a autenticação do dispositivo no mesmo serviço e permite reavaliar o risco no mesmo request que grava a leitura.</li>
+  <li><b>Polling a cada 5 s.</b> Mais simples e estável que WebSocket no plano gratuito, e alinhado ao intervalo de envio do sensor.</li>
+  <li><b>Horário registrado no servidor.</b> O ESP32 simulado não tem relógio sincronizado, então o backend carimba cada leitura no recebimento.</li>
+  <li><b>Contrato único.</b> O formato da avaliação é o mesmo schema da Fase 6, e Web e APK compartilham o mesmo contrato (<code>document/contrato_api.md</code>), o que permitiu desenvolver as três partes em paralelo.</li>
+</ul>
+
+<h2>7. Limitações e próximos passos</h2>
+<ul>
+  <li><b>Dados sintéticos:</b> o modelo foi treinado com dados sintéticos sem ruído, e os sinais vêm de componentes virtuais. Os resultados não têm validade clínica.</li>
+  <li><b>SpO₂ fixa:</b> o circuito não tem oxímetro. Um próximo passo é incluir um sensor simulado de SpO₂ (por exemplo, um segundo potenciômetro).</li>
+  <li><b>Persistência:</b> o SQLite no disco temporário do Render gratuito é recriado a cada reinício. Em produção, o caminho seria um banco gerenciado, como PostgreSQL.</li>
+  <li><b>Inicialização a frio:</b> o plano gratuito desliga o backend sem uso, e a primeira chamada pode levar até um minuto.</li>
+  <li><b>Segurança:</b> as contas de demonstração e a chave única por dispositivo atendem ao MVP. Em produção seriam necessários cadastro real, chave por dispositivo, rotação de segredos e trilha de auditoria.</li>
+</ul>
+
+<div class="aviso"><b>Aviso:</b> o CardioIA é um sistema acadêmico, informativo e de apoio à decisão operacional, baseado em dados sintéticos. Não realiza diagnóstico, não prescreve tratamentos e não substitui a avaliação de um profissional de saúde.</div>
+
+</body>
+</html>
