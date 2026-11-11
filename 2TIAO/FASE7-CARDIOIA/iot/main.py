@@ -1,3 +1,4 @@
+import gc
 import network
 import time
 import ujson
@@ -54,9 +55,8 @@ wlan = network.WLAN(network.STA_IF)
 def conectar_wifi():
     """Conecta ao Wi-Fi Wokwi-GUEST, no mesmo padrão da documentação do Wokwi.
 
-    Chama connect() uma única vez e espera o tempo necessário: no simulador a
-    conexão leva cerca de 15 a 20 s, e chamar connect() de novo no meio da
-    tentativa a reinicia.
+    Chama connect() uma única vez e espera o tempo necessário. O gateway
+    público do Wokwi é instável: se ficar só nos pontos, reinicie a simulação.
     """
     wlan.active(True)
     if wlan.isconnected():
@@ -123,12 +123,19 @@ def enviar_para_backend(fc, temp, estado):
         # Sem "ts": o ESP32 não tem relógio sincronizado (time.time() conta a
         # partir de 2000), então o backend registra o horário de recebimento.
     }
-    try:
-        res = urequests.post(API_URL, data=ujson.dumps(payload), headers=headers)
-        print("Envio concluido. Status HTTP:", res.status_code)
-        res.close()
-    except Exception as erro:
-        print("Erro de conexao HTTP ao enviar dados:", erro)
+    corpo = ujson.dumps(payload)
+    # O handshake TLS precisa de ~40 KB contíguos e o gateway público do Wokwi
+    # às vezes derruba a conexão no meio dele: libera memória e tenta 2 vezes.
+    for tentativa in (1, 2):
+        gc.collect()
+        try:
+            res = urequests.post(API_URL, data=corpo, headers=headers)
+            print("Envio concluido. Status HTTP:", res.status_code)
+            res.close()
+            return
+        except Exception as erro:
+            print("Erro de conexao HTTP ao enviar dados (tentativa {}):".format(tentativa), erro)
+            time.sleep(1)
 
 # ==========================================================
 # 3. Ciclo Principal de Execução
