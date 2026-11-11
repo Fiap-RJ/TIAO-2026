@@ -13,7 +13,7 @@ WIFI_SSID = "Wokwi-GUEST"
 WIFI_PASSWORD = ""
 
 # Alinhar a URL e chave com o Arthur (responsável pelo backend)
-API_URL = "https://cardioia-backend.onrender.com/api/leituras"
+API_URL = "https://cardioia-backend-phkq.onrender.com/api/leituras"
 DEVICE_KEY = "INSIRA_A_DEVICE_KEY_DO_RENDER"
 PACIENTE_ID = "p-001"
 

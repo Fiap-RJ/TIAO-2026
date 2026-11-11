@@ -14,7 +14,7 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "",
+        "EXPO_PUBLIC_API_URL": "https://cardioia-backend-phkq.onrender.com",
         "EXPO_PUBLIC_USE_MOCK": "false"
       }
     },

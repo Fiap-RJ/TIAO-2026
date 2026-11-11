@@ -23,3 +23,8 @@ de iniciar a simulação.
 O [`render.yaml`](render.yaml) define o serviço. No painel do Render, defina
 `DEVICE_KEY`, `CORS_ORIGINS` com a URL da Vercel e, se disponíveis, as
 credenciais Watson/OpenAI. Nunca envie o arquivo `.env` ao repositório.
+
+A URL pública atual é `https://cardioia-backend-phkq.onrender.com`. O workflow
+do GitHub Actions dispara o deploy no Render após um push na `main`; cadastre a
+URL do deploy hook como o secret `RENDER_DEPLOY_HOOK_URL` no ambiente
+`production` do repositório.

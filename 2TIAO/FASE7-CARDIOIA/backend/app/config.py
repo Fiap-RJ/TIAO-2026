@@ -11,7 +11,8 @@ DEVICE_KEY = os.getenv("DEVICE_KEY", "")
 CORS_ORIGINS = [
     origin.strip()
     for origin in os.getenv(
-        "CORS_ORIGINS", "http://localhost:5173,http://localhost:8081"
+        "CORS_ORIGINS",
+        "http://localhost:5173,http://localhost:8081,https://tiao-2026.vercel.app",
     ).split(",")
     if origin.strip()
 ]

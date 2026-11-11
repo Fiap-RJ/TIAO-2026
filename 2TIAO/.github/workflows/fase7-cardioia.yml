@@ -3,9 +3,9 @@ name: CardioIA Fase 7
 on:
   push:
     branches: [main]
-    paths: ["2TIAO/FASE7-CARDIOIA/**"]
+    paths: ["2TIAO/FASE7-CARDIOIA/**", "2TIAO/.github/workflows/fase7-cardioia.yml"]
   pull_request:
-    paths: ["2TIAO/FASE7-CARDIOIA/**"]
+    paths: ["2TIAO/FASE7-CARDIOIA/**", "2TIAO/.github/workflows/fase7-cardioia.yml"]
 
 jobs:
   backend:
@@ -35,3 +35,19 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run build
+  deploy-render:
+    name: Deploy backend on Render
+    needs: backend
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+    steps:
+      - name: Trigger Render deploy hook
+        run: |
+          if [ -z "$RENDER_DEPLOY_HOOK_URL" ]; then
+            echo "::error::Configure o secret RENDER_DEPLOY_HOOK_URL no ambiente production."
+            exit 1
+          fi
+          curl --fail --show-error --silent --request POST "$RENDER_DEPLOY_HOOK_URL"
