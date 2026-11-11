@@ -38,7 +38,7 @@ def initialize() -> None:
         if conn.execute("SELECT COUNT(*) FROM pacientes").fetchone()[0]:
             return
         pacientes = [
-            ("p-001", "João Batista", 62, "UTI-C 04", {"carga_sistema": 76, "tempo_espera": 38, "pa_sistolica": 138, "densidade_eventos": 3, "eventos_24h": 4, "disponibilidade_recursos": 54}),
+            ("p-001", "João Batista", 62, "UTI-C 04", {"carga_sistema": 84, "tempo_espera": 38, "pa_sistolica": 138, "densidade_eventos": 3, "eventos_24h": 4, "disponibilidade_recursos": 54}),
             ("p-002", "Maria Aparecida", 57, "UTI-C 07", {"carga_sistema": 42, "tempo_espera": 18, "pa_sistolica": 124, "densidade_eventos": 1, "eventos_24h": 1, "disponibilidade_recursos": 77}),
         ]
         conn.executemany("INSERT INTO pacientes VALUES (?, ?, ?, ?, ?)", [(a, b, c, d, json.dumps(e)) for a, b, c, d, e in pacientes])
